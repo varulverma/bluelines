@@ -214,9 +214,9 @@ async function main() {
     await h.domClick(s, '#dn-export-menu-btn-table');
     await sleep(150);
     await ev(s, `[...document.querySelectorAll('.dn-action-menu-item')].find(b => b.textContent.trim().startsWith(${JSON.stringify(label)})).click(); true`);
-    await poll(async () => fs.readdirSync(h.downloads).filter((f) => f.startsWith('redlines-') && !f.endsWith('.crdownload')).length > ['Excel', 'HTML', 'CSV', 'ZIP'].indexOf(label), 6000);
+    await poll(async () => fs.readdirSync(h.downloads).filter((f) => f.startsWith('bluelines-') && !f.endsWith('.crdownload')).length > ['Excel', 'HTML', 'CSV', 'ZIP'].indexOf(label), 6000);
   }
-  const files = fs.readdirSync(h.downloads).filter((f) => f.startsWith('redlines-'));
+  const files = fs.readdirSync(h.downloads).filter((f) => f.startsWith('bluelines-'));
   const leaking = files.filter((f) => { const t = fs.readFileSync(path.join(h.downloads, f)).toString('latin1'); return t.includes(FAKE_KEY) || t.includes(FAKE_TOKEN); });
   record('P9', 'exports (xlsx, html, csv, zip) contain neither the API key nor the OAuth token', files.length >= 4 && leaking.length === 0, `${files.length} files; leaking: ${leaking.join(', ') || 'none'}`);
 

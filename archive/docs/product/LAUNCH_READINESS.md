@@ -1,4 +1,4 @@
-# Redlines — Launch Readiness
+# Bluelines — Launch Readiness
 
 _Created 2026-10-21. This document takes the extension from "works on my machine" to a public store listing. It lists what is done, what blocks launch, what each store needs, and the decisions only the owner can make. Update the status columns as items close._
 
@@ -19,7 +19,7 @@ Related: [PRODUCT_BRIEF.md](PRODUCT_BRIEF.md) (scope, decisions D1–D10), [PRIV
 | Code hygiene | Clean | no `console.log`/`debug`, no TODO/FIXME, all JS passes `node --check` |
 | Remote code | None | no CDN scripts, no `eval`; fonts and icons are bundled |
 | Package size | 1.1 MB runtime files | the folder also holds ~170 MB of dev material that must not ship (§5) |
-| Branding | Final | name **Redlines**, Burst logo in `brand/logo/burst/` and `icons/` |
+| Branding | Final | name **Bluelines**, Burst logo in `brand/logo/burst/` and `icons/` |
 | Real-person checks | **Not done** | the headed human passes requested in Phases 1–4 were never reported; real Enhance and real Drive OAuth were never run |
 
 **Bottom line:** the code is close to release quality on Chromium. What's missing is mostly *around* the code: packaging, MCP distribution, licence, hosted privacy policy, store assets, and one round of human testing.
@@ -46,8 +46,8 @@ Store review usually takes from a few days up to a couple of weeks for `<all_url
 
 | ID | Blocker | Why it blocks | What "done" looks like | Status |
 |---|---|---|---|---|
-| **L1** | **Release package** | The folder mixes runtime files with `brag-output*` (~170 MB), `tests/`, `docs/`, `tools/`, `brand/`, `.claude/`, `.impeccable/`, `.superpowers/`, `*.md`, `design-system.html`. Stores reject or flag junk, and dev notes would ship to users. | A `tools/package` script that zips an **allowlist**: `manifest.json`, `*.js` (runtime only), `*.html` (popup, settings), `*.css`, `fonts/`, `icons/`. It refuses to build if `node --check` or the unit tests fail. Output: `dist/redlines-<version>.zip`. | Open |
-| **L2** | **MCP server distribution** | Users must currently type the path of the folder they loaded into Chrome. Store installs have no visible folder at all, and a wrong path fails silently as "Connection closed" (this happened on 2026-10-21). | Publish `mcp/redlines-mcp.js` to npm as **`redlines-mcp`** (name was free on 2026-10-21) with a `bin` entry. Settings shows `npx -y redlines-mcp` in every agent's command and drops the "Redlines folder" field. | Open |
+| **L1** | **Release package** | The folder mixes runtime files with `brag-output*` (~170 MB), `tests/`, `docs/`, `tools/`, `brand/`, `.claude/`, `.impeccable/`, `.superpowers/`, `*.md`, `design-system.html`. Stores reject or flag junk, and dev notes would ship to users. | A `tools/package` script that zips an **allowlist**: `manifest.json`, `*.js` (runtime only), `*.html` (popup, settings), `*.css`, `fonts/`, `icons/`. It refuses to build if `node --check` or the unit tests fail. Output: `dist/bluelines-<version>.zip`. | Open |
+| **L2** | **MCP server distribution** | Users must currently type the path of the folder they loaded into Chrome. Store installs have no visible folder at all, and a wrong path fails silently as "Connection closed" (this happened on 2026-10-21). | Publish `mcp/bluelines-mcp.js` to npm as **`bluelines-mcp`** (name was free on 2026-10-21) with a `bin` entry. Settings shows `npx -y bluelines-mcp` in every agent's command and drops the "Bluelines folder" field. | Open |
 | **L3** | **Licence + ownership** | No `LICENSE` file, so legally nobody may use or fork the code; and ownership must be clear before you publish under your name. | `LICENSE` at the root (see §7), copyright line with the owner's name, and the employer question in §7 answered. | Open |
 | **L4** | **Hosted privacy policy** | Both stores require a public privacy-policy URL for an extension that reads page content, takes screenshots and can send data to AI providers and Google. | A public page (free: GitHub Pages) based on PRIVACY_AND_PERMISSIONS.md, **including the AI-agent bridge** (see L5). URL added to the store listing and to Settings → "Your data". | Open |
 | **L5** | **Privacy doc misses the AI-agent bridge and `alarms`** | `PRIVACY_AND_PERMISSIONS.md` predates the bridge. It says data leaves only through Enhance and Drive, and its permission table has no `alarms`. The Settings page already describes the bridge correctly; the doc and store disclosures must match it. | Doc updated: the bridge row (what an agent can read, that it stays on 127.0.0.1, that the AI tool may forward it to its provider, read-only default, shared sites, screenshots toggle, activity log) and an `alarms` row (reconnects to the bridge every 30 s while it's on). | Open |
@@ -97,13 +97,13 @@ icons/   (app icons + icons/agents/*.svg + SOURCES.md)
 LICENSE
 ```
 
-Never ships: `mcp/` (goes to npm instead, L2), `tests/`, `docs/`, `tools/`, `brand/` (except `brand/logo/burst/redlines-burst-body.svg` and `redlines-burst-cursor.svg`, which `theme.css` loads), `brag-output*`, `design-system.html`, `*.md` (other than LICENSE), dot-folders.
+Never ships: `mcp/` (goes to npm instead, L2), `tests/`, `docs/`, `tools/`, `brand/` (except `brand/logo/burst/bluelines-burst-body.svg` and `bluelines-burst-cursor.svg`, which `theme.css` loads), `brag-output*`, `design-system.html`, `*.md` (other than LICENSE), dot-folders.
 
 ### Versioning
 
 - `manifest.json` `version` follows `MAJOR.MINOR.PATCH`. Every store upload needs a **higher** version than the last one.
 - Keep a `CHANGELOG.md` (repo only) with one entry per release, in plain language; it doubles as the store's "What's new".
-- The npm `redlines-mcp` version moves independently, but the extension and server must agree on the message protocol (`hello` / `welcome` / `call` / `reply` / `agent`). If that protocol changes, bump the server's major version and have the extension show "Update your Redlines MCP server" when the versions disagree.
+- The npm `bluelines-mcp` version moves independently, but the extension and server must agree on the message protocol (`hello` / `welcome` / `call` / `reply` / `agent`). If that protocol changes, bump the server's major version and have the extension show "Update your Bluelines MCP server" when the versions disagree.
 
 ### Release steps (each release)
 
@@ -154,27 +154,27 @@ As the author, you already own the copyright. A licence is a file you add that s
 | Option | Effect | Good when |
 |---|---|---|
 | **MIT** | Anyone may use, change and redistribute it, including commercially, if they keep your copyright notice. | You want trust and contributions. Common for developer tools and MCP servers; an open-source MCP server is easier for people to trust with their notes. |
-| **Apache-2.0** | Like MIT, plus an explicit patent grant and a trademark clause. | You want to stop forks from using the Redlines name and logo. |
+| **Apache-2.0** | Like MIT, plus an explicit patent grant and a trademark clause. | You want to stop forks from using the Bluelines name and logo. |
 | **Proprietary** ("Copyright © 2026 <owner>. All rights reserved.") | People can install it from the store but may not copy or reuse the code. | You may sell it or a Pro tier later. |
 
 You can list on every store under any of these. A common split: **extension proprietary or MIT, MCP server MIT** (people run it on their machine and want to read it).
 
-The licence covers code, not the name. To protect "Redlines" and the Burst logo, add a line such as "The Redlines name and logo are not covered by this licence" (Apache-2.0 already says so).
+The licence covers code, not the name. To protect "Bluelines" and the Burst logo, add a line such as "The Bluelines name and logo are not covered by this licence" (Apache-2.0 already says so).
 
 ### Ownership check (do this first)
 
-Resolved 2026-10-21: Redlines is owned by Varul Verma. Store, npm and GitHub accounts belong to the owner.
+Resolved 2026-10-21: Bluelines is owned by Varul Verma. Store, npm and GitHub accounts belong to the owner.
 
 ### Name check
 
-Search the Chrome Web Store, Edge Add-ons, npm, GitHub and a trademark database (for India: the IP India public search; for the US: USPTO) for "Redlines" in software or design tools before you print it on a listing.
+Search the Chrome Web Store, Edge Add-ons, npm, GitHub and a trademark database (for India: the IP India public search; for the US: USPTO) for "Bluelines" in software or design tools before you print it on a listing.
 
 ### Third-party material already in the package
 
 | Item | Licence | What to do |
 |---|---|---|
 | Space Grotesk, Space Mono (`fonts/`) | SIL Open Font License 1.1 | Already compliant: the OFL text files ship next to the fonts. Don't sell the fonts on their own. |
-| Agent logos (`icons/agents/`) | Simple Icons, CC0 | Free to use. The logos are still the companies' trademarks: use them only to identify those tools (as Settings does), never in store screenshots or promo art as if they endorse Redlines. `SOURCES.md` records this. |
+| Agent logos (`icons/agents/`) | Simple Icons, CC0 | Free to use. The logos are still the companies' trademarks: use them only to identify those tools (as Settings does), never in store screenshots or promo art as if they endorse Bluelines. `SOURCES.md` records this. |
 | Burst logo, all code | Yours | Covered by your chosen licence. |
 
 ---
@@ -185,7 +185,7 @@ Search the Chrome Web Store, Edge Add-ons, npm, GitHub and a trademark database 
 
 | Field | Content |
 |---|---|
-| Name | Redlines — Visual Annotation Tool (33 chars; manifest limit 75) |
+| Name | Bluelines — Visual Annotation Tool (33 chars; manifest limit 75) |
 | Short description | "See. Mark. Explain. Ship. Pin notes to any element on any web page, saved privately in your browser." Comes from `manifest.json` `description`, limit 132 chars (L8). |
 | Long description | What it does; who it's for; local-first; the optional features (Enhance, Drive, AI agents) and exactly what each sends; shortcuts; link to the privacy policy. |
 | Category | Developer Tools (Chrome) / Developer tools (Edge) |
@@ -229,7 +229,7 @@ Collected *only on user action and never sold or transferred to third parties ot
 ## 10. Order of work
 
 1. **Decide** §9 (licence, ownership, D9, Drive).
-2. **Ship prep (code):** L8 manifest description, L1 package script, L2 npm `redlines-mcp` + Settings `npx` command, F1 backup/restore/delete-all, F2 welcome page, F3 feedback link, F8 model check.
+2. **Ship prep (code):** L8 manifest description, L1 package script, L2 npm `bluelines-mcp` + Settings `npx` command, F1 backup/restore/delete-all, F2 welcome page, F3 feedback link, F8 model check.
 3. **Ship prep (docs):** L3 LICENSE, L5 privacy doc, L4 hosted policy, CHANGELOG, README refresh (title still says "DesignNote … (MVP)"; the bridge section still says "one AI tool at a time" though several now run side by side).
 4. **Assets:** screenshots, promo tile, store copy (§8).
 5. **Verify:** all suites + the human checklist (L7) on the packaged zip.

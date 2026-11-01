@@ -1,4 +1,4 @@
-# Redlines — extension reference
+# Bluelines — extension reference
 
 A Chrome / Edge extension for marking up any web page like Figma comments. Fully
 local and offline by default; an optional AI "Enhance" button turns a raw
@@ -10,7 +10,7 @@ local MCP bridge lets AI coding agents read your notes.
 1. Open `chrome://extensions`
 2. Turn on **Developer mode** (top right)
 3. Click **Load unpacked**
-4. Select the Redlines folder (the one with `manifest.json`)
+4. Select the Bluelines folder (the one with `manifest.json`)
 5. Visit any webpage or local HTML file (for local files, enable "Allow
    access to file URLs" on the extension's details page)
 
@@ -117,7 +117,7 @@ installed an earlier build, set the shortcuts once at `chrome://extensions/short
   can't read it; anyone using this browser profile could).
 - **AI agents** (off until you turn it on): an AI tool on this computer that you started
   with your pairing code can read notes from your **shared sites** only. See "Connect to AI
-  agents" below. Redlines talks only to `127.0.0.1`; the AI tool may send what it reads to
+  agents" below. Bluelines talks only to `127.0.0.1`; the AI tool may send what it reads to
   its own provider.
 - While a DesignNote panel is open, the page's own scripts can technically see what it
   shows. Avoid opening it on untrusted sites.
@@ -160,7 +160,7 @@ Older notes without the optional fields keep working unchanged.
 ## Connect to AI agents (MCP)
 
 AI tools that support MCP (Claude Code, Claude Desktop, Cursor, VS Code, Windsurf, Codex,
-Gemini CLI…) can read your notes and work through them: "fix all open Redlines bugs on
+Gemini CLI…) can read your notes and work through them: "fix all open Bluelines bugs on
 localhost:3000".
 
 **You need:** Node.js 18+, an MCP-capable AI tool on the same computer, and the browser open.
@@ -168,7 +168,7 @@ localhost:3000".
 1. **Settings → Connect to AI agents → On.** You get a private pairing code.
 2. Enter the folder you loaded into Chrome; copy the ready-made command
    (Claude Code) or JSON (other tools' MCP config) and add it to your AI tool.
-3. The status turns **Connected** once the AI tool starts the bridge (`mcp/redlines-mcp.js`,
+3. The status turns **Connected** once the AI tool starts the bridge (`mcp/bluelines-mcp.js`,
    no dependencies).
 
 The toolbar popup's **AI agents** strip shows how many agents are connected and which ones. An
@@ -192,7 +192,7 @@ pairing code" revokes the old one). Only **shared sites** are visible (default: 
 `*.local`, `*.test`, `staging.*`, `dev.*`). Screenshots can be switched off. Agents are
 **read-only** unless you allow changes, anything they write is labelled **AI**, and every
 access shows in Settings → Recent agent activity. Several AI tools can be connected at once:
-each starts its own bridge on the next free port (up to 10), and Redlines connects to all of them.
+each starts its own bridge on the next free port (up to 10), and Bluelines connects to all of them.
 
 ## Google Drive setup (one-time)
 

@@ -32,8 +32,8 @@ document.addEventListener('DOMContentLoaded', () => {
       labelEl.classList.add('long');
       // No "tabs" permission, so tab.url may be hidden; Chrome's injection error names the URL.
       labelEl.textContent = /file:/i.test(res.error || '')
-        ? 'To annotate local files, turn on "Allow access to file URLs" for Redlines in chrome://extensions.'
-        : "Redlines can't run on this page (browser pages and extension stores are off-limits).";
+        ? 'To annotate local files, turn on "Allow access to file URLs" for Bluelines in chrome://extensions.'
+        : "Bluelines can't run on this page (browser pages and extension stores are off-limits).";
       openBtn.disabled = true;
       inspectBtn.disabled = true;
       return;
@@ -192,7 +192,7 @@ function renderAgentsLive() {
     let error = false;
     if (!enabled) note = 'Let Claude Code, Cursor and other AI tools read your notes.';
     else if (status === 'bad-token') { note = 'An AI tool used an old pairing code. Copy the setup command again in Settings.'; error = true; }
-    else if (!agents.length) note = 'Waiting for an AI tool to start the Redlines MCP server.';
+    else if (!agents.length) note = 'Waiting for an AI tool to start the Bluelines MCP server.';
     noteEl.hidden = !note;
     noteEl.classList.toggle('error', error);
     if (note) {

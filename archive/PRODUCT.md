@@ -28,10 +28,10 @@ Runs as an overlay on arbitrary third-party sites (light or dark, any CSS), so i
 - Open decisions live in `docs/product/PRODUCT_BRIEF.md` (D5 URL keying, D6 release browsers, D8 backup, D9 shadow DOM, D10 Drive OAuth).
 
 ## Brand Commitments
-- Name: **Redlines** (renamed from DesignNote on 2026-10-19). Tagline: "See. Mark. Explain. Ship." The annotate mode is called **Inspect Mode** in user-facing copy.
+- Name: **Bluelines** (renamed from DesignNote on 2026-10-19). Tagline: "See. Mark. Explain. Ship." The annotate mode is called **Inspect Mode** in user-facing copy.
 - Internal identifiers (`dn_*` storage keys, `#designnote-root`, `designnote-*` ids, the gecko id) stay unchanged so existing local notes keep loading.
-- The logo is final: the **Burst** mark (finalized 2026-10-20). Masters live in `brand/logo/burst/` (SVG, mono, lockups, app icons, PNGs) and in Figma `Portfolio-27` → Logo section (`66:1544`, board "Redlines — Burst final"). Use those files wherever a mark appears (`.dn-mark-slot`, `.rl-mark-slot`, `icons/`); don't redraw, recolour or restyle it.
-- Visual source of truth: the Redlines moodboard in Figma (`Portfolio-27`, section `19:1276`).
+- The logo is final: the **Burst** mark (finalized 2026-10-20). Masters live in `brand/logo/burst/` (SVG, mono, lockups, app icons, PNGs) and in Figma `Portfolio-27` → Logo section (`66:1544`, board "Bluelines — Burst final"). Use those files wherever a mark appears (`.dn-mark-slot`, `.rl-mark-slot`, `icons/`); don't redraw, recolour or restyle it.
+- Visual source of truth: the Bluelines moodboard in Figma (`Portfolio-27`, section `19:1276`).
 
 ## Evidence on Hand
 - Current UI rebuilt in Figma: `Portfolio-27`, node `23:1284` ("Extension UI — as shipped").

@@ -31,7 +31,7 @@ Still manual: clipboard, Enhance, Drive, opening exports in Excel/Sheets, visual
 
 ## 2. Loading the extension (human-run)
 
-1. `chrome://extensions` → Developer mode → **Load unpacked** → select the Redlines folder (the one with `manifest.json`).
+1. `chrome://extensions` → Developer mode → **Load unpacked** → select the Bluelines folder (the one with `manifest.json`).
 2. Record the Chrome version (`chrome://version`) and the extension ID.
 3. Details → enable **Allow access to file URLs** (for the fixture page).
 4. After any code change: reload the card **and** reload the test tab.

@@ -1,5 +1,5 @@
 ---
-name: Redlines
+name: Bluelines
 description: "See. Mark. Explain. Ship."
 colors:
   signal-cyan: "#00e5ff"
@@ -154,13 +154,13 @@ components:
     padding: "14px 16px 12px"
 ---
 
-# Design System: Redlines
+# Design System: Bluelines
 
 ## Overview
 
 **Creative North Star: "The Inspector's Instrument"**
 
-Redlines is a measuring tool laid over someone else's page. Its panels are ink slabs ruled with slate hairlines, its voice is a monospace readout, and it has exactly one signal: a neon cyan that marks what is live, locked or selected. The core gesture is the four-corner bracket frame that snaps around the element under inspection, with a selector chip above and a "W × H px" chip below. Everything else stays quiet so that the bracket, the dock's active Inspect state and the category marks read instantly over any host site, light or dark.
+Bluelines is a measuring tool laid over someone else's page. Its panels are ink slabs ruled with slate hairlines, its voice is a monospace readout, and it has exactly one signal: a neon cyan that marks what is live, locked or selected. The core gesture is the four-corner bracket frame that snaps around the element under inspection, with a selector chip above and a "W × H px" chip below. Everything else stays quiet so that the bracket, the dock's active Inspect state and the category marks read instantly over any host site, light or dark.
 
 Density is that of a log, not a gallery. The sidebar is a 360px column of hairline-divided rows, not floating cards; metadata is set in uppercase tracked micro-labels; numbers are tabular. Prose (note bodies, explanations) switches to Space Grotesk so a human sentence reads differently from a machine readout. Panel titles end in a blinking cyan underscore, the terminal cursor borrowed from the wordmark.
 
@@ -219,7 +219,7 @@ Both are bundled from `fonts/` (OFL) so the UI renders offline: Space Mono 400/7
 
 ### Hierarchy
 - **Display** (Mono 700, 40px / 44px, -0.04em, tabular): the popup's annotation count. One per surface at most.
-- **Headline** (Mono 700, 24px / 30px, -0.03em): the extension-page title ("Redlines_ / settings").
+- **Headline** (Mono 700, 24px / 30px, -0.03em): the extension-page title ("Bluelines_ / settings").
 - **Title** (Mono 700, 15px / 22px, -0.02em): panel titles (Annotations, table view, edit dialog, popup), followed by the blinking cursor.
 - **Body** (Grotesk 400, 13px, line-height 1.55): note text, empty-state copy, settings explanations (hint text at 12px). Explanatory paragraphs cap at about 60ch.
 - **UI** (Mono 400, 12px / 18px): buttons, menu items, inputs, toasts, table cells.

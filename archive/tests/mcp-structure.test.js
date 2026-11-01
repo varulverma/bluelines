@@ -2,7 +2,7 @@
 // Checks how the MCP bridge structures notes for AI agents: site → section → page → category,
 // with the user's own category kept and generic ones ("note", "UI") given an inferred kind.
 const assert = require('assert');
-const { inferKind, tree, filter, agentFrom } = require('../../mcp/redlines-mcp.js');
+const { inferKind, tree, filter, agentFrom } = require('../../mcp/bluelines-mcp.js');
 
 assert.strictEqual(inferKind('Button text overlaps the icon on mobile'), 'Bug');
 assert.strictEqual(inferKind('Typo in the headline'), 'Copy / text');

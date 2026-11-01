@@ -1,6 +1,6 @@
 // Run: node tests/browser-bridge.js   (HEADED=1 to watch)
 // End-to-end check of the AI agent bridge: real Chrome + the unpacked extension, and the real
-// MCP server (mcp/redlines-mcp.js) driven over stdio exactly as an AI tool would. Covers the
+// MCP server (mcp/bluelines-mcp.js) driven over stdio exactly as an AI tool would. Covers the
 // security rules (origin, pairing code, shared sites, screenshots, read-only by default), the
 // site → section → page → category structure, writes showing up in the sidebar, and Re-pin.
 const path = require('path');
@@ -11,7 +11,7 @@ const { spawn } = require('child_process');
 const { launch, recorder, sleep, poll } = require('./lib/cdp');
 
 const EXT = path.join(__dirname, '..', '..');
-const SERVER = path.join(EXT, 'mcp', 'redlines-mcp.js');
+const SERVER = path.join(EXT, 'mcp', 'bluelines-mcp.js');
 const TOKEN = crypto.randomBytes(24).toString('base64url');
 const PNG = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==';
 const PAGE = `<!doctype html><html><head><title>Checkout</title></head><body style="font:14px sans-serif">
@@ -23,7 +23,7 @@ const freePort = () => new Promise((r) => { const s = net.createServer().listen(
 // A raw WebSocket attempt, as a web page or another local program would make it.
 function rawWs(port, origin, token) {
   return new Promise((resolve) => {
-    const req = http.request({ host: '127.0.0.1', port, path: '/redlines', headers: {
+    const req = http.request({ host: '127.0.0.1', port, path: '/bluelines', headers: {
       Connection: 'Upgrade', Upgrade: 'websocket', 'Sec-WebSocket-Version': '13',
       'Sec-WebSocket-Key': crypto.randomBytes(16).toString('base64'), Origin: origin } });
     req.on('response', (res) => resolve({ status: res.statusCode }));
@@ -51,7 +51,7 @@ function rawWs(port, origin, token) {
 
   // One MCP server per AI tool, as each tool starts its own (the second one takes the next port)
   function startServer() {
-    const proc = spawn(process.execPath, [SERVER], { env: { ...process.env, REDLINES_TOKEN: TOKEN, REDLINES_PORT: String(PORT) }, stdio: ['pipe', 'pipe', 'pipe'] });
+    const proc = spawn(process.execPath, [SERVER], { env: { ...process.env, BLUELINES_TOKEN: TOKEN, BLUELINES_PORT: String(PORT) }, stdio: ['pipe', 'pipe', 'pipe'] });
     let out = '';
     let rid = 0;
     const waiters = new Map();
@@ -79,7 +79,7 @@ function rawWs(port, origin, token) {
   try {
     const init = await rpc('initialize', { protocolVersion: '2025-06-18', capabilities: {}, clientInfo: { name: 'claude-code', version: '1' } });
     const tools = (await rpc('tools/list', {})).result.tools.map((t) => t.name);
-    record('B1', 'MCP handshake + 10 tools', init.result.serverInfo.name === 'redlines' && tools.length === 10, tools.join(', '));
+    record('B1', 'MCP handshake + 10 tools', init.result.serverInfo.name === 'bluelines' && tools.length === 10, tools.join(', '));
 
     await sw(`chrome.storage.local.set(${JSON.stringify({
       ['dn_annotations::' + CHECKOUT]: [

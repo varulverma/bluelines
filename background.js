@@ -93,7 +93,7 @@ chrome.commands.onCommand.addListener(runCommand);
 
 // First install only: open the Quickstart guide. A plain tab, nothing is sent.
 chrome.runtime.onInstalled.addListener(({ reason }) => {
-  if (reason === 'install') chrome.tabs.create({ url: 'https://redlines.design/docs/quickstart' });
+  if (reason === 'install') chrome.tabs.create({ url: 'https://getbluelines.netlify.app/docs/quickstart/' });
 });
 
 async function checkDrive(interactive) {
@@ -272,11 +272,11 @@ async function callProvider(p, model, init) {
   const data = await res.json().catch(() => null);
   if (res.ok && data) return data;
   const detail = data && data.error && (data.error.message || (typeof data.error === 'string' ? data.error : ''));
-  if (res.status === 401 || res.status === 403) throw new Error(`${p.name} rejected the API key. Check it in Redlines Settings.`);
-  if (res.status === 404) throw new Error(`${p.name} didn't accept the model "${model}". Change the model in Redlines Settings.`);
+  if (res.status === 401 || res.status === 403) throw new Error(`${p.name} rejected the API key. Check it in Bluelines Settings.`);
+  if (res.status === 404) throw new Error(`${p.name} didn't accept the model "${model}". Change the model in Bluelines Settings.`);
   if (res.status === 429) throw new Error(`${p.name} rate limit reached. Wait a moment and try again.`);
   if (res.status >= 500 || res.status === 529) throw new Error(`${p.name} is busy or unavailable right now (HTTP ${res.status}). Try again shortly.`);
-  if (res.ok) throw new Error(`${p.name} sent a response Redlines couldn't read. Try again.`);
+  if (res.ok) throw new Error(`${p.name} sent a response Bluelines couldn't read. Try again.`);
   throw new Error(`${p.name} request failed (HTTP ${res.status})${detail ? ': ' + detail : '.'}`);
 }
 
@@ -308,7 +308,7 @@ async function enhancePrompt(payload) {
 }
 
 // ---------- AI agent bridge (Settings → Connect to AI agents) ----------
-// The local MCP server (mcp/redlines-mcp.js, started by the user's AI tool) listens on
+// The local MCP server (mcp/bluelines-mcp.js, started by the user's AI tool) listens on
 // 127.0.0.1; this worker connects out to it, proves the pairing token, then answers its calls.
 // Off by default. Everything about the data is enforced here, not in the server: only notes from
 // shared sites, screenshots only if allowed, changes only if allowed, every call logged.
@@ -316,7 +316,7 @@ const NOTE_PREFIX = 'dn_annotations::';
 const BRIDGE_DEFAULT_PORT = 17337;
 const DEFAULT_BRIDGE_SITES = 'localhost 127.0.0.1 *.localhost *.local *.test staging.* dev.*';
 const BRIDGE_KEYS = ['dn_bridge_enabled', 'dn_bridge_token', 'dn_bridge_sites', 'dn_bridge_write', 'dn_bridge_screenshots', 'dn_bridge_port'];
-// Each AI tool starts its own server on the next free port from the base (mcp/redlines-mcp.js
+// Each AI tool starts its own server on the next free port from the base (mcp/bluelines-mcp.js
 // PORT_RANGE), so we connect to every port in the range. Each server says which tool it belongs to.
 // ponytail: probes up to 10 closed loopback ports every 30 s (console noise only); a port-file handshake if that matters.
 const BRIDGE_PORT_RANGE = 10;
@@ -362,7 +362,7 @@ async function connectBridge() {
 }
 
 function openBridge(port, token) {
-  const ws = new WebSocket(`ws://127.0.0.1:${port}/redlines`);
+  const ws = new WebSocket(`ws://127.0.0.1:${port}/bluelines`);
   const link = { ws, ok: false, agent: null, since: 0, calls: 0, busy: 0, lastAt: 0, seen: null, assigned: null };
   bridges.set(port, link);
   let keepalive = 0;
@@ -435,7 +435,7 @@ async function bridgeCall(op, args, link) {
   const caller = link && link.agent;
   const log = (action, detail) => bridgeLog(action, detail, caller && caller.id);
   const s = await chrome.storage.local.get(BRIDGE_KEYS);
-  if (!s.dn_bridge_enabled) throw new Error('AI agent access is switched off in Redlines settings.');
+  if (!s.dn_bridge_enabled) throw new Error('AI agent access is switched off in Bluelines settings.');
   const shared = bridgeSiteMatcher(s.dn_bridge_sites);
   const screenshots = s.dn_bridge_screenshots !== false;
   const all = await chrome.storage.local.get(null);
@@ -481,7 +481,7 @@ async function bridgeCall(op, args, link) {
     return { shown: true, url: n.pageUrl };
   }
   if (op === 'write') {
-    if (!s.dn_bridge_write) throw new Error('AI agents can read Redlines notes but not change them. The user can allow changes in Redlines settings → Connect to AI agents.');
+    if (!s.dn_bridge_write) throw new Error('AI agents can read Bluelines notes but not change them. The user can allow changes in Bluelines settings → Connect to AI agents.');
     return bridgeWrite(args, find, shared, log);
   }
   throw new Error('Unknown request: ' + op);
@@ -494,7 +494,7 @@ async function bridgeWrite(args, find, shared, log) {
     let url;
     try { url = new URL(args.url); } catch (e) { throw new Error('add_annotation needs a full page URL, e.g. http://localhost:3000/checkout'); }
     const pageUrl = url.href.split('#')[0];
-    if (!shared(pageUrl)) throw new Error('That site is not shared with AI agents in Redlines settings.');
+    if (!shared(pageUrl)) throw new Error('That site is not shared with AI agents in Bluelines settings.');
     if (!text) throw new Error('The note needs some text.');
     const note = {
       id: 'dn_' + now + '_' + Math.random().toString(36).slice(2, 8),
@@ -574,7 +574,7 @@ chrome.storage.session.set({ dn_bridge_agents: [] }).catch(() => {}); // a fresh
 chrome.storage.local.get('dn_bridge_enabled').then((r) => { syncBridgeAlarm(!!r.dn_bridge_enabled); connectBridge(); });
 
 // ---------- Toolbar icon in the accent colour (Settings → Accent colour, dn_appearance.accent) ----------
-// The mark from brand/logo/burst/redlines-burst.svg (48×48) on the app-icon square; the last path is
+// The mark from brand/logo/burst/bluelines-burst.svg (48×48) on the app-icon square; the last path is
 // the arrow, painted in the accent. The default accent keeps the shipped PNGs.
 const ICON_MARK = [
   ["M22.9458 5.08569C23.8776 4.07538 25.3776 3.70134 26.7218 4.25862L33.0551 6.88095C33.501 7.06553 33.8857 7.33531 34.1994 7.66271L36.2172 9.68044C36.475 9.92953 36.6886 10.2164 36.8537 10.5281C37.1664 10.6933 37.4536 10.9082 37.7034 11.1667L39.7253 13.1886C40.0511 13.5017 40.319 13.8855 40.5029 14.3298L43.1263 20.6631C43.6836 22.0076 43.3069 23.5053 42.2961 24.437L42.3733 24.5142C43.3258 25.4499 43.6692 26.9053 43.1263 28.2149L40.5029 34.5483C40.2569 35.1424 39.8581 35.6249 39.374 35.9779L41.055 38.1697L41.1528 38.3036C42.1179 39.7037 41.8266 41.6301 40.4596 42.679L40.4607 42.68L39.6078 43.3351C38.195 44.42 36.1773 44.1456 35.0986 42.7428L35.0965 42.7408L33.4506 40.5964L33.1293 40.7292C32.5207 41.3302 31.7321 41.6244 30.9416 41.6346L28.8312 42.5101C27.5215 43.053 26.0662 42.7095 25.1304 41.7571L25.0532 41.6799C24.1215 42.6907 22.6238 43.0674 21.2793 42.5101L14.946 39.8867C14.5017 39.7028 14.1179 39.4349 13.8048 39.1091L11.7829 37.0872C11.5244 36.8374 11.3095 36.5502 11.1443 36.2375C10.8326 36.0724 10.5457 35.8588 10.2966 35.6009L8.27892 33.5832C7.95152 33.2695 7.68174 32.8848 7.49716 32.4389L4.87483 26.1055C4.31756 24.7613 4.69159 23.2614 5.7019 22.3296L5.60509 22.2328C4.66892 21.2964 4.33595 19.8536 4.87483 18.5537L7.49716 12.2204C8.05382 10.8757 9.37975 10.0815 10.754 10.1378C10.6978 8.76354 11.4919 7.43761 12.8366 6.88095L19.1699 4.25862C20.4698 3.71974 21.9126 4.05374 22.849 4.98991L22.9458 5.08569Z", "#0b0b0b"],

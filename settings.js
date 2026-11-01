@@ -286,7 +286,7 @@ document.addEventListener('DOMContentLoaded', () => {
     );
   }
 
-  // ---------- Connect to AI agents (background.js runs the bridge; mcp/redlines-mcp.js is the MCP server) ----------
+  // ---------- Connect to AI agents (background.js runs the bridge; mcp/bluelines-mcp.js is the MCP server) ----------
   const DEFAULT_BRIDGE_SITES = 'localhost 127.0.0.1 *.localhost *.local *.test staging.* dev.*'; // mirrors background.js
   const bridgeInputs = document.querySelectorAll('input[name="bridge"]');
   const bridgeDetails = document.getElementById('bridge-details');
@@ -300,25 +300,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const newToken = () => btoa(String.fromCharCode(...crypto.getRandomValues(new Uint8Array(24)))).replace(/\+/g, '-').replace(/\//g, '_');
 
-  // Setup per AI tool. ids match mcp/redlines-mcp.js AGENTS and the logos in icons/agents/<id>.svg.
+  // Setup per AI tool. ids match mcp/bluelines-mcp.js AGENTS and the logos in icons/agents/<id>.svg.
   const json = (o) => JSON.stringify(o, null, 2);
-  const mcpServers = (f, t) => json({ mcpServers: { redlines: { command: 'node', args: [f], env: { REDLINES_TOKEN: t } } } });
+  const mcpServers = (f, t) => json({ mcpServers: { bluelines: { command: 'node', args: [f], env: { BLUELINES_TOKEN: t } } } });
   const AGENT_SETUP = [
     { id: 'claude-code', name: 'Claude Code', color: '#D97757', where: 'Run once in a terminal.',
-      setup: (f, t) => `claude mcp add redlines -s user -e REDLINES_TOKEN=${t} -- node "${f}"` },
+      setup: (f, t) => `claude mcp add bluelines -s user -e BLUELINES_TOKEN=${t} -- node "${f}"` },
     { id: 'codex', name: 'Codex', where: 'Run once in a terminal.',
-      setup: (f, t) => `codex mcp add redlines --env REDLINES_TOKEN=${t} -- node "${f}"` },
+      setup: (f, t) => `codex mcp add bluelines --env BLUELINES_TOKEN=${t} -- node "${f}"` },
     { id: 'claude-desktop', name: 'Claude Desktop', color: '#D97757', where: 'Settings → Developer → Edit Config: add to claude_desktop_config.json, then restart Claude.', setup: mcpServers },
     { id: 'cursor', name: 'Cursor', where: 'Add to ~/.cursor/mcp.json (or Cursor Settings → MCP → Add new server).', setup: mcpServers },
     { id: 'copilot', name: 'GitHub Copilot', where: 'VS Code: add to .vscode/mcp.json, or run "MCP: Open User Configuration".',
-      setup: (f, t) => json({ servers: { redlines: { type: 'stdio', command: 'node', args: [f], env: { REDLINES_TOKEN: t } } } }) },
+      setup: (f, t) => json({ servers: { bluelines: { type: 'stdio', command: 'node', args: [f], env: { BLUELINES_TOKEN: t } } } }) },
     { id: 'windsurf', name: 'Windsurf', where: 'Add to ~/.codeium/windsurf/mcp_config.json.', setup: mcpServers },
     { id: 'gemini', name: 'Gemini CLI', color: '#8E75B2', where: 'Add to ~/.gemini/settings.json.', setup: mcpServers },
     { id: 'cline', name: 'Cline', where: 'Cline → MCP Servers → Configure: add to cline_mcp_settings.json.', setup: mcpServers },
     { id: 'zed', name: 'Zed', where: 'Add to Zed settings.json.',
-      setup: (f, t) => json({ context_servers: { redlines: { command: 'node', args: [f], env: { REDLINES_TOKEN: t } } } }) },
+      setup: (f, t) => json({ context_servers: { bluelines: { command: 'node', args: [f], env: { BLUELINES_TOKEN: t } } } }) },
     { id: 'opencode', name: 'OpenCode', where: 'Add to opencode.json.',
-      setup: (f, t) => json({ mcp: { redlines: { type: 'local', command: ['node', f], environment: { REDLINES_TOKEN: t } } } }) },
+      setup: (f, t) => json({ mcp: { bluelines: { type: 'local', command: ['node', f], environment: { BLUELINES_TOKEN: t } } } }) },
     { id: 'agent', name: 'Other MCP tool', where: 'Add to your tool\'s MCP config file (most tools use this format).', setup: mcpServers },
   ];
   const agentIcon = (id) => {
@@ -345,7 +345,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderBridgeCommands() {
     const folder = bridgePathEl.value.trim().replace(/[\\/]+$/, '') || '/path/to/designnote-extension';
     const sep = folder.includes('\\') ? '\\' : '/';
-    const file = `${folder}${sep}mcp${sep}redlines-mcp.js`;
+    const file = `${folder}${sep}mcp${sep}bluelines-mcp.js`;
     const a = AGENT_SETUP.find((x) => x.id === agentPickEl.querySelector('input:checked').value);
     document.getElementById('agent-where').textContent = a.where;
     document.getElementById('bridge-cmd').textContent = a.setup(file, bridgeToken);
@@ -366,7 +366,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const BRIDGE_STATUS = {
     connected: ['connected', 'Connected to AI tools'],
-    waiting: ['checking', 'Waiting for an AI tool to start the Redlines MCP server…'],
+    waiting: ['checking', 'Waiting for an AI tool to start the Bluelines MCP server…'],
     'bad-token': ['error', 'An AI tool tried to connect with an old pairing code. Copy the command again.'],
   };
   function renderBridgeStatus(status) {
@@ -417,7 +417,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!i.checked) return;
     const on = i.value === 'on';
     if (on && (!e.isTrusted || !window.confirm(
-      'Let AI tools on this computer read your Redlines notes?\n\n' +
+      'Let AI tools on this computer read your Bluelines notes?\n\n' +
       'An AI tool you start with your pairing code can read notes from your shared sites: text, element details, ' +
       'page addresses and (if allowed) screenshots. The AI tool may send what it reads to its provider.\n\n' +
       'You can turn this off at any time.'))) {

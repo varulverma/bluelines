@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Redlines — Visual Annotation Tool",
+  "name": "Bluelines — Visual Annotation Tool",
   "version": "1.0.0",
-  "description": "See. Mark. Explain. Ship. Mark up any web page with element-pinned notes, saved locally per URL. Optional AI prompt-enhancement for Claude/GPT/OpenRouter.",
+  "description": "See. Mark. Explain. Ship. Pin notes to elements on any web page, saved locally, and hand them to your developer or AI coding agent.",
   "permissions": [
     "storage",
     "unlimitedStorage",
@@ -63,7 +63,7 @@
       "suggested_key": {
         "default": "Alt+Shift+D"
       },
-      "description": "Toggle the Redlines annotations sidebar"
+      "description": "Toggle the Bluelines annotations sidebar"
     },
     "toggle-pill": {
       "suggested_key": {

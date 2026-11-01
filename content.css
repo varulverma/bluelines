@@ -1,4 +1,4 @@
-/* Redlines in-page UI. Everything is namespaced under #designnote-root so host styles can't
+/* Bluelines in-page UI. Everything is namespaced under #designnote-root so host styles can't
    reach in and ours can't leak out. SVG icons (and their shape children) are exempted from
    `all: revert`: revert discards presentation attributes (d, cx, cy, r, points, …) since those
    live in the author cascade, which would zero out every icon's geometry. */

@@ -29,9 +29,9 @@ html { scrollbar-width: thin; scrollbar-color: var(--dn-border-strong) transpare
 @keyframes rl-blink { 50% { opacity: 0; } }
 
 /* Reserved for the brand mark (designed separately) */
-.rl-mark-slot { position: relative; display: inline-block; flex-shrink: 0; width: 22px; height: 22px; background: url("brand/logo/burst/redlines-burst-body.svg") center / contain no-repeat; }
+.rl-mark-slot { position: relative; display: inline-block; flex-shrink: 0; width: 22px; height: 22px; background: url("brand/logo/burst/bluelines-burst-body.svg") center / contain no-repeat; }
 /* The mark's arrow takes the accent colour (Settings → Accent colour) */
-.rl-mark-slot::after { content: ""; position: absolute; inset: 0; background: var(--dn-accent); -webkit-mask: url("brand/logo/burst/redlines-burst-cursor.svg") center / contain no-repeat; mask: url("brand/logo/burst/redlines-burst-cursor.svg") center / contain no-repeat; }
+.rl-mark-slot::after { content: ""; position: absolute; inset: 0; background: var(--dn-accent); -webkit-mask: url("brand/logo/burst/bluelines-burst-cursor.svg") center / contain no-repeat; mask: url("brand/logo/burst/bluelines-burst-cursor.svg") center / contain no-repeat; }
 
 .rl-label {
   font-size: var(--dn-text-xs);
