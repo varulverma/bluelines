@@ -22,7 +22,7 @@ All runs were headless. Headed mode (`HEADED=1`) and real key presses were not e
 | E2 | Background runs as an MV3 service worker | ✓ | ✓ |
 | E3 | Every declared shortcut is actually assigned (`chrome.commands.getAll`) | **none assigned** | ✓ `Alt+Shift+D/M/H` |
 | E4/E5 | Popup shows the page's count; "Open sidebar" works | ✓¹ | ✓ |
-| E6 | Popup on a page DesignNote can't run on | **bare "0"** | ✓ explains why |
+| E6 | Popup on a page Bluelines can't run on | **bare "0"** | ✓ explains why |
 | E7 | Settings: redirect URI, Drive "Not connected" without client ID, save persists | ✓ | ✓ |
 | E8 | Save after the service worker was stopped still captures a screenshot | ✓¹ | ✓ |
 | E9 | Badge updates on save and follows pushState routes | **badge never updated after a save** (any page)² | ✓ |
@@ -53,11 +53,11 @@ All runs were headless. Headed mode (`HEADED=1`) and real key presses were not e
 | Badge stale after every save | `saveAnnotations` updates the badge (all saves go through it) | content.js |
 | No shortcuts worked in Chrome | New defaults, verified assignable | manifest.json, content.js (hint), README |
 | Sidebar shortcut could only open | `TOGGLE_SIDEBAR` message; commands via one `runCommand()` | background.js, content.js |
-| Tabs open before install / during an update had no working DesignNote; popup showed "0" | `sendToTab()` injects selector.js + content.js + CSS via `chrome.scripting` when no receiver exists; the popup goes through it and explains pages it can't run on | background.js, popup.js, popup.html |
+| Tabs open before install / during an update had no working Bluelines; popup showed "0" | `sendToTab()` injects selector.js + content.js + CSS via `chrome.scripting` when no receiver exists; the popup goes through it and explains pages it can't run on | background.js, popup.js, popup.html |
 | Orphaned content script after an update failed silently (uncaught TypeError) | `extensionAlive()` guard on UI clicks shows "Refresh this page"; fresh injection replaces the stale root; SPA poll stops when orphaned | content.js |
-| Host fixed header at max z-index covered the UI | `#designnote-root` is a fixed, zero-size stacking context at z-index 2147483647 (ties go to the later root) | content.css |
+| Host fixed header at max z-index covered the UI | `#bluelines-root` is a fixed, zero-size stacking context at z-index 2147483647 (ties go to the later root) | content.css |
 | UI unusable over a modal `<dialog>` (inert) | `placeRoot()` keeps the root inside the topmost open modal dialog | content.js |
-| "Matched approximately" badge was added to the host `<body>` | Now inside `#designnote-root` | content.js |
+| "Matched approximately" badge was added to the host `<body>` | Now inside `#bluelines-root` | content.js |
 | Screenshot capture failure was silent | Toast: "Annotation saved without a screenshot (reason)"; `lastError` read | content.js |
 
 ## Message / async audit (source + E8/E15/E18)

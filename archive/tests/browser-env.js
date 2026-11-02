@@ -46,12 +46,12 @@ const notesFor = async (url) => (await h.storage())['dn_annotations::' + url] ||
 
 // Mark → real click on the element → choose the "note" preset → save
 async function quickNote(s, sel, text) {
-  await h.domClick(s, '#designnote-mode-btn');
+  await h.domClick(s, '#bluelines-mode-btn');
   const [x, y] = await h.center(s, sel);
   await h.realClick(s, x, y);
-  const opened = await poll(() => ev(s, `!!document.querySelector('#designnote-popup-form')`), 3000);
+  const opened = await poll(() => ev(s, `!!document.querySelector('#bluelines-popup-form')`), 3000);
   if (!opened) return false;
-  await ev(s, `(() => { const f = document.querySelector('#designnote-popup-form');
+  await ev(s, `(() => { const f = document.querySelector('#bluelines-popup-form');
     (f.querySelector('.dn-type-pill[data-type="note"]') || f.querySelector('.dn-type-pill')).click();
     f.querySelector('#dn-text-input').value = ${JSON.stringify(text)}; f.querySelector('.dn-form-save').click(); return true; })()`);
   await sleep(1500);
@@ -105,13 +105,13 @@ async function main() {
   record('E4', 'popup shows this page\'s note count', popCount === '1', `count=${popCount}`);
   await ev(pop.s, `document.getElementById('open-sidebar').click(); true`).catch(() => {});
   await sleep(500);
-  record('E5', 'popup "Open sidebar" opens the sidebar', await ev(plain.s, `document.getElementById('designnote-sidebar').classList.contains('open')`));
+  record('E5', 'popup "Open sidebar" opens the sidebar', await ev(plain.s, `document.getElementById('bluelines-sidebar').classList.contains('open')`));
 
   // ---------- E6 popup on a page the extension can't run on ----------
   const restricted = await h.openPage('chrome://version/', { waitPill: false });
   pop = await openPopup(restricted.targetId);
   const restrictedText = await popupText(pop.s);
-  record('E6', 'popup explains a page DesignNote cannot run on (not a bare "0")', !/^DesignNote Annotations on this page 0 on this page/.test(restrictedText), restrictedText.slice(0, 120));
+  record('E6', 'popup explains a page Bluelines cannot run on (not a bare "0")', !/^Bluelines Annotations on this page 0 on this page/.test(restrictedText), restrictedText.slice(0, 120));
   await h.cdp.send('Target.closeTarget', { targetId: restricted.targetId });
 
   // ---------- E7 options page ----------
@@ -138,7 +138,7 @@ async function main() {
   // ---------- E9 SPA route changes ----------
   const spa = await h.openPage(base + '/spa.html');
   await quickNote(spa.s, '#view', 'Route A note');
-  const badge = () => ev(spa.s, `(() => { const b = document.getElementById('designnote-badge'); return b.hidden ? 0 : +b.textContent; })()`);
+  const badge = () => ev(spa.s, `(() => { const b = document.getElementById('bluelines-badge'); return b.hidden ? 0 : +b.textContent; })()`);
   const tA = Date.now();
   const onA = (await poll(async () => ((await badge()) === 1 ? 1 : 0), 6000)) || 0;
   const badgeMs = Date.now() - tA;
@@ -154,7 +154,7 @@ async function main() {
   await h.domClick(plain.s, '#dn-close-btn').catch(() => {});
   await h.cdp.send('Target.activateTarget', { targetId: plain.targetId });
   await sleep(200);
-  const sidebarOpen = () => ev(plain.s, `document.getElementById('designnote-sidebar').classList.contains('open')`);
+  const sidebarOpen = () => ev(plain.s, `document.getElementById('bluelines-sidebar').classList.contains('open')`);
   await ev(h.sw, `runCommand('toggle-sidebar').then(() => true)`);
   await sleep(300);
   const opened = await sidebarOpen();
@@ -167,13 +167,13 @@ async function main() {
   await ev(h.sw, `runCommand('toggle-mark-mode').then(() => true)`);
   await ev(h.sw, `runCommand('toggle-pill').then(() => true)`);
   await sleep(200);
-  const pillHidden = await ev(plain.s, `document.getElementById('designnote-pill').hidden`);
+  const pillHidden = await ev(plain.s, `document.getElementById('bluelines-pill').hidden`);
   await ev(h.sw, `runCommand('toggle-pill').then(() => true)`);
   record('E18', 'shortcut handlers: sidebar toggles open+closed, Mark toggles, pill hides', opened && closed && marking && pillHidden,
     `opened=${opened} closed=${closed} marking=${marking} pillHidden=${pillHidden}`);
 
   // ---------- E10 Appearance setting switches the UI tokens (dark default, light, system) ----------
-  const bg = () => ev(plain.s, `getComputedStyle(document.getElementById('designnote-sidebar')).getPropertyValue('--dn-bg').trim()`);
+  const bg = () => ev(plain.s, `getComputedStyle(document.getElementById('bluelines-sidebar')).getPropertyValue('--dn-bg').trim()`);
   const setTheme = async (v) => { await ev(h.sw, `chrome.storage.local.set({ dn_theme: ${JSON.stringify(v)} }).then(() => true)`); await sleep(250); };
   const byDefault = await bg();
   await setTheme('light');
@@ -194,17 +194,17 @@ async function main() {
   // ---------- E11 small viewport ----------
   await h.cdp.send('Emulation.setDeviceMetricsOverride', { width: 375, height: 667, deviceScaleFactor: 2, mobile: false }, plain.s);
   await sleep(300);
-  await ev(plain.s, `document.getElementById('designnote-sidebar').classList.add('open'); true`);
+  await ev(plain.s, `document.getElementById('bluelines-sidebar').classList.add('open'); true`);
   await sleep(700); // slide-in transition
   const fit = await ev(plain.s, `(() => { const vw = innerWidth, vh = innerHeight;
     const inside = (el) => { const r = el.getBoundingClientRect(); return r.left >= 0 && r.top >= 0 && r.right <= vw && r.bottom <= vh; };
-    const sb = document.getElementById('designnote-sidebar');
+    const sb = document.getElementById('bluelines-sidebar');
     const r = sb.getBoundingClientRect();
-    return { pill: inside(document.getElementById('designnote-pill')), sidebarW: Math.round(r.width), sidebarRight: Math.round(r.right), vw }; })()`);
-  await ev(plain.s, `document.getElementById('designnote-sidebar').classList.remove('dn-compact'); true`);
+    return { pill: inside(document.getElementById('bluelines-pill')), sidebarW: Math.round(r.width), sidebarRight: Math.round(r.right), vw }; })()`);
+  await ev(plain.s, `document.getElementById('bluelines-sidebar').classList.remove('dn-compact'); true`);
   await sleep(700);
-  const expanded = await ev(plain.s, `(() => { const r = document.getElementById('designnote-sidebar').getBoundingClientRect(); return { left: Math.round(r.left), right: Math.round(r.right), w: Math.round(r.width) }; })()`);
-  await ev(plain.s, `document.getElementById('designnote-sidebar').classList.add('dn-compact'); true`);
+  const expanded = await ev(plain.s, `(() => { const r = document.getElementById('bluelines-sidebar').getBoundingClientRect(); return { left: Math.round(r.left), right: Math.round(r.right), w: Math.round(r.width) }; })()`);
+  await ev(plain.s, `document.getElementById('bluelines-sidebar').classList.add('dn-compact'); true`);
   record('E11', 'at 375×667 the pill and the sidebar (compact and expanded) fit the viewport', fit.pill && fit.sidebarRight <= fit.vw && expanded.left >= 0 && expanded.right <= fit.vw,
     `${JSON.stringify(fit)} expanded=${JSON.stringify(expanded)}`);
   await h.cdp.send('Emulation.clearDeviceMetricsOverride', {}, plain.s);
@@ -216,7 +216,7 @@ async function main() {
   const { root } = await h.cdp.send('DOM.getDocument', { depth: -1 }, plain.s);
   const hostNodes = [];
   (function walk(n, inRoot) {
-    const own = n.attributes && n.attributes[n.attributes.indexOf('id') + 1] === 'designnote-root' && n.attributes.includes('id');
+    const own = n.attributes && n.attributes[n.attributes.indexOf('id') + 1] === 'bluelines-root' && n.attributes.includes('id');
     if (n.nodeType === 1 && !inRoot && !own) hostNodes.push(n);
     (n.children || []).forEach((c) => walk(c, inRoot || own));
   })(root, false);
@@ -231,22 +231,22 @@ async function main() {
       }
     }
   }
-  record('E12', 'extension CSS matches no host elements except the :root token block', [...leaks].every((l) => /^html ← :root, #designnote-root$/.test(l)), [...leaks].join(' ; ') || 'none');
+  record('E12', 'extension CSS matches no host elements except the :root token block', [...leaks].every((l) => /^html ← :root, #bluelines-root$/.test(l)), [...leaks].join(' ; ') || 'none');
 
   // ---------- E13 aggressive host CSS + fixed header ----------
   const agg = await h.openPage(base + '/aggressive.html');
   const pillState = await ev(agg.s, `(() => {
-    const btn = document.getElementById('designnote-mode-btn'); const r = btn.getBoundingClientRect();
+    const btn = document.getElementById('bluelines-mode-btn'); const r = btn.getBoundingClientRect();
     const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
     const icon = btn.querySelector('svg').getBoundingClientRect();
     return { pillClickable: btn.contains(hit), iconW: Math.round(icon.width), iconH: Math.round(icon.height) }; })()`);
-  await h.domClick(agg.s, '#designnote-toggle-btn');
+  await h.domClick(agg.s, '#bluelines-toggle-btn');
   await sleep(700); // slide-in transition
   const aggState = { ...pillState, ...(await ev(agg.s, `(() => {
     // The sidebar's top strip sits under the 64px max-z fixed header: who gets the click there?
-    const sb = document.getElementById('designnote-sidebar').getBoundingClientRect();
+    const sb = document.getElementById('bluelines-sidebar').getBoundingClientRect();
     const topHit = document.elementFromPoint(sb.left + sb.width / 2, sb.top + 12);
-    return { sidebarTop: Math.round(sb.top), sidebarTopIsOurs: !!topHit && !!topHit.closest('#designnote-root') }; })()`)) };
+    return { sidebarTop: Math.round(sb.top), sidebarTopIsOurs: !!topHit && !!topHit.closest('#bluelines-root') }; })()`)) };
   record('E13', 'aggressive host CSS: pill clickable, icons sized, sidebar not covered by a max-z fixed header',
     aggState.pillClickable && aggState.iconW > 0 && aggState.iconW < 40 && aggState.sidebarTop < 64 && aggState.sidebarTopIsOurs, JSON.stringify(aggState));
 
@@ -258,7 +258,7 @@ async function main() {
   const [dx, dy] = await h.center(dlg.s, '#in-dialog');
   await h.realClick(dlg.s, dx, dy);
   await sleep(400);
-  const dlgState = await ev(dlg.s, `(() => { const f = document.querySelector('#designnote-popup-form'); if (!f) return { form: false };
+  const dlgState = await ev(dlg.s, `(() => { const f = document.querySelector('#bluelines-popup-form'); if (!f) return { form: false };
     const ta = f.querySelector('#dn-text-input'); ta.focus();
     return { form: true, focused: document.activeElement === ta, inert: !!f.closest('[inert]') || (typeof ta.matches === 'function' && !ta.checkVisibility()) }; })()`);
   record('E14', 'inside a modal dialog, the note form opens and can be typed into', dlgState.form && dlgState.focused, JSON.stringify(dlgState));
@@ -271,17 +271,17 @@ async function main() {
   await h.cdp.send('Extensions.loadUnpacked', { path: EXT });
   await sleep(1000);
   await h.attachSw();
-  await h.domClick(plain.s, '#designnote-toggle-btn').catch(() => {});
+  await h.domClick(plain.s, '#bluelines-toggle-btn').catch(() => {});
   await sleep(600);
-  const orphan = await ev(plain.s, `({ roots: document.querySelectorAll('#designnote-root').length,
+  const orphan = await ev(plain.s, `({ roots: document.querySelectorAll('#bluelines-root').length,
     toast: [...document.querySelectorAll('.dn-toast')].map(t => t.textContent).join(' | '),
-    cards: document.querySelectorAll('#designnote-sidebar .dn-card').length })`);
+    cards: document.querySelectorAll('#bluelines-sidebar .dn-card').length })`);
   const newExceptions = exceptions.slice(before).map((e) => e.text.split('\n')[0]);
   record('E15', 'after an extension reload, the old tab tells the user to refresh (no silent failure)', /reload|refresh/i.test(orphan.toast),
     `${JSON.stringify(orphan)}; uncaught: ${newExceptions.join(' | ') || 'none'}`);
   pop = await openPopup(plain.targetId).catch(() => null);
   const afterReloadPopup = pop ? await popupText(pop.s) : '(popup failed)';
-  const reinjected = await ev(plain.s, `document.querySelectorAll('#designnote-root').length`);
+  const reinjected = await ev(plain.s, `document.querySelectorAll('#bluelines-root').length`);
   record('E16', 'popup on that tab still works after the reload (count shown or page re-armed)', /on this page/.test(afterReloadPopup) && !/ 0 on this page/.test(afterReloadPopup) || reinjected > 0 && /\b2\b/.test(afterReloadPopup),
     `${afterReloadPopup.slice(0, 100)}; roots=${reinjected}`);
 

@@ -302,7 +302,7 @@ Panel and page titles end in a cyan "_" that blinks with a hard step every 1.1s,
 
 ## Annotation UI v2 (shipped 21 Oct 2026)
 
-The callout, sidebar notes and table actions. Clickable reference: `annotation-variations.html#shortlist` (serve the folder over http). Components: `design-system.html`. Code: `openForm` and `renderSidebar` in `content.js`, the `#designnote-popup-form`, `.dn-card` and `.dn-act` blocks in `content.css`, action and surface tokens in `design-tokens.css`.
+The callout, sidebar notes and table actions. Clickable reference: `annotation-variations.html#shortlist` (serve the folder over http). Components: `design-system.html`. Code: `openForm` and `renderSidebar` in `content.js`, the `#bluelines-popup-form`, `.dn-card` and `.dn-act` blocks in `content.css`, action and surface tokens in `design-tokens.css`.
 
 - **Callout = one-line composer.** A 440px card, 14px radius, 6px padding, hairline edge. One 30px row: category chip (soft fill, 6px category dot, Mono 11px, chevron) · note (borderless, grows to ~7 lines, Shift+Enter = new line) · Esc (red ✕, ghost until hover/press) · Save (the only solid control, accent, arrow icon). Under it a faint caption `› selector · W×H · #NN`; "⇧↵ new line" fades in only while typing. Nothing else: no attachments. Every active AI agent shows as a small icon-only toggle (22px, its logo) at the right end of the caption line, on the same line as the selector; pick one and the note is sent to it on save (none connected: the row isn't there).
 - **Save readiness.** Empty note: Save is `aria-disabled` (faint tile) but stays focusable; Enter or click then shakes the card and says "Please add a comment before saving." (A real `disabled` would drop it from the Tab order and from keyboard-only saving.)

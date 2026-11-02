@@ -9,11 +9,11 @@
 
   // A copy injected before an extension reload/update is orphaned (its chrome.* calls
   // throw). When this script is injected again on demand, replace that dead UI.
-  const staleRoot = document.getElementById('designnote-root');
+  const staleRoot = document.getElementById('bluelines-root');
   if (staleRoot) staleRoot.remove();
 
   const root = document.createElement('div');
-  root.id = 'designnote-root';
+  root.id = 'bluelines-root';
   document.documentElement.appendChild(root);
 
   // An open modal <dialog> makes everything outside it inert: the UI would show but not
@@ -469,28 +469,28 @@
   const motionReduced = () => reducedMotion.matches || root.dataset.dnMotion === 'reduce'; // OS or Settings → Motion
   const scrollBehavior = () => (motionReduced() ? 'auto' : 'smooth');
   const pill = document.createElement('div');
-  pill.id = 'designnote-pill';
+  pill.id = 'bluelines-pill';
   pill.dataset.orientation = 'horizontal';
   pill.dataset.dock = 'bottom';
   pill.innerHTML = `
     <button class="dn-drag-handle" aria-label="Drag to move the dock (or Enter, then arrow keys)" data-tip="Drag to move" tabindex="0" draggable="false">${DN_MARK}</button>
-    <button id="designnote-mode-btn" class="dn-pill-btn" title="${MARK_TITLE}" aria-pressed="false">${dnIcon('pointer')}<span class="dn-pill-label">Inspect</span></button>
-    <button id="designnote-toggle-btn" class="dn-pill-btn" title="Annotations sidebar (Alt+Shift+D)" aria-label="Annotations sidebar" aria-expanded="false">
+    <button id="bluelines-mode-btn" class="dn-pill-btn" title="${MARK_TITLE}" aria-pressed="false">${dnIcon('pointer')}<span class="dn-pill-label">Inspect</span></button>
+    <button id="bluelines-toggle-btn" class="dn-pill-btn" title="Annotations sidebar (Alt+Shift+D)" aria-label="Annotations sidebar" aria-expanded="false">
       ${dnIcon('message')}
-      <span id="designnote-badge" class="dn-badge" hidden>0</span>
+      <span id="bluelines-badge" class="dn-badge" hidden>0</span>
     </button>
     <button id="dn-pill-table-btn" class="dn-pill-btn" title="Table view" aria-label="Table view" aria-expanded="false">${dnIcon('table')}</button>
     <button class="dn-close-pill" aria-label="Hide floating dock" title="Hide dock" tabindex="0">${dnIcon('x')}</button>
   `;
   root.appendChild(pill);
 
-  const modeBtn = pill.querySelector('#designnote-mode-btn');
-  const toggleBtn = pill.querySelector('#designnote-toggle-btn');
+  const modeBtn = pill.querySelector('#bluelines-mode-btn');
+  const toggleBtn = pill.querySelector('#bluelines-toggle-btn');
   const pillTableBtn = pill.querySelector('#dn-pill-table-btn');
   pillTableBtn.addEventListener('click', () => {
     tableOverlay.classList.contains('open') ? hideTableView() : showTableView();
   });
-  const badgeEl = pill.querySelector('#designnote-badge');
+  const badgeEl = pill.querySelector('#bluelines-badge');
   const dragHandle = pill.querySelector('.dn-drag-handle');
   const closePillBtn = pill.querySelector('.dn-close-pill');
 
@@ -654,9 +654,9 @@
 
   // ---------- Sidebar ----------
   const sidebar = document.createElement('div');
-  sidebar.id = 'designnote-sidebar';
+  sidebar.id = 'bluelines-sidebar';
   sidebar.innerHTML = `
-    <div id="designnote-sidebar-header">
+    <div id="bluelines-sidebar-header">
       <div>
         <h2>Annotations</h2>
         <div class="dn-header-count" id="dn-header-count">0 annotations on this page</div>
@@ -672,7 +672,7 @@
       </div>
     </div>
     <div id="dn-filters" class="dn-filters" role="group" aria-label="Show notes" hidden></div>
-    <div id="designnote-list"></div>
+    <div id="bluelines-list"></div>
   `;
   root.appendChild(sidebar);
 
@@ -769,10 +769,10 @@
   let tableTypeFilter = 'all'; // 'all' | 'bug' | 'suggestion' | 'text' | 'note'
 
   const tableOverlay = document.createElement('div');
-  tableOverlay.id = 'designnote-table-overlay';
+  tableOverlay.id = 'bluelines-table-overlay';
   tableOverlay.innerHTML = `
-    <div id="designnote-table-header">
-      <div id="designnote-table-header-top">
+    <div id="bluelines-table-header">
+      <div id="bluelines-table-header-top">
         <h2>Annotations · table</h2>
         <div class="dn-header-actions">
           <div class="dn-view-toggle" id="dn-view-toggle" role="group" aria-label="Annotation view">
@@ -790,7 +790,7 @@
           <button id="dn-table-close-btn" class="dn-icon-btn" title="Close">${dnIcon('x')}</button>
         </div>
       </div>
-      <div id="designnote-table-header-bottom">
+      <div id="bluelines-table-header-bottom">
         <div class="dn-search-box">
           ${dnIcon('search')}
           <input type="search" id="dn-table-search" aria-label="Search annotations" placeholder="Search notes, selectors, pages…" />
@@ -798,16 +798,16 @@
         <div class="dn-filter-chips" id="dn-filter-chips" role="group" aria-label="Filter by category"></div>
       </div>
     </div>
-    <div id="designnote-table-body"></div>
+    <div id="bluelines-table-body"></div>
   `;
   root.appendChild(tableOverlay);
 
   tableOverlay.querySelector('#dn-table-close-btn').addEventListener('click', hideTableView);
 
-  // Escape closes the innermost open layer while focus is in DesignNote's UI (the forms and
+  // Escape closes the innermost open layer while focus is in Bluelines's UI (the forms and
   // Mark mode handle their own Escape). Scoped to our UI so the host page's Escape still works.
   root.addEventListener('keydown', (e) => {
-    if (e.key !== 'Escape' || keyboardDrag.active || root.querySelector('#designnote-popup-form, #designnote-edit-form')) return;
+    if (e.key !== 'Escape' || keyboardDrag.active || root.querySelector('#bluelines-popup-form, #bluelines-edit-form')) return;
     if (root.querySelector('.dn-lightbox')) { closeLightbox(); e.stopPropagation(); return; }
     if (menuAnchor) { const a = menuAnchor; closeActionMenu(); a.focus(); }
     else if (tableOverlay.classList.contains('open')) hideTableView();
@@ -891,7 +891,7 @@
         filtered = filtered.filter(a => (a.type || '').toLowerCase() === tableTypeFilter);
       }
       
-      const body = tableOverlay.querySelector('#designnote-table-body');
+      const body = tableOverlay.querySelector('#bluelines-table-body');
       body.innerHTML = renderAnnotationsTable(filtered, { interactive: true, showPage: tableViewMode === 'all' });
       
       // Update button counts
@@ -1974,9 +1974,9 @@ ${colDefs}
       filters.hidden = !list.length;
       filters.innerHTML = SF_DEFS.map(([k, label, text]) =>
         `<button type="button" class="dn-sf-chip" data-sf="${k}" aria-pressed="${sidebarFilter === k}" data-tip="${text}">${label}<b>${list.filter((a) => noteInFilter(a, lostIds.has(a.id), k)).length}</b></button>`).join('');
-      const container = sidebar.querySelector('#designnote-list');
+      const container = sidebar.querySelector('#bluelines-list');
       if (!list.length) {
-        container.innerHTML = `<div id="designnote-empty">${dnIcon('pointer')}<strong>No annotations on this page yet</strong>Turn on Inspect in the dock (or press <kbd>Alt+Shift+M</kbd>) and click any element. Use + above for a general note without a location. <a href="https://getbluelines.netlify.app/docs/quickstart/" target="_blank" rel="noopener">Quickstart guide</a></div>`;
+        container.innerHTML = `<div id="bluelines-empty">${dnIcon('pointer')}<strong>No annotations on this page yet</strong>Turn on Inspect in the dock (or press <kbd>Alt+Shift+M</kbd>) and click any element. Use + above for a general note without a location. <a href="https://getbluelines.netlify.app/docs/quickstart/" target="_blank" rel="noopener">Quickstart guide</a></div>`;
         return;
       }
       // n = chronological number, matches the page pin; newest first
@@ -2206,7 +2206,7 @@ ${colDefs}
 
   function editAnnotation(a) {
     // Remove any existing edit form
-    const existing = root.querySelector('#designnote-edit-form');
+    const existing = root.querySelector('#bluelines-edit-form');
     if (existing) existing._dispose();
 
     // Same categories as the create form, plus this note's own (custom ones may not be listed)
@@ -2214,7 +2214,7 @@ ${colDefs}
     if (a.type && !editCategories.some((c) => c.toLowerCase() === a.type.toLowerCase())) editCategories.push(a.type);
 
     const form = document.createElement('div');
-    form.id = 'designnote-edit-form';
+    form.id = 'bluelines-edit-form';
     form.setAttribute('role', 'dialog');
     form.setAttribute('aria-label', 'Edit annotation');
     form.innerHTML = `
@@ -2409,7 +2409,7 @@ ${colDefs}
   // fingerprint fallback; 'none' = lost (offer Re-pin) rather than a guess. Shared by jump + page pins.
   function findAnnotationEl(a) {
     if (!a.selector && !a.fingerprint) return { el: null, method: 'none' };
-    const result = window.__designNoteFindElement(a.selector, a.fingerprint);
+    const result = window.__bluelinesFindElement(a.selector, a.fingerprint);
     return { el: result.element, method: result.method };
   }
 
@@ -2439,7 +2439,7 @@ ${colDefs}
     toast('Re-pin: click the element this note belongs to. Esc to cancel.');
   }
   function repinAnnotation(a, el, rect) {
-    const s = window.__designNoteGetSelectorWithFingerprint(el);
+    const s = window.__bluelinesGetSelectorWithFingerprint(el);
     // ponytail: keeps the old screenshot; retake it here if stale crops confuse people
     updateAnnotation(a, (t) => Object.assign(t, { selector: s.selector, fingerprint: s.fingerprint, anchor: s.anchor, rect }),
       () => toast('Note re-pinned to this element'));
@@ -2776,7 +2776,7 @@ ${colDefs}
 
   function openForm(el, pos) {
     placeRoot();
-    const existing = root.querySelector('#designnote-popup-form');
+    const existing = root.querySelector('#bluelines-popup-form');
     if (existing) existing._dispose();
     root.querySelectorAll('.dn-toast:not(:has(.dn-toast-action))').forEach((t) => t.remove()); // the Inspect hint is stale now (Undo toasts stay)
 
@@ -2784,7 +2784,7 @@ ${colDefs}
     let current = categories[0] || 'UI'; // the first category is preselected
 
     const form = document.createElement('div');
-    form.id = 'designnote-popup-form';
+    form.id = 'bluelines-popup-form';
     form.setAttribute('role', 'dialog');
     form.setAttribute('aria-label', el ? 'New annotation' : 'New general note');
     const opener = document.activeElement; // focus goes back here when the form closes
@@ -3120,7 +3120,7 @@ ${colDefs}
 
   // rect: the element's box in document coordinates at click time (null for general notes).
   function saveNewAnnotation(el, type, text, rect, agent) {
-    const selectorData = el ? window.__designNoteGetSelectorWithFingerprint(el) : { selector: null, fingerprint: null, anchor: null };
+    const selectorData = el ? window.__bluelinesGetSelectorWithFingerprint(el) : { selector: null, fingerprint: null, anchor: null };
     const annotation = {
       id: uid(),
       type,

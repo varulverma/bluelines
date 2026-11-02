@@ -3,6 +3,11 @@
 </p>
 
 <p align="center">
+  <a href="https://getbluelines.netlify.app/"><img alt="Visit the website" src="https://img.shields.io/badge/Website-getbluelines.netlify.app-0B0B0B?style=for-the-badge&labelColor=0B0B0B&color=00E5FF&logo=astro&logoColor=00E5FF"></a>
+  <a href="https://getbluelines.netlify.app/docs/"><img alt="Read the docs" src="https://img.shields.io/badge/Docs-read_online-0B0B0B?style=for-the-badge&labelColor=0B0B0B&color=FFFFFF&logo=readthedocs&logoColor=FFFFFF"></a>
+</p>
+
+<p align="center">
   <a href="#install"><img alt="Chrome MV3" src="https://img.shields.io/badge/Chrome-MV3-0B0B0B?style=for-the-badge&labelColor=0B0B0B&color=00E5FF"></a>
   <a href="#privacy"><img alt="Local first" src="https://img.shields.io/badge/Local_first-no_server-0B0B0B?style=for-the-badge&labelColor=0B0B0B&color=3DDC97"></a>
   <a href="#connect-to-ai-agents-mcp"><img alt="MCP ready" src="https://img.shields.io/badge/MCP-ready-0B0B0B?style=for-the-badge&labelColor=0B0B0B&color=A78BFA"></a>
@@ -18,8 +23,10 @@
 </p>
 
 <p align="center">
-  <a href="#install"><b>Install</b></a> ·
-  <a href="#how-it-works"><b>How it works</b></a> ·
+  <a href="https://getbluelines.netlify.app/"><b>Website</b></a> ·
+  <a href="https://getbluelines.netlify.app/docs/"><b>Documentation</b></a> ·
+  <a href="#install">Install</a> ·
+  <a href="#how-it-works">How it works</a> ·
   <a href="#exports">Exports</a> ·
   <a href="#connect-to-ai-agents-mcp">AI agents</a> ·
   <a href="#privacy">Privacy</a> ·
@@ -70,7 +77,8 @@ Every frame is the real extension, captured live; music, no voice-over.
 4. Select the `extension` folder inside this repo (the one with `manifest.json`)
 5. Visit any webpage or local HTML file — for `file://` pages, enable **Allow access to file URLs** on the extension's details page
 
-No build step, no dependencies.
+No build step, no dependencies. Screenshots and the long version:
+**[Install guide →](https://getbluelines.netlify.app/docs/install/)**
 
 ### Keyboard shortcuts
 
@@ -145,6 +153,9 @@ top. Search and type filters are **not** applied to exports. File names include 
 formats carry a `hasScreenshot` flag rather than raw image bytes; the images live in the Excel and
 HTML exports.
 
+**[Export & share docs →](https://getbluelines.netlify.app/docs/export-and-share/)** ·
+**[Google Drive setup →](https://getbluelines.netlify.app/docs/google-drive/)**
+
 ---
 
 ## Connect to AI agents (MCP)
@@ -155,6 +166,8 @@ CLI — can read your notes and work through them:
 > *"fix all open Bluelines bugs on localhost:3000"*
 
 **You need:** Node.js 18+, an MCP-capable AI tool on the same computer, and the browser open.
+Per-tool setup: **[AI agents docs →](https://getbluelines.netlify.app/docs/ai-agents/)** ·
+**[MCP tool reference →](https://getbluelines.netlify.app/docs/mcp-tools/)**
 
 1. **Settings → Connect to AI agents → On.** You get a private pairing code.
 2. Enter the folder you loaded into Chrome; copy the ready-made command (Claude Code) or JSON
@@ -210,7 +223,8 @@ bridge on the next free port (up to 10), and Bluelines connects to all of them.
   opening it on untrusted sites.
 - Remove data by deleting notes, clearing the key in Settings, or removing the extension.
 
-Details and the threat model: [`extension/docs/PRIVACY_AND_PERMISSIONS.md`](extension/docs/PRIVACY_AND_PERMISSIONS.md).
+Details and the threat model: [`extension/docs/PRIVACY_AND_PERMISSIONS.md`](extension/docs/PRIVACY_AND_PERMISSIONS.md)
+· **[Privacy page →](https://getbluelines.netlify.app/docs/privacy/)**
 
 <details>
 <summary><b>Permissions, and why each one is needed</b></summary>
@@ -323,7 +337,7 @@ extension re-auths silently if your Google session is still active, or shows the
   possible v2.
 - **No sync across devices** — by design, local-first. If team collaboration is ever wanted,
   swapping `chrome.storage.local` for a Supabase-backed store is the smallest lift.
-- **CSS isolation** uses `all: revert` under `#designnote-root` rather than a full shadow DOM —
+- **CSS isolation** uses `all: revert` under `#bluelines-root` rather than a full shadow DOM —
   works well in practice, but a shadow DOM wrapper would be more bulletproof against aggressive
   host-page CSS.
 
@@ -333,7 +347,8 @@ extension re-auths silently if your Google session is still active, or shows the
 
 ## Browser support
 
-One manifest, no build step. Test evidence: [`extension/docs/`](extension/docs/).
+One manifest, no build step. Test evidence: [`extension/docs/`](extension/docs/)
+· **[Browser support page →](https://getbluelines.netlify.app/docs/browser-support/)**
 
 | Browser | Status |
 |---|---|
@@ -356,6 +371,8 @@ Chrome 121+ accepts without warnings — verified, no install warnings in Chrome
 
 <p align="center">
   <sub>
+    <a href="https://getbluelines.netlify.app/">Website</a> ·
+    <a href="https://getbluelines.netlify.app/docs/">Docs</a> ·
     <a href="extension/docs/GUIDE.md">Guide</a> ·
     <a href="CHANGELOG.md">Changelog</a> ·
     <a href="SECURITY.md">Security</a> ·

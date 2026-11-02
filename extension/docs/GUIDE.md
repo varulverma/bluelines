@@ -56,8 +56,8 @@ local MCP bridge lets AI coding agents read your notes.
   filters are *not* applied to exports. File names include `current-page` or
   `all-pages`, and every row carries its page URL. Formats:
   - **Excel (`.xlsx`)** — a real spreadsheet with each screenshot **embedded
-    as an image** in the Screenshot column. Filename `designnote-<host>-<scope>-<date>.xlsx`.
-  - **HTML** — a standalone `designnote-<host>-<scope>-<date>.html` with the same
+    as an image** in the Screenshot column. Filename `bluelines-<host>-<scope>-<date>.xlsx`.
+  - **HTML** — a standalone `bluelines-<host>-<scope>-<date>.html` with the same
     table and inline screenshots, opens in any browser.
   - **CSV** (table view) — every cell quoted; values starting with `=`, `+`, `-`
     or `@` get a leading `'` so spreadsheets don't run them as formulas.
@@ -92,12 +92,12 @@ installed an earlier build, set the shortcuts once at `chrome://extensions/short
 
 ### Pages and tabs
 
-- Tabs that were already open when you installed, reloaded or updated DesignNote
+- Tabs that were already open when you installed, reloaded or updated Bluelines
   get it the first time you use the toolbar popup or a shortcut there. A tab still
   showing the old floating button says "Refresh this page" when you click it.
 - Browser pages (`chrome://…`, `edge://…`) and extension stores can't be annotated;
   the popup says so. Local `file://` pages need "Allow access to file URLs".
-- While a page shows a modal `<dialog>`, DesignNote's UI moves into the dialog so it
+- While a page shows a modal `<dialog>`, Bluelines's UI moves into the dialog so it
   stays usable.
 
 ## Privacy
@@ -109,7 +109,7 @@ installed an earlier build, set the shortcuts once at `chrome://extensions/short
   the page address **without** query string or `#fragment` to the AI provider you chose,
   using your own API key. No screenshots. You're asked once per provider first.
 - **Send to Google Drive** (only when you click it) uploads the Excel export, screenshots
-  included, to your Drive (`drive.file` scope: DesignNote sees only files it creates).
+  included, to your Drive (`drive.file` scope: Bluelines sees only files it creates).
   You're asked once first. Opening Settings never contacts Google; **Disconnect** revokes
   access and forgets the account.
 - Both actions respond only to your own clicks or key presses, not to scripts on the page.
@@ -119,14 +119,14 @@ installed an earlier build, set the shortcuts once at `chrome://extensions/short
   with your pairing code can read notes from your **shared sites** only. See "Connect to AI
   agents" below. Bluelines talks only to `127.0.0.1`; the AI tool may send what it reads to
   its own provider.
-- While a DesignNote panel is open, the page's own scripts can technically see what it
+- While a Bluelines panel is open, the page's own scripts can technically see what it
   shows. Avoid opening it on untrusted sites.
 - Remove data by deleting notes, clearing the key in Settings, or removing the extension.
 
 Details, permissions and the threat model are in `docs/product/PRIVACY_AND_PERMISSIONS.md`.
 
 **Permissions:** `<all_urls>` (show the UI on pages you review and take screenshots),
-`storage` + `unlimitedStorage` (notes and screenshots), `scripting` (enable DesignNote in tabs
+`storage` + `unlimitedStorage` (notes and screenshots), `scripting` (enable Bluelines in tabs
 that were open before install or an update), `identity` (Google Drive sign-in), `alarms`
 (reconnect to a local AI tool every 30 s while "Connect to AI agents" is on).
 
@@ -238,7 +238,7 @@ session is still active, or shows the consent screen otherwise.
 - **No sync across devices** — by design (local-first per your spec). If you
   ever want team collaboration, swapping `chrome.storage.local` for a
   Supabase-backed store is the smallest lift.
-- **Content script CSS isolation** uses `all: revert` under `#designnote-root`
+- **Content script CSS isolation** uses `all: revert` under `#bluelines-root`
   rather than a full shadow DOM — works well in practice, but a shadow DOM
   wrapper would be more bulletproof against aggressive host-page CSS.
 

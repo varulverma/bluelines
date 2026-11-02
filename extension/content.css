@@ -1,4 +1,4 @@
-/* Bluelines in-page UI. Everything is namespaced under #designnote-root so host styles can't
+/* Bluelines in-page UI. Everything is namespaced under #bluelines-root so host styles can't
    reach in and ours can't leak out. SVG icons (and their shape children) are exempted from
    `all: revert`: revert discards presentation attributes (d, cx, cy, r, points, …) since those
    live in the author cascade, which would zero out every icon's geometry. */
@@ -13,7 +13,7 @@
 @font-face { font-family: "Space Grotesk"; font-weight: 300 700; font-style: normal; font-display: swap;
   src: url("chrome-extension://__MSG_@@extension_id__/fonts/SpaceGrotesk-Variable.ttf") format("truetype"); }
 
-:where(#designnote-root, #designnote-root *:not(svg, svg *)) {
+:where(#bluelines-root, #bluelines-root *:not(svg, svg *)) {
   all: revert;
   box-sizing: border-box;
   font-family: var(--dn-font-ui, ui-monospace, SFMono-Regular, Menlo, Consolas, monospace);
@@ -22,7 +22,7 @@
 /* One stacking context at the maximum z-index, so host elements that also use the maximum
    (fixed headers, cookie bars) can't cover the UI: on a tie the root wins because it comes
    later in the document. Zero-size and fixed, so it never affects layout. */
-#designnote-root {
+#bluelines-root {
   position: fixed;
   top: 0;
   left: 0;
@@ -33,10 +33,10 @@
 }
 
 /* ── Browser surfaces ─────────────────────────────────────────────────────── */
-#designnote-root ::selection { background: var(--dn-accent-ring); color: var(--dn-text); }
-#designnote-root textarea, #designnote-root input { caret-color: var(--dn-accent); }
-#designnote-root *:focus-visible { outline: 2px solid var(--dn-accent); outline-offset: 2px; }
-#designnote-sidebar, #designnote-list, #designnote-table-body, #designnote-edit-form {
+#bluelines-root ::selection { background: var(--dn-accent-ring); color: var(--dn-text); }
+#bluelines-root textarea, #bluelines-root input { caret-color: var(--dn-accent); }
+#bluelines-root *:focus-visible { outline: 2px solid var(--dn-accent); outline-offset: 2px; }
+#bluelines-sidebar, #bluelines-list, #bluelines-table-body, #bluelines-edit-form {
   scrollbar-width: thin;
   scrollbar-color: var(--dn-border-strong) transparent;
 }
@@ -76,8 +76,8 @@
 @keyframes dn-btn-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
 /* Blinking terminal underscore after panel titles (the wordmark's cursor). */
-#designnote-sidebar-header h2::after,
-#designnote-table-header h2::after {
+#bluelines-sidebar-header h2::after,
+#bluelines-table-header h2::after {
   content: "_";
   margin-left: 2px;
   color: var(--dn-accent-text);
@@ -85,9 +85,9 @@
 }
 @keyframes dn-blink { 50% { opacity: 0; } }
 
-/* ── Dock (#designnote-pill) ───────────────────────────────────────────────
+/* ── Dock (#bluelines-pill) ───────────────────────────────────────────────
    Draggable; snaps to the nearest edge (content.js sets orientation + dock). */
-#designnote-pill {
+#bluelines-pill {
   position: fixed;
   bottom: 16px;
   left: 50%;
@@ -103,9 +103,9 @@
   box-shadow: var(--dn-shadow-lg);
   font-family: var(--dn-font-ui);
 }
-#designnote-pill[hidden] { display: none; }
-#designnote-pill[data-orientation="horizontal"] { flex-direction: row; }
-#designnote-pill[data-orientation="vertical"] { flex-direction: column; }
+#bluelines-pill[hidden] { display: none; }
+#bluelines-pill[data-orientation="horizontal"] { flex-direction: row; }
+#bluelines-pill[data-orientation="vertical"] { flex-direction: column; }
 
 
 .dn-pill-btn {
@@ -132,10 +132,10 @@
 .dn-pill-btn[aria-expanded="true"] { color: var(--dn-text); background: var(--dn-hover); }
 
 /* Inspect carries its label in the horizontal dock, like the moodboard's tool bar. */
-#designnote-mode-btn { padding: 0 11px 0 9px; }
+#bluelines-mode-btn { padding: 0 11px 0 9px; }
 .dn-pill-label { line-height: 1; }
-#designnote-pill[data-orientation="vertical"] #designnote-mode-btn { padding: 0; }
-#designnote-pill[data-orientation="vertical"] .dn-pill-label { display: none; }
+#bluelines-pill[data-orientation="vertical"] #bluelines-mode-btn { padding: 0; }
+#bluelines-pill[data-orientation="vertical"] .dn-pill-label { display: none; }
 
 .dn-pill-btn.active {
   color: var(--dn-accent-text);
@@ -205,12 +205,12 @@
   transition: opacity var(--dn-duration-fast) ease;
 }
 .dn-drag-handle:hover::after, .dn-drag-handle:focus-visible::after { opacity: 1; }
-#designnote-pill.dragging .dn-drag-handle::after { opacity: 0; }
-#designnote-pill[data-dock="top"] .dn-drag-handle::after { bottom: auto; top: calc(100% + 10px); }
-#designnote-pill[data-dock="right"] .dn-drag-handle::after,
-#designnote-pill[data-dock="left"] .dn-drag-handle::after { bottom: auto; top: 50%; transform: translateY(-50%); }
-#designnote-pill[data-dock="right"] .dn-drag-handle::after { left: auto; right: calc(100% + 10px); }
-#designnote-pill[data-dock="left"] .dn-drag-handle::after { left: calc(100% + 10px); }
+#bluelines-pill.dragging .dn-drag-handle::after { opacity: 0; }
+#bluelines-pill[data-dock="top"] .dn-drag-handle::after { bottom: auto; top: calc(100% + 10px); }
+#bluelines-pill[data-dock="right"] .dn-drag-handle::after,
+#bluelines-pill[data-dock="left"] .dn-drag-handle::after { bottom: auto; top: 50%; transform: translateY(-50%); }
+#bluelines-pill[data-dock="right"] .dn-drag-handle::after { left: auto; right: calc(100% + 10px); }
+#bluelines-pill[data-dock="left"] .dn-drag-handle::after { left: calc(100% + 10px); }
 
 /* Hide-dock X: always visible on the dock's top-right corner. */
 .dn-close-pill {
@@ -236,7 +236,7 @@
 .dn-close-pill:hover { color: var(--dn-error); border-color: var(--dn-error); }
 
 /* Inspect cursor icon: a continuous little "click" tap. */
-#designnote-mode-btn .dn-icon { transform-origin: 30% 30%; animation: dn-cursor-tap 2.4s var(--dn-ease-out) infinite; }
+#bluelines-mode-btn .dn-icon { transform-origin: 30% 30%; animation: dn-cursor-tap 2.4s var(--dn-ease-out) infinite; }
 @keyframes dn-cursor-tap {
   0%, 55%, 100% { transform: none; }
   65%           { transform: translate(1.5px, 1.5px) scale(0.82); }
@@ -244,24 +244,24 @@
   85%           { transform: none; }
 }
 
-#designnote-pill.dragging {
+#bluelines-pill.dragging {
   z-index: 2147483010;
   border-color: var(--dn-accent);
   box-shadow: var(--dn-shadow-lg), var(--dn-accent-glow);
 }
-#designnote-pill.keyboard-drag { box-shadow: var(--dn-shadow-lg), 0 0 0 2px var(--dn-accent); }
+#bluelines-pill.keyboard-drag { box-shadow: var(--dn-shadow-lg), 0 0 0 2px var(--dn-accent); }
 
 /* ── Frosted glass ─────────────────────────────────────────────────────────
    Translucent tints come from design-tokens.css; every floating surface blurs what is behind it. */
-#designnote-pill, #designnote-sidebar, #designnote-popup-form, #designnote-edit-form, .dn-toast,
-#designnote-table-overlay, .dn-action-menu, .dn-table th,
+#bluelines-pill, #bluelines-sidebar, #bluelines-popup-form, #bluelines-edit-form, .dn-toast,
+#bluelines-table-overlay, .dn-action-menu, .dn-table th,
 .dn-drag-handle::after, .dn-close-pill {
   -webkit-backdrop-filter: var(--dn-glass-filter);
   backdrop-filter: var(--dn-glass-filter);
 }
 
 /* ── Sidebar ──────────────────────────────────────────────────────────────── */
-#designnote-sidebar {
+#bluelines-sidebar {
   position: fixed;
   top: 16px;
   right: 16px;
@@ -283,9 +283,9 @@
   transition: transform var(--dn-duration-slow) var(--dn-ease-out), opacity 200ms ease,
               width 240ms var(--dn-ease-out);
 }
-#designnote-sidebar.open { transform: translateX(0); opacity: 1; }
+#bluelines-sidebar.open { transform: translateX(0); opacity: 1; }
 
-#designnote-sidebar-header {
+#bluelines-sidebar-header {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -294,7 +294,7 @@
   padding: 14px 12px 12px 16px;
   border-bottom: 1px solid var(--dn-border);
 }
-#designnote-sidebar-header h2 {
+#bluelines-sidebar-header h2 {
   margin: 0;
   font-family: var(--dn-font-ui);
   font-size: var(--dn-text-lg);
@@ -312,26 +312,26 @@
   text-transform: uppercase;
   color: var(--dn-text-secondary);
 }
-#designnote-sidebar-header .actions { display: flex; flex-wrap: wrap; flex: 1 0 auto; max-width: 100%; justify-content: flex-end; align-items: center; gap: 2px; margin-right: -4px; }
+#bluelines-sidebar-header .actions { display: flex; flex-wrap: wrap; flex: 1 0 auto; max-width: 100%; justify-content: flex-end; align-items: center; gap: 2px; margin-right: -4px; }
 
-#designnote-list { flex: 0 1 auto; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; padding: 10px; }
+#bluelines-list { flex: 0 1 auto; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; padding: 10px; }
 
 /* Compact rail: 56px column of numbered chips; hover (or keyboard focus) expands to the full sidebar. */
 .dn-rail-count { display: none; }
-#designnote-sidebar.dn-compact:not(:hover):not(:has(:focus-visible)) { width: 56px; }
-#designnote-sidebar.dn-compact:not(:hover):not(:has(:focus-visible)) #designnote-sidebar-header { flex-direction: column; align-items: center; gap: 8px; padding: 12px 0; }
-#designnote-sidebar.dn-compact:not(:hover):not(:has(:focus-visible)) #designnote-sidebar-header > div:first-child,
-#designnote-sidebar.dn-compact:not(:hover):not(:has(:focus-visible)) #designnote-sidebar-header .actions > :not(#dn-compact-btn),
-#designnote-sidebar.dn-compact:not(:hover):not(:has(:focus-visible)) #designnote-empty { display: none; }
-#designnote-sidebar.dn-compact:not(:hover):not(:has(:focus-visible)) .dn-rail-count { display: block; font-size: var(--dn-text-md); font-weight: 700; color: var(--dn-accent-text); }
-#designnote-sidebar.dn-compact:not(:hover):not(:has(:focus-visible)) #designnote-list { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 12px 0; }
-#designnote-sidebar.dn-compact:not(:hover):not(:has(:focus-visible)) .dn-card { padding: 0; margin: 0; border: 0; background: none; box-shadow: none; }
-#designnote-sidebar.dn-compact:not(:hover):not(:has(:focus-visible)) .dn-card > :not(.dn-card-head) { display: none; }
-#designnote-sidebar.dn-compact:not(:hover):not(:has(:focus-visible)) .dn-card-head > :not(.dn-card-num) { display: none; }
-#designnote-sidebar.dn-compact:not(:hover):not(:has(:focus-visible)) .dn-card-num { min-width: 28px; height: 28px; margin: 0; font-size: var(--dn-text-base); }
-#designnote-sidebar.dn-compact:not(:hover):not(:has(:focus-visible)) .dn-card:has(.dn-copied) .dn-card-num { opacity: 0.5; }
-#designnote-sidebar.dn-compact:not(:hover):not(:has(:focus-visible)) #dn-filters { display: none; }
-#designnote-sidebar.dn-compact:not(:hover):not(:has(:focus-visible)) .dn-card::before { display: none; }
+#bluelines-sidebar.dn-compact:not(:hover):not(:has(:focus-visible)) { width: 56px; }
+#bluelines-sidebar.dn-compact:not(:hover):not(:has(:focus-visible)) #bluelines-sidebar-header { flex-direction: column; align-items: center; gap: 8px; padding: 12px 0; }
+#bluelines-sidebar.dn-compact:not(:hover):not(:has(:focus-visible)) #bluelines-sidebar-header > div:first-child,
+#bluelines-sidebar.dn-compact:not(:hover):not(:has(:focus-visible)) #bluelines-sidebar-header .actions > :not(#dn-compact-btn),
+#bluelines-sidebar.dn-compact:not(:hover):not(:has(:focus-visible)) #bluelines-empty { display: none; }
+#bluelines-sidebar.dn-compact:not(:hover):not(:has(:focus-visible)) .dn-rail-count { display: block; font-size: var(--dn-text-md); font-weight: 700; color: var(--dn-accent-text); }
+#bluelines-sidebar.dn-compact:not(:hover):not(:has(:focus-visible)) #bluelines-list { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 12px 0; }
+#bluelines-sidebar.dn-compact:not(:hover):not(:has(:focus-visible)) .dn-card { padding: 0; margin: 0; border: 0; background: none; box-shadow: none; }
+#bluelines-sidebar.dn-compact:not(:hover):not(:has(:focus-visible)) .dn-card > :not(.dn-card-head) { display: none; }
+#bluelines-sidebar.dn-compact:not(:hover):not(:has(:focus-visible)) .dn-card-head > :not(.dn-card-num) { display: none; }
+#bluelines-sidebar.dn-compact:not(:hover):not(:has(:focus-visible)) .dn-card-num { min-width: 28px; height: 28px; margin: 0; font-size: var(--dn-text-base); }
+#bluelines-sidebar.dn-compact:not(:hover):not(:has(:focus-visible)) .dn-card:has(.dn-copied) .dn-card-num { opacity: 0.5; }
+#bluelines-sidebar.dn-compact:not(:hover):not(:has(:focus-visible)) #dn-filters { display: none; }
+#bluelines-sidebar.dn-compact:not(:hover):not(:has(:focus-visible)) .dn-card::before { display: none; }
 #dn-compact-btn[aria-pressed="true"] { color: var(--dn-accent-text); }
 
 /* ── Annotation rows ──────────────────────────────────────────────────────── */
@@ -643,7 +643,7 @@
   color: var(--dn-text-tertiary);
 }
 
-#designnote-empty {
+#bluelines-empty {
   padding: 48px 28px;
   text-align: center;
   font-family: var(--dn-font-body);
@@ -651,9 +651,9 @@
   line-height: 1.55;
   color: var(--dn-text-secondary);
 }
-#designnote-empty .dn-icon { width: 28px; height: 28px; margin: 0 auto 14px; color: var(--dn-accent-text); }
-#designnote-empty strong { display: block; margin-bottom: 6px; font-family: var(--dn-font-ui); font-size: var(--dn-text-md); color: var(--dn-text); }
-#designnote-empty kbd {
+#bluelines-empty .dn-icon { width: 28px; height: 28px; margin: 0 auto 14px; color: var(--dn-accent-text); }
+#bluelines-empty strong { display: block; margin-bottom: 6px; font-family: var(--dn-font-ui); font-size: var(--dn-text-md); color: var(--dn-text); }
+#bluelines-empty kbd {
   padding: 1px 5px;
   border: 1px solid var(--dn-border-strong);
   border-radius: var(--dn-radius-xs);
@@ -798,7 +798,7 @@ html.dn-marking, html.dn-marking * {
 }
 
 /* ── New-annotation form ──────────────────────────────────────────────────── */
-#designnote-popup-form {
+#bluelines-popup-form {
   position: fixed;
   z-index: 2147483002;
   width: 440px;
@@ -815,9 +815,9 @@ html.dn-marking, html.dn-marking * {
   transition: opacity var(--dn-duration-base) var(--dn-ease-out), transform var(--dn-duration-base) var(--dn-ease-out), border-color var(--dn-duration-fast) ease, box-shadow var(--dn-duration-fast) ease;
 }
 /* Opens after the connector has started drawing, so the eye follows element → note */
-#designnote-popup-form.open { opacity: 1; transform: none; transition-delay: 120ms, 120ms, 0s, 0s; }
+#bluelines-popup-form.open { opacity: 1; transform: none; transition-delay: 120ms, 120ms, 0s, 0s; }
 /* Writing: the whole composer lights up */
-#designnote-popup-form.dn-writing { border-color: var(--dn-accent); box-shadow: 0 0 0 4px var(--dn-accent-subtle), var(--dn-shadow-lg); }
+#bluelines-popup-form.dn-writing { border-color: var(--dn-accent); box-shadow: 0 0 0 4px var(--dn-accent-subtle), var(--dn-shadow-lg); }
 
 .dn-form-row { display: flex; align-items: flex-start; gap: 6px; }
 .dn-cat-chip {
@@ -909,8 +909,8 @@ html.dn-marking, html.dn-marking * {
 .dn-type-pill.dn-new-category:hover { color: var(--dn-text); border-color: var(--dn-border-strong); }
 .dn-type-pill.dn-new-category.selected { border-style: solid; border-color: var(--dn-accent); color: var(--dn-accent-text); }
 
-#designnote-popup-form textarea,
-#designnote-edit-form textarea,
+#bluelines-popup-form textarea,
+#bluelines-edit-form textarea,
 .dn-category-input-wrapper input {
   display: block;
   width: 100%;
@@ -926,19 +926,19 @@ html.dn-marking, html.dn-marking * {
   transition: border-color var(--dn-duration-fast) ease, box-shadow var(--dn-duration-fast) ease;
 }
 .dn-category-input-wrapper input { font-family: var(--dn-font-ui); font-size: var(--dn-text-base); padding: 7px 10px; }
-#designnote-popup-form textarea { min-height: 80px; resize: vertical; }
-#designnote-edit-form textarea { min-height: 120px; resize: vertical; }
-#designnote-popup-form textarea:focus,
-#designnote-edit-form textarea:focus,
+#bluelines-popup-form textarea { min-height: 80px; resize: vertical; }
+#bluelines-edit-form textarea { min-height: 120px; resize: vertical; }
+#bluelines-popup-form textarea:focus,
+#bluelines-edit-form textarea:focus,
 .dn-category-input-wrapper input:focus {
   outline: none;
   border-color: var(--dn-accent);
   box-shadow: 0 0 0 3px var(--dn-accent-subtle);
 }
-#designnote-root textarea::placeholder,
-#designnote-root input::placeholder { color: var(--dn-text-tertiary); opacity: 1; }
+#bluelines-root textarea::placeholder,
+#bluelines-root input::placeholder { color: var(--dn-text-tertiary); opacity: 1; }
 
-#designnote-popup-form textarea {
+#bluelines-popup-form textarea {
   flex: 1;
   min-width: 0;
   min-height: 30px;
@@ -954,14 +954,14 @@ html.dn-marking, html.dn-marking * {
   overflow-y: auto;
 }
 /* Focus stays visible without a box: a faint field + accent hairline (the card itself lights up once there's text) */
-#designnote-popup-form textarea:focus { border-color: var(--dn-accent-ring); background: color-mix(in srgb, var(--dn-text) 4%, transparent); box-shadow: none; }
+#bluelines-popup-form textarea:focus { border-color: var(--dn-accent-ring); background: color-mix(in srgb, var(--dn-text) 4%, transparent); box-shadow: none; }
 .dn-form-cap { display: flex; align-items: center; gap: 8px; margin-top: 2px; padding: 3px 6px 1px; font-size: 10px; line-height: 14px; color: var(--dn-text-tertiary); }
 .dn-form-sel { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-variant-numeric: tabular-nums; }
 .dn-form-hint { margin-left: auto; flex-shrink: 0; white-space: nowrap; opacity: 0; transition: opacity var(--dn-duration-base) ease; }
-#designnote-popup-form.dn-writing .dn-form-hint { opacity: 1; }
-#designnote-popup-form .dn-form-actions { display: flex; flex-shrink: 0; gap: 2px; }
-#designnote-popup-form .dn-form-cancel,
-#designnote-popup-form .dn-form-save {
+#bluelines-popup-form.dn-writing .dn-form-hint { opacity: 1; }
+#bluelines-popup-form .dn-form-actions { display: flex; flex-shrink: 0; gap: 2px; }
+#bluelines-popup-form .dn-form-cancel,
+#bluelines-popup-form .dn-form-save {
   display: grid;
   place-items: center;
   width: 30px;
@@ -972,28 +972,28 @@ html.dn-marking, html.dn-marking * {
   cursor: pointer;
   transition: background var(--dn-duration-fast) ease, color var(--dn-duration-fast) ease, box-shadow var(--dn-duration-fast) ease, transform 80ms ease;
 }
-#designnote-popup-form .dn-form-cancel .dn-icon, #designnote-popup-form .dn-form-save .dn-icon { width: 16px; height: 16px; }
+#bluelines-popup-form .dn-form-cancel .dn-icon, #bluelines-popup-form .dn-form-save .dn-icon { width: 16px; height: 16px; }
 /* Esc is red, Save is the accent: two colours, so it's clear which one fired */
-#designnote-popup-form .dn-form-cancel { background: transparent; color: var(--dn-act-del); }
-#designnote-popup-form .dn-form-cancel:hover { background: color-mix(in srgb, var(--dn-error) 14%, transparent); }
-#designnote-popup-form .dn-form-cancel.dn-hit { background: var(--dn-error); color: var(--dn-text-inverse); }
-#designnote-popup-form .dn-form-save { background: var(--dn-accent); color: var(--dn-accent-contrast); }
-#designnote-popup-form .dn-form-save:hover:not([aria-disabled="true"]) { background: var(--dn-accent-hover); box-shadow: var(--dn-accent-glow); }
-#designnote-popup-form .dn-form-save[aria-disabled="true"] { background: color-mix(in srgb, var(--dn-text) 7%, transparent); color: var(--dn-text-tertiary); cursor: not-allowed; }
-#designnote-popup-form .dn-form-cancel:active, #designnote-popup-form .dn-form-save:active { transform: translateY(1px); }
-#designnote-popup-form .dn-form-save.dn-hit { animation: dn-hit 320ms ease-out; }
+#bluelines-popup-form .dn-form-cancel { background: transparent; color: var(--dn-act-del); }
+#bluelines-popup-form .dn-form-cancel:hover { background: color-mix(in srgb, var(--dn-error) 14%, transparent); }
+#bluelines-popup-form .dn-form-cancel.dn-hit { background: var(--dn-error); color: var(--dn-text-inverse); }
+#bluelines-popup-form .dn-form-save { background: var(--dn-accent); color: var(--dn-accent-contrast); }
+#bluelines-popup-form .dn-form-save:hover:not([aria-disabled="true"]) { background: var(--dn-accent-hover); box-shadow: var(--dn-accent-glow); }
+#bluelines-popup-form .dn-form-save[aria-disabled="true"] { background: color-mix(in srgb, var(--dn-text) 7%, transparent); color: var(--dn-text-tertiary); cursor: not-allowed; }
+#bluelines-popup-form .dn-form-cancel:active, #bluelines-popup-form .dn-form-save:active { transform: translateY(1px); }
+#bluelines-popup-form .dn-form-save.dn-hit { animation: dn-hit 320ms ease-out; }
 @keyframes dn-hit { from { box-shadow: 0 0 0 0 var(--dn-accent); } to { box-shadow: 0 0 0 8px transparent; } }
-#designnote-popup-form.dn-shake { animation: dn-shake 240ms ease-in-out; }
+#bluelines-popup-form.dn-shake { animation: dn-shake 240ms ease-in-out; }
 @keyframes dn-shake { 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
-#designnote-edit-form .dn-save {
+#bluelines-edit-form .dn-save {
   background: var(--dn-accent);
   border-color: var(--dn-accent);
   color: var(--dn-accent-contrast);
 }
-#designnote-edit-form .dn-save:hover { background: var(--dn-accent-hover); color: var(--dn-accent-contrast); box-shadow: var(--dn-accent-glow); }
+#bluelines-edit-form .dn-save:hover { background: var(--dn-accent-hover); color: var(--dn-accent-contrast); box-shadow: var(--dn-accent-glow); }
 
 /* ── Edit dialog ──────────────────────────────────────────────────────────── */
-#designnote-edit-form {
+#bluelines-edit-form {
   position: fixed;
   inset: 0;
   z-index: 2147483003;
@@ -1014,7 +1014,7 @@ html.dn-marking, html.dn-marking * {
 @keyframes dn-panel-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 .dn-edit-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
 .dn-edit-head h3 { margin: 0; font-family: var(--dn-font-ui); font-size: var(--dn-text-lg); font-weight: 700; letter-spacing: -0.02em; }
-#designnote-edit-form .dn-form-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 4px; }
+#bluelines-edit-form .dn-form-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 4px; }
 .dn-text-btn {
   height: 32px;
   padding: 0 14px;
@@ -1071,7 +1071,7 @@ html.dn-marking, html.dn-marking * {
 .dn-toast-action:hover { background: var(--dn-accent-subtle); }
 
 /* ── Table view ───────────────────────────────────────────────────────────── */
-#designnote-table-overlay {
+#bluelines-table-overlay {
   position: fixed;
   inset: 16px;
   z-index: 2147483004;
@@ -1084,22 +1084,22 @@ html.dn-marking, html.dn-marking * {
   box-shadow: var(--dn-shadow-lg), 0 0 0 100vmax rgba(0, 0, 0, 0.3);
   color: var(--dn-text);
 }
-#designnote-table-overlay.open { display: flex; animation: dn-panel-in var(--dn-duration-base) var(--dn-ease-out) both; }
-#designnote-table-header {
+#bluelines-table-overlay.open { display: flex; animation: dn-panel-in var(--dn-duration-base) var(--dn-ease-out) both; }
+#bluelines-table-header {
   display: flex;
   flex-direction: column;
   gap: 12px;
   padding: 14px 16px;
   border-bottom: 1px solid var(--dn-border);
 }
-#designnote-table-header-top {
+#bluelines-table-header-top {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
 }
-#designnote-table-header h2 {
+#bluelines-table-header h2 {
   margin: 0;
   font-family: var(--dn-font-ui);
   font-size: var(--dn-text-lg);
@@ -1107,8 +1107,8 @@ html.dn-marking, html.dn-marking * {
   letter-spacing: -0.02em;
   white-space: nowrap;
 }
-#designnote-table-header .dn-header-actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 4px; }
-#designnote-table-header-bottom { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+#bluelines-table-header .dn-header-actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 4px; }
+#bluelines-table-header-bottom { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
 
 .dn-view-toggle {
   display: flex;
@@ -1244,7 +1244,7 @@ html.dn-marking, html.dn-marking * {
 .dn-action-menu-item .dn-menu-check .dn-icon { color: var(--dn-accent-text); }
 .dn-action-menu-item[aria-checked="true"] { font-weight: 600; }
 
-#designnote-table-body { flex: 1; overflow: auto; padding: 0 16px 16px; }
+#bluelines-table-body { flex: 1; overflow: auto; padding: 0 16px 16px; }
 
 .dn-table {
   width: 100%;
@@ -1344,7 +1344,7 @@ html.dn-marking, html.dn-marking * {
 /* Reduced motion: no transitions or animations anywhere in the UI (the busy pulse is a fade,
    kept as the only "working" cue). Scrolling and the Inspect cursor are handled in content.js. */
 @media (prefers-reduced-motion: reduce) {
-  #designnote-root *:not(.dn-busy), #designnote-root *::before, #designnote-root *::after {
+  #bluelines-root *:not(.dn-busy), #bluelines-root *::before, #bluelines-root *::after {
     transition-duration: 0s !important;
     animation-duration: 0s !important;
     animation-iteration-count: 1 !important;
@@ -1352,15 +1352,15 @@ html.dn-marking, html.dn-marking * {
 }
 
 /* Settings → Motion: Reduced applies the same rules regardless of the OS setting */
-#designnote-root[data-dn-motion="reduce"] *:not(.dn-busy), #designnote-root[data-dn-motion="reduce"] *::before, #designnote-root[data-dn-motion="reduce"] *::after {
+#bluelines-root[data-dn-motion="reduce"] *:not(.dn-busy), #bluelines-root[data-dn-motion="reduce"] *::before, #bluelines-root[data-dn-motion="reduce"] *::after {
   transition-duration: 0s !important;
   animation-duration: 0s !important;
   animation-iteration-count: 1 !important;
 }
 /* Settings → Page pins: Hide */
-#designnote-root[data-dn-pins="hide"] #dn-pins { display: none !important; }
+#bluelines-root[data-dn-pins="hide"] #dn-pins { display: none !important; }
 /* Settings → Note colours: note numbers and page pins use the accent unless "By category" */
-#designnote-root:not([data-dn-notes="category"]) :is(.dn-card-num, .dn-pin) { background: var(--dn-accent); color: var(--dn-accent-contrast); }
+#bluelines-root:not([data-dn-notes="category"]) :is(.dn-card-num, .dn-pin) { background: var(--dn-accent); color: var(--dn-accent-contrast); }
 
 /* Attached to an element while the note form is open: rounded outline instead of brackets, plus a connector to the form */
 #dn-mark-ui.dn-locked #dn-highlight-box { border: 1.5px solid var(--dn-accent); border-radius: 8px; box-shadow: 0 0 0 4px var(--dn-accent-subtle); transition: transform 90ms var(--dn-ease-out), width 90ms var(--dn-ease-out), height 90ms var(--dn-ease-out), opacity 120ms ease, box-shadow var(--dn-duration-base) ease; }
@@ -1395,4 +1395,4 @@ html.dn-marking, html.dn-marking * {
 
 /* Author display rules above would otherwise beat the [hidden] attribute */
 .dn-cat-chip[hidden], .dn-cat-rename[hidden], .dn-filters[hidden] { display: none; }
-#designnote-popup-form .dn-form-cancel:active { background: var(--dn-error); color: var(--dn-text-inverse); }
+#bluelines-popup-form .dn-form-cancel:active { background: var(--dn-error); color: var(--dn-text-inverse); }

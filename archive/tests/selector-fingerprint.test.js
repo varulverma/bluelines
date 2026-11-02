@@ -45,9 +45,9 @@ for (const cards of [10, 500]) {
   const { all, targets, doc } = buildPage(cards);
   const w = load(doc);
   const target = targets[7];
-  const { fingerprint } = w.__designNoteGetSelectorWithFingerprint(target);
+  const { fingerprint } = w.__bluelinesGetSelectorWithFingerprint(target);
   const t0 = Date.now();
-  const r = w.__designNoteFindElement('#gone', fingerprint, doc);
+  const r = w.__bluelinesFindElement('#gone', fingerprint, doc);
   const ms = Date.now() - t0;
   assert.strictEqual(r.method, 'fingerprint', `cards=${cards}: expected fingerprint match`);
   assert.strictEqual(r.element, target, `cards=${cards}: matched the wrong element`);
@@ -59,9 +59,9 @@ for (const cards of [10, 500]) {
 {
   const { targets, doc } = buildPage(20);
   const w = load(doc);
-  const fp = w.__designNoteGetSelectorWithFingerprint(targets[3]).fingerprint;
+  const fp = w.__bluelinesGetSelectorWithFingerprint(targets[3]).fingerprint;
   fp.textHash = 'nonexistent';
-  const r = w.__designNoteFindElement('#gone', fp, doc);
+  const r = w.__bluelinesFindElement('#gone', fp, doc);
   assert.ok(r.element === null || r.element === targets[3], 'matched an unrelated element');
   console.log('ok removed-text case:', r.method);
 }

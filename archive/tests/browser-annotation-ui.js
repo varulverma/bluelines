@@ -23,11 +23,11 @@ const seed = (list) => h.ev(h.sw, `chrome.storage.local.set({ ${JSON.stringify('
 const note = (id, text, o = {}) => Object.assign({ id, type: 'UI', text, selector: '#sub', fingerprint: null, anchor: '#sub', rect: { top: 10, left: 10, width: 50, height: 20 }, screenshot: null, timestamp: Date.now() - 60000 }, o);
 const toastText = () => ev(`[...document.querySelectorAll('.dn-toast')].map((t) => t.textContent).join(' | ')`);
 const openForm = async (sel) => {
-  await h.domClick(s, '#designnote-mode-btn');
+  await h.domClick(s, '#bluelines-mode-btn');
   const [x, y] = await h.center(s, sel);
   await sleep(120);
   await h.realClick(s, x, y);
-  return poll(() => ev(`!!document.querySelector('#designnote-popup-form.open')`), 3000);
+  return poll(() => ev(`!!document.querySelector('#bluelines-popup-form.open')`), 3000);
 };
 const closeFormByEsc = async () => { await key('Escape', 27); await sleep(400); };
 
@@ -41,7 +41,7 @@ async function main() {
 
   // ── Composer ──
   record('A0', 'form opens attached to the picked element', await openForm('#c-late'));
-  const rows = await ev(`(() => { const f = document.querySelector('#designnote-popup-form'); return {
+  const rows = await ev(`(() => { const f = document.querySelector('#bluelines-popup-form'); return {
     chip: !!f.querySelector('#dn-cat-chip'), noPills: !f.querySelector('.dn-agent-pill'), noAttach: !f.querySelector('input[type=checkbox]'), menuClosed: f.querySelector('#dn-type-picker').hidden, noAgentsRow: f.querySelector('#dn-form-agents').hidden,
     saveDisabled: f.querySelector('.dn-form-save').getAttribute('aria-disabled') === 'true', cap: f.querySelector('.dn-form-sel').textContent }; })()`);
   record('A1', 'composer = category chip + note + Esc + Save, caption shows selector, size and number; no attach, and the category menu and agent row start closed/empty with no agent connected', rows.chip && rows.noPills && rows.noAttach && rows.menuClosed && rows.noAgentsRow && /c-late.*·.*×.*· #01/.test(rows.cap), JSON.stringify(rows));
@@ -50,18 +50,18 @@ async function main() {
   record('A3', 'a connector is drawn from the element to the form', link0.shown && /^M[\d.]+ [\d.]+[HV]/.test(link0.d), link0.d);
   await h.cdp.send('Input.insertText', { text: 'Late should read 7.2%' }, s);
   await sleep(250);
-  const writing = await ev(`({ form: document.querySelector('#designnote-popup-form').classList.contains('dn-writing'),
+  const writing = await ev(`({ form: document.querySelector('#bluelines-popup-form').classList.contains('dn-writing'),
     link: document.getElementById('dn-form-link').classList.contains('dn-writing'), mark: document.getElementById('dn-mark-ui').classList.contains('dn-writing'),
     ready: document.querySelector('.dn-form-save').getAttribute('aria-disabled') === 'false' })`);
   record('A4', 'typing lights up the whole annotation (form, element outline, connector) and Save becomes ready', writing.form && writing.link && writing.mark && writing.ready, JSON.stringify(writing));
   await closeFormByEsc();
-  const afterEsc = await ev(`({ form: !!document.querySelector('#designnote-popup-form'), link: document.getElementById('dn-form-link').hasAttribute('hidden') })`);
+  const afterEsc = await ev(`({ form: !!document.querySelector('#bluelines-popup-form'), link: document.getElementById('dn-form-link').hasAttribute('hidden') })`);
   record('A5', 'Esc closes the form and removes the connector', !afterEsc.form && afterEsc.link, JSON.stringify(afterEsc));
 
   await openForm('#c-late');
   await key('Enter', 13);
   await sleep(300);
-  const emptyEnter = await ev(`({ open: !!document.querySelector('#designnote-popup-form'), toast: [...document.querySelectorAll('.dn-toast')].map((t) => t.textContent).join('|') })`);
+  const emptyEnter = await ev(`({ open: !!document.querySelector('#bluelines-popup-form'), toast: [...document.querySelectorAll('.dn-toast')].map((t) => t.textContent).join('|') })`);
   record('A6', 'Enter with nothing typed does not save and says so', emptyEnter.open && /add a comment/i.test(emptyEnter.toast) && (await notes()).length === 0, JSON.stringify(emptyEnter));
 
   // Category: add through the menu, save
@@ -94,9 +94,9 @@ async function main() {
   // ── Sidebar ──
   await seed([note('n1', 'Lost note', { selector: '#gone' }), note('n2', 'Resolved note', { status: 'resolved' }), note('n3', 'Open with image', { screenshot: SHOT }), note('n4', 'Sent to agent', { assignee: { id: 'claude-code', name: 'Claude Code' } })]);
   await ev('location.reload(), true');
-  await poll(() => ev(`!!document.getElementById('designnote-pill')`));
+  await poll(() => ev(`!!document.getElementById('bluelines-pill')`));
   await sleep(500);
-  await ev(`document.getElementById('designnote-toggle-btn').click(), true`);
+  await ev(`document.getElementById('bluelines-toggle-btn').click(), true`);
   await sleep(500);
   await ev(`(() => { const b = document.getElementById('dn-compact-btn'); if (b.getAttribute('aria-pressed') === 'true') b.click(); return true; })()`);
   await sleep(300);
@@ -144,7 +144,7 @@ async function main() {
   const lb = await poll(() => ev(`!!document.querySelector('.dn-lightbox img')`), 2000);
   await key('Escape', 27);
   await sleep(250);
-  const lbClosed = await ev(`!document.querySelector('.dn-lightbox') && document.querySelector('#designnote-sidebar').classList.contains('open')`);
+  const lbClosed = await ev(`!document.querySelector('.dn-lightbox') && document.querySelector('#bluelines-sidebar').classList.contains('open')`);
   record('B8', 'screenshot opens large; Esc closes just that layer', lb && lbClosed);
 
   // Tooltip sentences on hover
@@ -157,9 +157,9 @@ async function main() {
   // ── Table ──
   await ev(`document.getElementById('dn-table-btn').click(), true`);
   await sleep(500);
-  const tbl = await ev(`(() => { const r = document.querySelector('#designnote-table-body tr[data-id="n3"]'); return { agent: !!r.querySelector('[data-act="agent"]'), resolve: !!r.querySelector('[data-act="resolve"]'), cls: r.className }; })()`);
+  const tbl = await ev(`(() => { const r = document.querySelector('#bluelines-table-body tr[data-id="n3"]'); return { agent: !!r.querySelector('[data-act="agent"]'), resolve: !!r.querySelector('[data-act="resolve"]'), cls: r.className }; })()`);
   record('B10', 'table rows carry the same coloured actions (resolve, copy, edit, enhance, send, delete); resolved rows are dimmed', tbl.agent && tbl.resolve && /dn-row-done/.test(tbl.cls), JSON.stringify(tbl));
-  await ev(`document.querySelector('#designnote-table-body tr[data-id="n3"] [data-act="resolve"]').click(), true`);
+  await ev(`document.querySelector('#bluelines-table-body tr[data-id="n3"] [data-act="resolve"]').click(), true`);
   const reopened = await poll(async () => (await notes()).find((a) => a.id === 'n3').status !== 'resolved', 3000);
   record('B11', 'Reopen works from the table', reopened);
   await ev(`document.getElementById('dn-table-close-btn').click(), true`);
@@ -169,7 +169,7 @@ async function main() {
   for (const g of ['frosted', 'glass', 'liquid', 'solid']) {
     await h.ev(h.sw, `chrome.storage.local.set({ dn_appearance: { glass: ${JSON.stringify(g)} } }).then(() => true)`);
     await sleep(450);
-    surfaces[g] = await ev(`(() => { const r = document.getElementById('designnote-root'); return (r.dataset.dnGlass || 'frosted') + '|' + getComputedStyle(document.getElementById('designnote-sidebar')).backdropFilter; })()`);
+    surfaces[g] = await ev(`(() => { const r = document.getElementById('bluelines-root'); return (r.dataset.dnGlass || 'frosted') + '|' + getComputedStyle(document.getElementById('bluelines-sidebar')).backdropFilter; })()`);
   }
   record('B12', 'Settings → In-page panels: Frosted, Glass, Liquid and Solid each change the surface', /blur\(24px\)/.test(surfaces.frosted) && /blur\(14px\)/.test(surfaces.glass) && /blur\(6px\)/.test(surfaces.liquid) && /^solid\|none$/.test(surfaces.solid), JSON.stringify(surfaces));
 

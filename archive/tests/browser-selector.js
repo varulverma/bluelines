@@ -30,40 +30,40 @@ const PAGE = `<!doctype html><html><body>
     // 1. Shifted path: saved Gamma, then a new first item pushes a *different* li into slot 3.
     const shift = await run(`
       const ul = document.querySelector('ul'); const gamma = ul.children[2];
-      const saved = W.__designNoteGetSelectorWithFingerprint(gamma);
+      const saved = W.__bluelinesGetSelectorWithFingerprint(gamma);
       ul.insertBefore(Object.assign(document.createElement('li'), { textContent: 'New' }), ul.firstChild);
-      const hit = W.__designNoteFindElement(saved.selector, saved.fingerprint);
+      const hit = W.__bluelinesFindElement(saved.selector, saved.fingerprint);
       return { selector: saved.selector, method: hit.method, text: hit.element && hit.element.textContent };`);
     record('S1', 'shifted path finds the saved element, not its new neighbour', shift.text === 'Gamma', JSON.stringify(shift));
 
     // 2. Generated ids/classes are never the anchor.
     const gen = await run(`
       const [a, b] = document.querySelectorAll('button[id]');
-      return { a: W.__designNoteGetSelector(a), b: W.__designNoteGetSelector(b),
-        title: W.__designNoteGetSelector(document.querySelector('.card-title')),
-        list: W.__designNoteGetSelector(document.querySelector('ul')) };`);
+      return { a: W.__bluelinesGetSelector(a), b: W.__bluelinesGetSelector(b),
+        title: W.__bluelinesGetSelector(document.querySelector('.card-title')),
+        list: W.__bluelinesGetSelector(document.querySelector('ul')) };`);
     record('S2', 'generated ids skipped', !/r3|radix/.test(gen.a + gen.b) && !gen.list.includes('1234'), JSON.stringify(gen));
     record('S3', 'semantic class used, CSS-in-JS class skipped', gen.title === 'div.card-title', gen.title);
 
     // 3. Duplicate text: when structure no longer helps, three "Delete" buttons must not resolve to the first.
     const dup = await run(`
       const btn = document.querySelectorAll('td button')[1];
-      const fp = W.__designNoteGetSelectorWithFingerprint(btn).fingerprint;
+      const fp = W.__bluelinesGetSelectorWithFingerprint(btn).fingerprint;
       fp.siblingIndex = 9; fp.parent = null; // structure gone, only the text clue is left
-      const hit = W.__designNoteFindElement('#gone', fp);
+      const hit = W.__bluelinesFindElement('#gone', fp);
       return { method: hit.method };`);
     record('S4', 'ambiguous text match returns lost, not a guess', dup.method === 'none', JSON.stringify(dup));
 
     // 4. Anchor bundle: readable description for people and coding agents.
-    const anchor = await run(`return W.__designNoteGetSelectorWithFingerprint(document.querySelector('[data-testid="pay-btn"]')).anchor;`);
+    const anchor = await run(`return W.__bluelinesGetSelectorWithFingerprint(document.querySelector('[data-testid="pay-btn"]')).anchor;`);
     record('S5', 'anchor describes element, landmark and heading',
       anchor.describe === 'button "Pay now" in form "Payment" under "Checkout"' && anchor.testId === 'pay-btn', anchor.describe);
 
     // 5. Stable selector survives the same shift without consulting the fingerprint.
     const stable = await run(`
-      const saved = W.__designNoteGetSelectorWithFingerprint(document.querySelector('[data-testid="pay-btn"]'));
+      const saved = W.__bluelinesGetSelectorWithFingerprint(document.querySelector('[data-testid="pay-btn"]'));
       document.querySelector('form').prepend(document.createElement('hr'));
-      const hit = W.__designNoteFindElement(saved.selector, saved.fingerprint);
+      const hit = W.__bluelinesFindElement(saved.selector, saved.fingerprint);
       return { selector: saved.selector, method: hit.method };`);
     record('S6', 'attribute selector trusted after layout change', stable.method === 'selector' && stable.selector.includes('data-testid'), JSON.stringify(stable));
   } catch (e) {

@@ -81,11 +81,11 @@ async function main() {
   // A note with hostile content: attribute breakout in the category, markup in the text
   const HOSTILE_CAT = 'x" onmouseover="window.__pwned=1" data-x="';
   const HOSTILE_TEXT = '<img src=x onerror="window.__pwned2=1"> & "quotes"';
-  await h.domClick(s, '#designnote-mode-btn');
+  await h.domClick(s, '#bluelines-mode-btn');
   const [x, y] = await h.center(s, '#title');
   await h.realClick(s, x, y);
-  await poll(() => ev(s, `!!document.querySelector('#designnote-popup-form')`), 3000);
-  await ev(s, `(() => { const f = document.querySelector('#designnote-popup-form');
+  await poll(() => ev(s, `!!document.querySelector('#bluelines-popup-form')`), 3000);
+  await ev(s, `(() => { const f = document.querySelector('#bluelines-popup-form');
     f.querySelector('#dn-new-category-btn').click();
     const inp = f.querySelector('#dn-custom-category-input'); inp.value = ${JSON.stringify(HOSTILE_CAT)};
     inp.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
@@ -94,7 +94,7 @@ async function main() {
   const saved = await poll(async () => Object.entries(await h.storage()).some(([k, v]) => k.startsWith('dn_annotations::') && v.length), 10000);
   console.log(`(note saved: ${!!saved} after ${Date.now() - tSave}ms)`);
   // ---------- P1 hostile note content never becomes markup/handlers ----------
-  await h.domClick(s, '#designnote-toggle-btn');
+  await h.domClick(s, '#bluelines-toggle-btn');
   await sleep(400);
   // Re-open the form so the hostile category is rendered as a pill, then the edit form
   await h.domClick(s, '#dn-add-note-btn');
@@ -104,20 +104,20 @@ async function main() {
   await h.domClick(s, '#dn-table-btn');
   await sleep(400);
   const injected = await ev(s, `(() => {
-    const all = [...document.querySelectorAll('#designnote-root *')];
+    const all = [...document.querySelectorAll('#bluelines-root *')];
     return { handlers: all.filter(e => [...e.attributes].some(a => /^on/i.test(a.name))).map(e => e.tagName + ':' + [...e.attributes].map(a => a.name).join(',')).slice(0, 5),
              strayImg: all.filter(e => e.tagName === 'IMG' && e.getAttribute('src') === 'x').length,
              pwned: !!(window.__pwned || window.__pwned2) }; })()`);
   record('P1', 'hostile category/text render as text everywhere (no handler attributes, no injected <img>)',
     injected.handlers.length === 0 && injected.strayImg === 0 && !injected.pwned, JSON.stringify(injected));
-  await ev(s, `(document.querySelector('#designnote-edit-form') || { remove() {} }).remove(); (document.querySelector('#designnote-popup-form') || { remove() {} }).remove(); true`);
+  await ev(s, `(document.querySelector('#bluelines-edit-form') || { remove() {} }).remove(); (document.querySelector('#bluelines-popup-form') || { remove() {} }).remove(); true`);
   await h.domClick(s, '#dn-table-close-btn');
 
   // ---------- P2 Enhance sends only what it should, only to the provider ----------
   await mockNetwork({ 'https://api.anthropic.com/': { status: 200, json: { content: [{ type: 'text', text: 'Rewritten prompt' }] } } });
   dialogs.length = 0;
-  await h.domClick(s, '#designnote-toggle-btn');
-  await ev(s, `document.getElementById('designnote-sidebar').classList.remove('dn-compact'); true`); // card actions visible
+  await h.domClick(s, '#bluelines-toggle-btn');
+  await ev(s, `document.getElementById('bluelines-sidebar').classList.remove('dn-compact'); true`); // card actions visible
   await sleep(700);
   await userClick(s, ENHANCE_BTN);
   await poll(async () => (await calls()).length > 0, 8000);
@@ -182,7 +182,7 @@ async function main() {
   dialogs.length = 0;
   await h.cdp.send('Target.activateTarget', { targetId });
   await h.domClick(s, '#dn-close-btn').catch(() => {});
-  await h.domClick(s, '#designnote-toggle-btn');
+  await h.domClick(s, '#bluelines-toggle-btn');
   await sleep(300);
   await h.domClick(s, '#dn-export-menu-btn');
   await sleep(150);
@@ -196,7 +196,7 @@ async function main() {
 
   // ---------- P12 a page script can't trigger outbound actions (consent already given) ----------
   await mockNetwork({ 'https://': { status: 200, json: {} } });
-  await ev(s, `document.getElementById('designnote-sidebar').classList.remove('dn-compact'); ${ENHANCE_BTN}.click(); true`);
+  await ev(s, `document.getElementById('bluelines-sidebar').classList.remove('dn-compact'); ${ENHANCE_BTN}.click(); true`);
   await h.domClick(s, '#dn-export-menu-btn');
   await sleep(150);
   await ev(s, `${DRIVE_ITEM}.click(); true`);
@@ -221,11 +221,11 @@ async function main() {
   record('P9', 'exports (xlsx, html, csv, zip) contain neither the API key nor the OAuth token', files.length >= 4 && leaking.length === 0, `${files.length} files; leaking: ${leaking.join(', ') || 'none'}`);
 
   // ---------- P10 nothing written into the host page's own storage ----------
-  await ev(s, `(() => { const r = document.querySelector('#designnote-table-overlay .dn-col-resizer'); const o = { bubbles: true, clientX: 100, pageX: 100 };
+  await ev(s, `(() => { const r = document.querySelector('#bluelines-table-overlay .dn-col-resizer'); const o = { bubbles: true, clientX: 100, pageX: 100 };
     r.dispatchEvent(new MouseEvent('mousedown', o)); document.dispatchEvent(new MouseEvent('mousemove', { ...o, clientX: 160, pageX: 160 })); document.dispatchEvent(new MouseEvent('mouseup', o)); return true; })()`);
   await sleep(300);
-  const hostStorage = await ev(s, `Object.keys(localStorage).concat(Object.keys(sessionStorage)).filter(k => /dn|designnote/i.test(k))`);
-  record('P10', 'DesignNote writes nothing to the host page\'s localStorage/sessionStorage', hostStorage.length === 0, hostStorage.join(', ') || 'none');
+  const hostStorage = await ev(s, `Object.keys(localStorage).concat(Object.keys(sessionStorage)).filter(k => /dn|bluelines/i.test(k))`);
+  record('P10', 'Bluelines writes nothing to the host page\'s localStorage/sessionStorage', hostStorage.length === 0, hostStorage.join(', ') || 'none');
 
   // ---------- P11 permissions ----------
   const manifest = JSON.parse(fs.readFileSync(path.join(EXT, 'manifest.json'), 'utf8'));

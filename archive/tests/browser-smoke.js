@@ -53,13 +53,13 @@ const domClick = (...a) => h.domClick(...a);
 // Mark → click element → pick/create category → type → save. Works for both the preset
 // UI and the older custom-only UI (falls back to the "New" category input).
 async function createNote(s, targetSel, category, text, beforeSave) {
-  await domClick(s, '#designnote-mode-btn');
+  await domClick(s, '#bluelines-mode-btn');
   const [x, y] = await center(s, targetSel);
   await sleep(100);
   await realClick(s, x, y);
-  if (!(await poll(() => ev(s, `!!document.querySelector('#designnote-popup-form')`)))) throw new Error('form did not open');
+  if (!(await poll(() => ev(s, `!!document.querySelector('#bluelines-popup-form')`)))) throw new Error('form did not open');
   await ev(s, `(() => {
-    const f = document.querySelector('#designnote-popup-form');
+    const f = document.querySelector('#bluelines-popup-form');
     const pill = [...f.querySelectorAll('.dn-type-pill:not(.dn-new-category)')].find(b => b.dataset.type === ${JSON.stringify(category)});
     if (pill) { pill.click(); }
     else {
@@ -72,7 +72,7 @@ async function createNote(s, targetSel, category, text, beforeSave) {
     return true; })()`);
   if (beforeSave) await beforeSave();
   const before = await totalNotes();
-  await domClick(s, '#designnote-popup-form .dn-form-save');
+  await domClick(s, '#bluelines-popup-form .dn-form-save');
   // close animation + capture + crop + storage write; the first save in a cold browser can take seconds
   await poll(async () => (await totalNotes()) > before, 10000);
   await sleep(200);
@@ -132,13 +132,13 @@ async function main() {
   const s = p1.s;
 
   // ---------- presets offered + typed "Bug" maps to the preset ----------
-  await domClick(s, '#designnote-mode-btn');
+  await domClick(s, '#bluelines-mode-btn');
   const [bx, by] = await center(s, '#stable-btn');
   await realClick(s, bx, by);
-  await poll(() => ev(s, `!!document.querySelector('#designnote-popup-form')`));
-  const pills = await ev(s, `[...document.querySelectorAll('#designnote-popup-form .dn-type-pill:not(.dn-new-category)')].map(b => b.dataset.type)`);
+  await poll(() => ev(s, `!!document.querySelector('#bluelines-popup-form')`));
+  const pills = await ev(s, `[...document.querySelectorAll('#bluelines-popup-form .dn-type-pill:not(.dn-new-category)')].map(b => b.dataset.type)`);
   record('C3', 'create form offers your categories (no presets; "note" was added by C2)', pills[0] === 'UI' && !pills.includes('bug') && !pills.includes('suggestion'), JSON.stringify(pills));
-  await domClick(s, '#designnote-popup-form .dn-form-cancel');
+  await domClick(s, '#bluelines-popup-form .dn-form-cancel');
   await sleep(300);
 
   await createNote(s, '#stable-btn', 'Bug', 'Label <b>wrong</b> & "quoted", with comma');
@@ -163,18 +163,18 @@ async function main() {
   record('C7', 'stored rect is the element position (doc coords)', !!mag && mag.rect && Math.abs(mag.rect.top - magentaTop) < 2, mag && `rect.top ${mag.rect && mag.rect.top} vs ${magentaTop}`);
 
   // ---------- Escape leaves Mark mode ----------
-  await domClick(s, '#designnote-mode-btn');
+  await domClick(s, '#bluelines-mode-btn');
   await cdp.send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 }, s);
   await cdp.send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 }, s);
   const stillMarking = await ev(s, `document.documentElement.classList.contains('dn-marking')`);
   record('C8', 'Escape exits Mark mode', !stillMarking);
-  if (stillMarking) await domClick(s, '#designnote-mode-btn');
+  if (stillMarking) await domClick(s, '#bluelines-mode-btn');
 
   // ---------- categories hidden by default; real Enter saves as "note" ----------
-  await domClick(s, '#designnote-mode-btn');
+  await domClick(s, '#bluelines-mode-btn');
   const [ex, ey] = await center(s, '#stable-btn');
   await realClick(s, ex, ey);
-  await poll(() => ev(s, `!!document.querySelector('#designnote-popup-form')`));
+  await poll(() => ev(s, `!!document.querySelector('#bluelines-popup-form')`));
   const pickerHidden = await ev(s, `getComputedStyle(document.querySelector('#dn-type-picker')).display === 'none'`);
   await ev(s, `document.querySelector('#dn-text-input').value = 'Saved with Enter'; true`);
   const beforeEnter = await totalNotes();
@@ -197,18 +197,18 @@ async function main() {
   await h.cdp.send('Page.bringToFront', {}, s).catch(() => {});
 
   // ---------- edit a custom-category note ----------
-  await domClick(s, '#designnote-toggle-btn');
+  await domClick(s, '#bluelines-toggle-btn');
   await sleep(400);
   await ev(s, `(() => { const card = [...document.querySelectorAll('.dn-card')].find(c => c.textContent.includes('Spacing too tight')); card.querySelector('[data-act="edit"]').click(); return true; })()`);
-  const selectedPill = await ev(s, `(document.querySelector('#designnote-edit-form .dn-type-pill.selected') || {dataset:{}}).dataset.type || null`);
+  const selectedPill = await ev(s, `(document.querySelector('#bluelines-edit-form .dn-type-pill.selected') || {dataset:{}}).dataset.type || null`);
   await ev(s, `document.querySelector('#dn-edit-text-input').value = 'Spacing too tight (edited)'; true`);
-  await ev(s, `document.querySelector('#designnote-edit-form .dn-save').click(); true`).catch(() => {});
+  await ev(s, `document.querySelector('#bluelines-edit-form .dn-save').click(); true`).catch(() => {});
   await sleep(600);
   const edited = (await notesFor(P1)).find((a) => a.id === layout.id);
   record('C9', 'edit form preselects the custom category', selectedPill === 'Layout', `selected ${selectedPill}`);
   record('C10', 'edit saves text and keeps category + original timestamp', edited.text === 'Spacing too tight (edited)' && edited.type === 'Layout' && edited.timestamp === layout.timestamp,
     `text=${JSON.stringify(edited.text)} type=${edited.type} timestampKept=${edited.timestamp === layout.timestamp}`);
-  await ev(s, `(document.querySelector('#designnote-edit-form') || {remove(){}}).remove(); true`);
+  await ev(s, `(document.querySelector('#bluelines-edit-form') || {remove(){}}).remove(); true`);
 
   // ---------- export scope: table left on "All pages", then export from the sidebar ----------
   await domClick(s, '#dn-table-btn');
@@ -216,7 +216,7 @@ async function main() {
   await domClick(s, '.dn-view-btn[data-mode="all"]');
   await sleep(400);
   await domClick(s, '#dn-table-close-btn');
-  await domClick(s, '#designnote-toggle-btn');
+  await domClick(s, '#bluelines-toggle-btn');
   await sleep(300);
   const sidebarHeading = await menuPick(s, '#dn-export-menu-btn', 'Excel');
   const xlsx = await waitDownload(/\.xlsx$/);
@@ -267,11 +267,11 @@ async function main() {
   await menuPick(s, '#dn-copy-menu-btn', 'Markdown');
   await sleep(300);
   const fmt = await ev(s, `({ table: document.querySelector('#dn-copy-menu-btn span').textContent, side: document.querySelector('.dn-copy-format-label').textContent,
-    rowTitle: (document.querySelector('#designnote-table-body [data-act="copy"]') || {}).dataset.tip })`);
+    rowTitle: (document.querySelector('#bluelines-table-body [data-act="copy"]') || {}).dataset.tip })`);
   const savedFmt = (await storage()).dn_copy_format;
   await menuPick(s, '#dn-copy-format-btn', 'JSON');
   await sleep(300);
-  const back = await ev(s, `({ side: document.querySelector('.dn-copy-format-label').textContent, rowTitle: (document.querySelector('#designnote-table-body [data-act="copy"]') || {}).dataset.tip })`);
+  const back = await ev(s, `({ side: document.querySelector('.dn-copy-format-label').textContent, rowTitle: (document.querySelector('#bluelines-table-body [data-act="copy"]') || {}).dataset.tip })`);
   record('C14c', 'copy format picked in table Copy as is saved and shown in sidebar picker + row copy buttons; sidebar picker switches it back',
     savedFmt === 'md' && fmt.table === 'Copy as MD' && fmt.side === 'MD' && fmt.rowTitle === 'Copy this note as Markdown' && back.side === 'JSON' && back.rowTitle === 'Copy this note as JSON',
     JSON.stringify({ savedFmt, fmt, back }));
@@ -283,7 +283,7 @@ async function main() {
   await sleep(300);
   await domClick(s, '.dn-filter-chip[data-type="bug"]');
   await sleep(400);
-  const bugRows = await ev(s, `document.querySelectorAll('#designnote-table-body tr[data-id]').length`);
+  const bugRows = await ev(s, `document.querySelectorAll('#bluelines-table-body tr[data-id]').length`);
   record('C15', 'Bug filter matches "bug" and legacy "Bug"', bugRows === 2, `${bugRows} rows`);
   await domClick(s, '.dn-filter-chip[data-type="all"]');
 
@@ -305,14 +305,14 @@ async function main() {
   // ---------- broken selectors → fingerprint fallback must not freeze the tab ----------
   await ev(s, `location.hash = 'wrap'; setTimeout(() => location.reload(), 50); true`);
   await sleep(500);
-  const wrapped = await poll(() => ev(s, `!!document.getElementById('designnote-pill') && !!document.querySelector('main')`));
+  const wrapped = await poll(() => ev(s, `!!document.getElementById('bluelines-pill') && !!document.querySelector('main')`));
   const layoutSel = (await notesFor(P1)).find((a) => a.type === 'Layout').selector;
   const selectorBroken = wrapped && (await ev(s, `!document.querySelector(${JSON.stringify(layoutSel)})`));
   record('C18a', 'fixture: selector really broken (precondition)', !!selectorBroken, `wrapped=${!!wrapped}`);
   const t0 = Date.now();
   let froze = false;
   try {
-    await ev(s, `document.querySelector('#designnote-toggle-btn').click(); true`, 20000);
+    await ev(s, `document.querySelector('#bluelines-toggle-btn').click(); true`, 20000);
     await sleep(800);
     await ev(s, '1', 20000); // page must still answer
   } catch (e) {

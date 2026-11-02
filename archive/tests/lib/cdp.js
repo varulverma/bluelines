@@ -101,7 +101,7 @@ async function launch({ ext, prefix = 'dn-test-' } = {}) {
     const { targetId } = await cdp.send('Target.createTarget', { url });
     const s = await h.attach(targetId);
     await cdp.send('Page.bringToFront', {}, s).catch(() => {});
-    if (waitPill && !(await poll(() => h.ev(s, `!!document.getElementById('designnote-pill')`)))) {
+    if (waitPill && !(await poll(() => h.ev(s, `!!document.getElementById('bluelines-pill')`)))) {
       throw new Error('content script did not inject into ' + url);
     }
     return { targetId, s };

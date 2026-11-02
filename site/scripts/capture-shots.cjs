@@ -55,44 +55,44 @@ async function main() {
     await cdp.send('Input.dispatchMouseEvent', { type: 'mouseMoved', x, y }, s);
   };
   const box = (sel) => ev(`(() => { const r = document.querySelector(${JSON.stringify(sel)}).getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; })()`);
-  const toastGone = () => poll(() => ev(`!document.querySelector('#designnote-root .dn-toast.show, #designnote-root .dn-toast.visible')`), 8000);
+  const toastGone = () => poll(() => ev(`!document.querySelector('#bluelines-root .dn-toast.show, #bluelines-root .dn-toast.visible')`), 8000);
 
   // Inspect Mode on the Pay button: full view, the dock, the hover chips
-  await h.domClick(s, '#designnote-mode-btn');
+  await h.domClick(s, '#bluelines-mode-btn');
   const [bx, by] = await box('#pay');
   await moveTo(bx + 30, by + 4);
   await sleep(4500); // the "Inspect Mode" toast fades
   await toastGone();
   await shot(s, LAND, 'inspect');
-  await shot(s, DOCS, 'dock', await rectOf(s, ['#designnote-pill'], 28));
+  await shot(s, DOCS, 'dock', await rectOf(s, ['#bluelines-pill'], 28));
   await shot(s, DOCS, 'hover-chips', await rectOf(s, ['#pay', '#dn-highlight-label', '#dn-highlight-size'], 40));
 
   // The note callout
   await h.realClick(s, bx + 30, by + 4);
-  await poll(() => ev(`!!document.querySelector('#designnote-popup-form')`));
+  await poll(() => ev(`!!document.querySelector('#bluelines-popup-form')`));
   await sleep(400);
-  const pick = (type) => ev(`document.querySelector('#designnote-popup-form .dn-type-pill[data-type="${type}"]').click(); true`);
+  const pick = (type) => ev(`document.querySelector('#bluelines-popup-form .dn-type-pill[data-type="${type}"]').click(); true`);
   await pick('UI');
   await ev(`document.querySelector('#dn-text-input').focus(); true`);
   await cdp.send('Input.insertText', { text: 'Too close to the total. Give it the same 24 px gap as the coupon field.' }, s);
   await shot(s, LAND, 'form');
-  await shot(s, DOCS, 'callout', await rectOf(s, ['#pay', '#dn-highlight-label', '#designnote-popup-form'], 32));
+  await shot(s, DOCS, 'callout', await rectOf(s, ['#pay', '#dn-highlight-label', '#bluelines-popup-form'], 32));
 
   const total = async () => ((await h.storage())['dn_annotations::' + URL] || []).length;
   const save = async () => {
     const before = await total();
-    await h.domClick(s, '#designnote-popup-form .dn-form-save');
+    await h.domClick(s, '#bluelines-popup-form .dn-form-save');
     await poll(async () => (await total()) > before, 10000);
     await sleep(400);
   };
   await save();
   const note = async (sel, type, text) => {
-    await h.domClick(s, '#designnote-mode-btn');
+    await h.domClick(s, '#bluelines-mode-btn');
     const [x, y] = await box(sel);
     await moveTo(x, y);
     await sleep(150);
     await h.realClick(s, x, y);
-    await poll(() => ev(`!!document.querySelector('#designnote-popup-form')`));
+    await poll(() => ev(`!!document.querySelector('#bluelines-popup-form')`));
     await pick(type);
     await ev(`document.querySelector('#dn-text-input').focus(); true`);
     await cdp.send('Input.insertText', { text }, s);
@@ -106,7 +106,7 @@ async function main() {
   await toastGone();
 
   // Sidebar with pins on the page
-  await h.domClick(s, '#designnote-toggle-btn');
+  await h.domClick(s, '#bluelines-toggle-btn');
   await sleep(800);
   await shot(s, LAND, 'sidebar');
   await shot(s, DOCS, 'sidebar');
@@ -119,7 +119,7 @@ async function main() {
   await h.domClick(s, '#dn-export-menu-btn-table');
   await sleep(400);
   await shot(s, LAND, 'export');
-  await shot(s, DOCS, 'export-menu', await ev(`(() => { const m = [...document.querySelectorAll('#designnote-root .dn-action-menu, #designnote-root [role="menu"]')].pop(); const b = document.querySelector('#dn-export-menu-btn-table').getBoundingClientRect(); const r = m.getBoundingClientRect();
+  await shot(s, DOCS, 'export-menu', await ev(`(() => { const m = [...document.querySelectorAll('#bluelines-root .dn-action-menu, #bluelines-root [role="menu"]')].pop(); const b = document.querySelector('#dn-export-menu-btn-table').getBoundingClientRect(); const r = m.getBoundingClientRect();
     const l = Math.min(b.left, r.left) - 24, t = b.top - 24; return { x: l, y: t, width: Math.max(b.right, r.right) + 24 - l, height: r.bottom + 24 - t, scale: 1 }; })()`));
 
   // Toolbar popup, opened as a tab but pointed at the demo tab (as if clicked over it)

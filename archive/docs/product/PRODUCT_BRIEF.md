@@ -1,4 +1,4 @@
-# DesignNote — Product Brief
+# Bluelines — Product Brief
 
 _Last updated: 2026-10-17 (Phase 0 baseline). Owner decisions marked **OPEN** are not yet made._
 
@@ -13,7 +13,7 @@ next person or tool (developer, tracker, AI coding assistant) with less ambiguit
 1. Install and enable the extension.
 2. Open a webpage.
 3. Find and turn on **Mark** mode (floating pill → target icon, or `Alt+Shift+M`).
-4. Click the element you mean. DesignNote stores its selector, a fingerprint, its position and a cropped screenshot.
+4. Click the element you mean. Bluelines stores its selector, a fingerprint, its position and a cropped screenshot.
 5. Choose a category, write the note, save.
 6. Reopen the sidebar (message icon) or the table view and find the note.
 7. Edit, delete, copy or jump back to the element.

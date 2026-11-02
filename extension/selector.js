@@ -1,4 +1,4 @@
-// DesignNote — best-effort unique CSS selector generator with structural fingerprint fallback.
+// Bluelines — best-effort unique CSS selector generator with structural fingerprint fallback.
 // Prefers stable attributes (id, data-*, aria-label, semantic classes) and falls back to nth-child paths.
 // Fingerprint: { tag, textHash, siblingIndex, parentFingerprint } for fuzzy re-matching.
 // Anchor: human/agent-readable description (text, label, heading, landmark) — survives any DOM change.
@@ -240,8 +240,8 @@
     return { element: null, method: 'none' };
   }
 
-  window.__designNoteGetSelector = getSelector;
-  window.__designNoteGetSelectorWithFingerprint = getSelectorWithFingerprint;
-  window.__designNoteFindElement = findElement;
-  window.__designNoteIsGenerated = isGenerated;
+  window.__bluelinesGetSelector = getSelector;
+  window.__bluelinesGetSelectorWithFingerprint = getSelectorWithFingerprint;
+  window.__bluelinesFindElement = findElement;
+  window.__bluelinesIsGenerated = isGenerated;
 })();

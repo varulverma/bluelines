@@ -1,4 +1,4 @@
-# DesignNote — Feature Inventory & Baseline
+# Bluelines — Feature Inventory & Baseline
 
 _Baseline taken 2026-10-17 against the files in this folder (no git; the source is the only record)._
 
@@ -19,10 +19,10 @@ _Baseline taken 2026-10-17 against the files in this folder (no git; the source 
 | File | Lines | Role |
 |---|---|---|
 | `manifest.json` | — | MV3. Content scripts `selector.js` → `content.js` (order correct, SRC). CSS `design-tokens.css` → `content.css`. |
-| `selector.js` | 165 | `__designNoteGetSelector`, `__designNoteGetSelectorWithFingerprint`, `__designNoteFindElement` |
+| `selector.js` | 165 | `__bluelinesGetSelector`, `__bluelinesGetSelectorWithFingerprint`, `__bluelinesFindElement` |
 | `content.js` | 2638 | All in-page UI and logic (IIFE): pill, Mark mode, create/edit forms, sidebar, pins, table view, all exporters, clipboard, categories, SPA polling |
-| `content.css` | 1147 | In-page styles. `all: revert` reset under `#designnote-root` |
-| `design-tokens.css` | 168 | `--dn-*` tokens on `:root, #designnote-root`, light and dark |
+| `content.css` | 1147 | In-page styles. `all: revert` reset under `#bluelines-root` |
+| `design-tokens.css` | 168 | `--dn-*` tokens on `:root, #bluelines-root`, light and dark |
 | `background.js` | 263 | Screenshot capture, AI Enhance, Drive OAuth/upload/check/disconnect, keyboard commands |
 | `popup.html/js` | 58/25 | Count for this page, Open sidebar, Settings |
 | `settings.html/js` | 143/79 | AI provider + key, Drive client ID, connect/disconnect |
@@ -42,7 +42,7 @@ Non-runtime folders that must not ship: `.superpowers/` (snapshots, diffs, repor
 | General note with no element (sidebar `+`) | 483 | SRC |
 | Sidebar: cards (newest first, numbered chronologically), compact rail (default on, remembered) | 403–437, 1564 | SRC |
 | Page pins (numbered markers while the sidebar is open) | 439–480 | SRC |
-| Jump to element: selector, then fingerprint ("⚠ Matched approximately"), then stored rect | 1993–2037 | SRC; badge attached to `document.body`, outside `#designnote-root` |
+| Jump to element: selector, then fingerprint ("⚠ Matched approximately"), then stored rect | 1993–2037 | SRC; badge attached to `document.body`, outside `#bluelines-root` |
 | Edit (type and text) | 1791–1905 | SRC. **Only offers the 4 legacy types**; see R2 |
 | Delete (no confirm, no undo) | 1781 | SRC |
 | Copy as JSON / Copy image (sets a persistent "Copied" badge) | 1907–1963 | SRC; BRW (clipboard permissions) |
@@ -166,7 +166,7 @@ Do not remove any of these before Phase 3 verifies it in a browser.
 | R11 | P1 | Enhance: non-JSON provider errors show a raw parse error. The clipboard write after the async round trip has no failure handler, so the result can be lost silently. Single "Copy as JSON" also has no failure toast (it correctly does not mark Copied). | SRC; BRW |
 | R12 | P2 | "PDF" export downloads auto-printing HTML while the toast says "Opening print dialog". | SRC |
 | R13 | P2 | Fingerprint match threshold (score ≥ 3) means a matching text hash alone is enough, so it can highlight the wrong element with the same text. | INF; BRW |
-| R14 | P2 | Style leakage: 175 of 176 `content.css` rules are not prefixed with `#designnote-root` (they use `dn-` classes, so collision risk is low). Tokens are declared on the host `:root`; the jump badge goes into `document.body`; column widths go into the host page's localStorage. | SRC |
+| R14 | P2 | Style leakage: 175 of 176 `content.css` rules are not prefixed with `#bluelines-root` (they use `dn-` classes, so collision risk is low). Tokens are declared on the host `:root`; the jump badge goes into `document.body`; column widths go into the host page's localStorage. | SRC |
 | R15 | P2 | `loadAllAnnotations` reads **all** storage, every screenshot included, on each table render and search keystroke in All-pages mode, so it gets slow as data grows. | SRC; BRW |
 | R16 | P2 | Unused or likely unneeded permissions (`scripting`, probably `tabs`, `activeTab`). | SRC/INF |
 | R17 | P2 | Popup shows "0" on pages where the content script can't run (chrome://, Web Store, pages opened before install) instead of "unavailable". | SRC |

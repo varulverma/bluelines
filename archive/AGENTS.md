@@ -1,4 +1,4 @@
-# AGENTS.md — DesignNote Chrome Extension
+# AGENTS.md — Bluelines Chrome Extension
 
 > **Start with `NOW.md`**: current status. The annotation UI v2 (one-line composer, card sidebar, table actions, Glass/Liquid surfaces) is built; spec in `DESIGN.md`, reference in `annotation-variations.html#shortlist`.
 
@@ -14,8 +14,8 @@
 ## Architecture (5 files, no modules)
 | File | Role |
 |------|------|
-| `selector.js` | Content script (loads first). Exposes `window.__designNoteGetSelector(el)` — best-effort CSS selector generator |
-| `content.js` | Main content script (IIFE). All in-page UI under `#designnote-root`. Stores annotations per-URL in `chrome.storage.local` as `dn_annotations::<url>` |
+| `selector.js` | Content script (loads first). Exposes `window.__bluelinesGetSelector(el)` — best-effort CSS selector generator |
+| `content.js` | Main content script (IIFE). All in-page UI under `#bluelines-root`. Stores annotations per-URL in `chrome.storage.local` as `dn_annotations::<url>` |
 | `background.js` | MV3 service worker. Handles `CAPTURE_SCREENSHOT` (via `chrome.tabs.captureVisibleTab`) and `ENHANCE_PROMPT` (calls AI provider with API key from storage) |
 | `popup.js` / `popup.html` | Toolbar popup: annotation count + open sidebar / settings |
 | `settings.js` / `settings.html` | Options page: AI provider + API key (`dn_provider`, `dn_api_key` in storage) |
@@ -26,7 +26,7 @@
 
 ## Critical constraints
 - **Load order matters**: `selector.js` must precede `content.js` in `manifest.json` → `content_scripts.js` array
-- **CSS isolation**: all injected DOM under `#designnote-root` (uses `all: revert` in `content.css`)
+- **CSS isolation**: all injected DOM under `#bluelines-root` (uses `all: revert` in `content.css`)
 - **Offline-first**: no network calls in `content.js` or annotation save/load path; only `background.js` calls AI provider
 - **API keys**: only ever sent from `background.js` → provider API, nowhere else
 

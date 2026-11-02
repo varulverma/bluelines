@@ -1,5 +1,5 @@
 // Appearance preferences (Settings → dn_appearance), shared by content.js (applies them to
-// #designnote-root) and theme.js (to <html> on extension pages). Loaded before both.
+// #bluelines-root) and theme.js (to <html> on extension pages). Loaded before both.
 // Tokens stay in design-tokens.css: this only sets data-dn-* attributes and, for a custom
 // accent, inline --dn-accent-* overrides derived from the chosen colour.
 (function () {
@@ -98,7 +98,7 @@
     if (tokens) for (const [p, v] of Object.entries(tokens)) el.style.setProperty(p, v);
   }
 
-  // Rules for host-page elements outside #designnote-root (the Inspect cursor and the
+  // Rules for host-page elements outside #bluelines-root (the Inspect cursor and the
   // jump-to outline), which can't inherit the root's inline tokens. '' for the default.
   function hostCss(appearance) {
     const a = resolve(appearance);

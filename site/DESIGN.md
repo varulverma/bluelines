@@ -4,7 +4,7 @@
 - Subject: Bluelines, a Chrome (MV3) extension that pins Figma-style notes to elements on any live webpage. Local-first, no account. v1.0.0.
 - Audience: freelance web designers and front-end developers who review live sites and hand findings to a developer, a team or an AI coding agent.
 - Job: launch. Get the visitor to add it to Chrome, and trust it (privacy is a feature).
-- Assets: brand system (`../designnote-extension/DESIGN.md`), Burst logo, Space Mono + Space Grotesk, real feature list (README), real agent icons (Simple Icons CC0), real screenshots of the extension captured from the running build.
+- Assets: brand system (`../archive/DESIGN.md`), Burst logo, Space Mono + Space Grotesk, real feature list (README), real agent icons (Simple Icons CC0), real screenshots of the extension captured from the running build.
 - Constraints: one page (plus a designed 404). Brand rules hold: ink ground, one signal accent, opaque surfaces, hairlines, mono readouts versus grotesk prose.
 - Assumptions (placeholder): Chrome Web Store URL, production domain `bluelines.app`, GitHub/source link. No testimonials, users or metrics exist, so none are shown.
 

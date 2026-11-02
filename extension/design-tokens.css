@@ -3,10 +3,10 @@
    Single source of truth for the extension (content UI, popup, settings,
    design-system.html). Dark (ink) is the default; light (paper) applies when
    the Appearance setting resolves to light: data-dn-theme="light" on
-   #designnote-root (in-page) or <html> (extension pages). All tokens --dn-*.
+   #bluelines-root (in-page) or <html> (extension pages). All tokens --dn-*.
    ========================================================================== */
 
-:root, #designnote-root {
+:root, #bluelines-root {
   color-scheme: dark;
 
   /* ── Signal ─────────────────────────────────────────────────────────── */
@@ -115,7 +115,7 @@
   --dn-z-dropdown: 2147483006;
 }
 
-:root[data-dn-theme="light"], #designnote-root[data-dn-theme="light"] {
+:root[data-dn-theme="light"], #bluelines-root[data-dn-theme="light"] {
   color-scheme: light;
   --dn-accent-text: #007585;       /* cyan is unreadable as text on paper */
   --dn-accent-ring: rgba(0, 170, 190, 0.45);
@@ -163,12 +163,12 @@
 }
 
 /* ── In-page frosted glass ───────────────────────────────────────────────
-   On the host page (#designnote-root only) surfaces are tinted glass: a
+   On the host page (#bluelines-root only) surfaces are tinted glass: a
    translucent tint here plus the backdrop blur in content.css. Tint opacity
    is the lowest that keeps body text ≥4.5:1 over a white page (dark glass)
    and a near-black page (light glass); tertiary text and the light-mode
    category colours are nudged to hold that. Extension pages stay opaque. */
-#designnote-root {
+#bluelines-root {
   --dn-bg: rgba(12, 12, 14, 0.88);
   --dn-bg-secondary: rgba(255, 255, 255, 0.04);
   --dn-bg-tertiary: rgba(255, 255, 255, 0.08);
@@ -181,7 +181,7 @@
   --dn-glass-filter: blur(24px) saturate(180%);
   --dn-shadow-lg: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 18px 44px rgba(0, 0, 0, 0.45), 0 4px 12px rgba(0, 0, 0, 0.30);
 }
-#designnote-root[data-dn-theme="light"] {
+#bluelines-root[data-dn-theme="light"] {
   --dn-bg: rgba(250, 250, 251, 0.88);
   --dn-bg-secondary: rgba(0, 0, 0, 0.035);
   --dn-bg-tertiary: rgba(0, 0, 0, 0.06);
@@ -201,15 +201,15 @@
 
 /* ── Appearance preferences ──────────────────────────────────────────────
    Settings → dn_appearance. prefs.js sets these data-dn-* attributes on
-   <html> (extension pages) or #designnote-root (in-page), and a custom
+   <html> (extension pages) or #bluelines-root (in-page), and a custom
    accent as inline --dn-accent-* overrides. Defaults set no attribute. */
-:root[data-dn-radius="sharp"], #designnote-root[data-dn-radius="sharp"] {
+:root[data-dn-radius="sharp"], #bluelines-root[data-dn-radius="sharp"] {
   --dn-radius-xs: 0; --dn-radius-sm: 2px; --dn-radius-md: 2px; --dn-radius-lg: 3px;
 }
-:root[data-dn-radius="round"], #designnote-root[data-dn-radius="round"] {
+:root[data-dn-radius="round"], #bluelines-root[data-dn-radius="round"] {
   --dn-radius-xs: 5px; --dn-radius-sm: 9px; --dn-radius-md: 12px; --dn-radius-lg: 18px;
 }
-:root[data-dn-text="large"], #designnote-root[data-dn-text="large"] {
+:root[data-dn-text="large"], #bluelines-root[data-dn-text="large"] {
   --dn-text-xs: 11px;   --dn-leading-xs: 16px;
   --dn-text-sm: 12px;   --dn-leading-sm: 18px;
   --dn-text-base: 13px; --dn-leading-base: 20px;
@@ -217,24 +217,24 @@
   --dn-text-lg: 16px;   --dn-leading-lg: 24px;
   --dn-text-xl: 19px;   --dn-leading-xl: 26px;
 }
-:root[data-dn-font="sans"], #designnote-root[data-dn-font="sans"] {
+:root[data-dn-font="sans"], #bluelines-root[data-dn-font="sans"] {
   --dn-font-ui: var(--dn-font-sans);
 }
 /* Solid in-page panels: opaque surfaces, no backdrop blur */
-#designnote-root:not([data-dn-theme="light"])[data-dn-glass="solid"] {
+#bluelines-root:not([data-dn-theme="light"])[data-dn-glass="solid"] {
   --dn-bg: #0b0b0b;
   --dn-surface-raised: #151515;
   --dn-surface-overlay: #0b0b0b;
   --dn-glass-filter: none;
 }
-#designnote-root[data-dn-theme="light"][data-dn-glass="solid"] {
+#bluelines-root[data-dn-theme="light"][data-dn-glass="solid"] {
   --dn-bg: #fafafa;
   --dn-surface-raised: #ffffff;
   --dn-surface-overlay: #fafafa;
   --dn-glass-filter: none;
 }
 /* Glass: more see-through than frosted, lighter blur, bright top edge. Body text stays ≥4.5:1 on white / near-black pages. */
-#designnote-root:not([data-dn-theme="light"])[data-dn-glass="glass"] {
+#bluelines-root:not([data-dn-theme="light"])[data-dn-glass="glass"] {
   --dn-bg: rgba(12, 12, 14, 0.62);
   --dn-surface-raised: rgba(22, 22, 26, 0.68);
   --dn-surface-overlay: rgba(12, 12, 14, 0.70);
@@ -242,7 +242,7 @@
   --dn-glass-filter: blur(14px) saturate(160%);
   --dn-shadow-lg: inset 0 1px 0 rgba(255, 255, 255, 0.22), 0 18px 44px rgba(0, 0, 0, 0.40), 0 4px 12px rgba(0, 0, 0, 0.26);
 }
-#designnote-root[data-dn-theme="light"][data-dn-glass="glass"] {
+#bluelines-root[data-dn-theme="light"][data-dn-glass="glass"] {
   --dn-bg: rgba(250, 250, 251, 0.66);
   --dn-surface-raised: rgba(255, 255, 255, 0.72);
   --dn-surface-overlay: rgba(250, 250, 251, 0.74);
@@ -252,7 +252,7 @@
 }
 /* Liquid: barely tinted, bright specular edge, backdrop darkened/lifted so text stays legible. Most transparent option;
    best over mid-tone pages (contrast on pure white/black pages is lower than the other surfaces). */
-#designnote-root:not([data-dn-theme="light"])[data-dn-glass="liquid"] {
+#bluelines-root:not([data-dn-theme="light"])[data-dn-glass="liquid"] {
   --dn-bg: rgba(12, 12, 14, 0.30);
   --dn-bg-secondary: rgba(255, 255, 255, 0.06);
   --dn-bg-tertiary: rgba(255, 255, 255, 0.12);
@@ -262,7 +262,7 @@
   --dn-glass-filter: blur(6px) saturate(220%) brightness(0.55);
   --dn-shadow-lg: inset 0 1px 0 rgba(255, 255, 255, 0.55), inset 0 -1px 0 rgba(255, 255, 255, 0.14), inset 0 0 26px rgba(255, 255, 255, 0.08), 0 18px 44px rgba(0, 0, 0, 0.35);
 }
-#designnote-root[data-dn-theme="light"][data-dn-glass="liquid"] {
+#bluelines-root[data-dn-theme="light"][data-dn-glass="liquid"] {
   --dn-bg: rgba(255, 255, 255, 0.34);
   --dn-bg-secondary: rgba(0, 0, 0, 0.05);
   --dn-bg-tertiary: rgba(0, 0, 0, 0.09);

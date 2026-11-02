@@ -343,7 +343,7 @@ document.addEventListener('DOMContentLoaded', () => {
   agentPickEl.addEventListener('change', renderBridgeCommands);
 
   function renderBridgeCommands() {
-    const folder = bridgePathEl.value.trim().replace(/[\\/]+$/, '') || '/path/to/designnote-extension';
+    const folder = bridgePathEl.value.trim().replace(/[\\/]+$/, '') || '/path/to/bluelines/extension';
     const sep = folder.includes('\\') ? '\\' : '/';
     const file = `${folder}${sep}mcp${sep}bluelines-mcp.js`;
     const a = AGENT_SETUP.find((x) => x.id === agentPickEl.querySelector('input:checked').value);

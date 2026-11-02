@@ -1,4 +1,4 @@
-# DesignNote — Test Plan
+# Bluelines — Test Plan
 
 _Created 2026-10-17 (Phase 0). Record every run in `docs/roadmap/EXECUTION_LOG.md` with the date, browser + version, result, and what was **not** run._
 

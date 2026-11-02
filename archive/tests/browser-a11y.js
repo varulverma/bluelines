@@ -52,11 +52,11 @@ async function seed(url, notes) {
 }
 const note = (id, type, text, selector) => ({ id, type, text, selector, fingerprint: null, rect: { top: 100, left: 20, width: 100, height: 20 }, screenshot: null, timestamp: Date.now() });
 
-// Computed accessible names of every visible control under #designnote-root
+// Computed accessible names of every visible control under #bluelines-root
 async function unnamedControls(s) {
   const { root } = await h.cdp.send('DOM.getDocument', { depth: 0 }, s);
   const { nodeIds } = await h.cdp.send('DOM.querySelectorAll', { nodeId: root.nodeId,
-    selector: '#designnote-root :is(button, input, textarea, select, a[href], [tabindex]:not([tabindex="-1"]))' }, s);
+    selector: '#bluelines-root :is(button, input, textarea, select, a[href], [tabindex]:not([tabindex="-1"]))' }, s);
   const bad = [];
   for (const nodeId of nodeIds) {
     const { nodes } = await h.cdp.send('Accessibility.getPartialAXTree', { nodeId, fetchRelatives: false }, s);
@@ -90,7 +90,7 @@ const CONTRAST_FN = `(() => {
   };
 })()`;
 const CONTRAST_TARGETS = {
-  'sidebar heading': '#designnote-sidebar-header h2',
+  'sidebar heading': '#bluelines-sidebar-header h2',
   'header count': '#dn-header-count',
   'card text': '.dn-card p',
   'card meta': '.dn-card .dn-meta',
@@ -121,10 +121,10 @@ async function noFocusRing(s, selectors) {
   return out;
 }
 
-const openSidebar = (s) => ev(s, `(() => { const r = document.getElementById('designnote-sidebar'); if (!r.classList.contains('open')) document.getElementById('designnote-toggle-btn').click(); return true; })()`);
+const openSidebar = (s) => ev(s, `(() => { const r = document.getElementById('bluelines-sidebar'); if (!r.classList.contains('open')) document.getElementById('bluelines-toggle-btn').click(); return true; })()`);
 const expandSidebar = (s) => ev(s, `(() => { const b = document.getElementById('dn-compact-btn'); if (b.getAttribute('aria-pressed') === 'true') b.click(); return true; })()`);
 const isOpen = (s, sel) => ev(s, `document.querySelector(${JSON.stringify(sel)}).classList.contains('open')`);
-const toastText = (s) => ev(s, `[...document.querySelectorAll('#designnote-root .dn-toast')].map((t) => t.textContent).join(' | ')`);
+const toastText = (s) => ev(s, `[...document.querySelectorAll('#bluelines-root .dn-toast')].map((t) => t.textContent).join(' | ')`);
 
 async function main() {
   await new Promise((r) => server.listen(0, '127.0.0.1', r));
@@ -139,14 +139,14 @@ async function main() {
   await h.cdp.send('Accessibility.enable', {}, s);
   {
     const steps = [];
-    const toMark = await tabUntil(s, `(a) => a.id === 'designnote-mode-btn'`);
+    const toMark = await tabUntil(s, `(a) => a.id === 'bluelines-mode-btn'`);
     steps.push(toMark ? `Mark reached in ${toMark} Tabs` : 'Mark not reachable');
     await press(s, 'Enter');
     const marking = await ev(s, `document.documentElement.classList.contains('dn-marking')`);
     steps.push(marking ? 'Mark on' : 'Enter did not start Mark');
     const toB1 = marking && await tabUntil(s, `(a) => a.id === 'b1'`);
     if (toB1) await press(s, 'Enter');
-    const formOpen = await poll(() => ev(s, `!!document.querySelector('#designnote-popup-form')`), 2000);
+    const formOpen = await poll(() => ev(s, `!!document.querySelector('#bluelines-popup-form')`), 2000);
     steps.push(formOpen ? 'form open' : 'no form');
     let saved = false;
     if (formOpen) {
@@ -166,21 +166,21 @@ async function main() {
   // Seed known notes for the remaining checks
   await seed(url, [note('n1', 'bug', 'Bug note text', '#p1'), note('n2', 'Spacing', 'Custom category note', '#title'), note('n3', 'note', 'Will lose its element', '#gone')]);
   await ev(s, 'location.reload(), true');
-  await poll(() => ev(s, `!!document.getElementById('designnote-pill')`));
+  await poll(() => ev(s, `!!document.getElementById('bluelines-pill')`));
   await sleep(400);
 
   // ---------- K3 sidebar: open with keyboard, Escape closes, focus returns ----------
   {
-    await ev(s, `document.getElementById('designnote-toggle-btn').focus(), true`);
+    await ev(s, `document.getElementById('bluelines-toggle-btn').focus(), true`);
     await press(s, 'Enter');
-    const opened = await poll(() => isOpen(s, '#designnote-sidebar'), 2000);
+    const opened = await poll(() => isOpen(s, '#bluelines-sidebar'), 2000);
     await expandSidebar(s);
-    const inside = await tabUntil(s, `(a) => !!a.closest('#designnote-sidebar')`, 6);
+    const inside = await tabUntil(s, `(a) => !!a.closest('#bluelines-sidebar')`, 6);
     await press(s, 'Escape');
-    const closed = !(await isOpen(s, '#designnote-sidebar'));
+    const closed = !(await isOpen(s, '#bluelines-sidebar'));
     const focus = await active(s);
     record('K3', 'Sidebar: Enter opens, Escape (focus inside) closes, focus back on the Notes button',
-      opened && inside && closed && focus.startsWith('button#designnote-toggle-btn'), `opened=${opened} reachedInside=${!!inside} closedByEsc=${closed} focus=${focus}`);
+      opened && inside && closed && focus.startsWith('button#bluelines-toggle-btn'), `opened=${opened} reachedInside=${!!inside} closedByEsc=${closed} focus=${focus}`);
   }
 
   // ---------- K4 cards: reachable and "jump" activatable by keyboard ----------
@@ -219,12 +219,12 @@ async function main() {
   {
     await ev(s, `document.querySelector('.dn-card[data-id="n1"] [data-act="edit"]').focus(), true`);
     await press(s, 'Enter');
-    const form = await poll(() => ev(s, `!!document.getElementById('designnote-edit-form')`), 1500);
-    const dlg = await ev(s, `(() => { const f = document.getElementById('designnote-edit-form'); return f ? [f.getAttribute('role'), f.getAttribute('aria-label') || f.getAttribute('aria-labelledby')].join('/') : ''; })()`);
+    const form = await poll(() => ev(s, `!!document.getElementById('bluelines-edit-form')`), 1500);
+    const dlg = await ev(s, `(() => { const f = document.getElementById('bluelines-edit-form'); return f ? [f.getAttribute('role'), f.getAttribute('aria-label') || f.getAttribute('aria-labelledby')].join('/') : ''; })()`);
     await press(s, 'Escape');
-    const closed = !(await ev(s, `!!document.getElementById('designnote-edit-form')`));
+    const closed = !(await ev(s, `!!document.getElementById('bluelines-edit-form')`));
     const focus = await active(s);
-    const sidebarStill = await isOpen(s, '#designnote-sidebar');
+    const sidebarStill = await isOpen(s, '#bluelines-sidebar');
     record('K6', 'Edit form: Escape closes it, focus returns to the Edit button, sidebar stays open',
       form && closed && /data-act|dn-icon-btn|dn-act/.test(focus) && sidebarStill, `role/name=${dlg} closed=${closed} focus=${focus} sidebarOpen=${sidebarStill}`);
     record('N3', 'Edit and create forms are labelled dialogs', dlg.startsWith('dialog/') && dlg.length > 'dialog/'.length, `edit form role/name: ${dlg || 'none'}`);
@@ -234,11 +234,11 @@ async function main() {
   {
     await ev(s, `document.getElementById('dn-table-btn').focus(), true`);
     await press(s, 'Enter');
-    const opened = await poll(() => isOpen(s, '#designnote-table-overlay'), 1500);
-    const inTable = await ev(s, `!!document.activeElement.closest('#designnote-table-overlay')`);
+    const opened = await poll(() => isOpen(s, '#bluelines-table-overlay'), 1500);
+    const inTable = await ev(s, `!!document.activeElement.closest('#bluelines-table-overlay')`);
     await ev(s, `document.getElementById('dn-table-search').focus(), true`);
     await press(s, 'Escape');
-    const closed = !(await isOpen(s, '#designnote-table-overlay'));
+    const closed = !(await isOpen(s, '#bluelines-table-overlay'));
     const focus = await active(s);
     record('K7', 'Table: opening moves focus into it, Escape closes it, focus is not lost',
       opened && inTable && closed && focus !== 'body', `opened=${opened} focusMovedIn=${inTable} closedByEsc=${closed} focus=${focus}`);
@@ -248,13 +248,13 @@ async function main() {
   // ---------- K8/K9 Escape doesn't over-close: Mark mode and keyboard drag keep the sidebar ----------
   {
     await openSidebar(s); await sleep(200);
-    await ev(s, `document.getElementById('designnote-mode-btn').focus(), true`);
+    await ev(s, `document.getElementById('bluelines-mode-btn').focus(), true`);
     await press(s, 'Enter');
     const marking = await ev(s, `document.documentElement.classList.contains('dn-marking')`);
     await press(s, 'Escape');
-    const r8 = { marking, stopped: !(await ev(s, `document.documentElement.classList.contains('dn-marking')`)), sidebarOpen: await isOpen(s, '#designnote-sidebar') };
+    const r8 = { marking, stopped: !(await ev(s, `document.documentElement.classList.contains('dn-marking')`)), sidebarOpen: await isOpen(s, '#bluelines-sidebar') };
     record('K8', 'In Mark mode with the sidebar open, one Escape leaves Mark mode only', r8.marking && r8.stopped && r8.sidebarOpen, JSON.stringify(r8));
-    const pos = () => ev(s, `(() => { const r = document.getElementById('designnote-pill').getBoundingClientRect(); return Math.round(r.left) + ',' + Math.round(r.top); })()`);
+    const pos = () => ev(s, `(() => { const r = document.getElementById('bluelines-pill').getBoundingClientRect(); return Math.round(r.left) + ',' + Math.round(r.top); })()`);
     const start = await pos();
     await ev(s, `document.querySelector('.dn-drag-handle').focus(), true`);
     await press(s, 'Enter');
@@ -262,7 +262,7 @@ async function main() {
     await h.cdp.send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'ArrowUp', code: 'ArrowUp', windowsVirtualKeyCode: 38 }, s);
     const moved = await pos();
     await press(s, 'Escape');
-    const r9 = { start, moved, after: await pos(), sidebarOpen: await isOpen(s, '#designnote-sidebar') };
+    const r9 = { start, moved, after: await pos(), sidebarOpen: await isOpen(s, '#bluelines-sidebar') };
     record('K9', 'Keyboard drag of the floating bar: Escape cancels the drag and leaves the sidebar open',
       r9.moved !== r9.start && r9.after === r9.start && r9.sidebarOpen, JSON.stringify(r9));
   }
@@ -278,14 +278,14 @@ async function main() {
     const bad = [...new Set([...sb.bad, ...tb.bad])];
     record('N1', 'Every visible control in the sidebar and table has an accessible name', bad.length === 0,
       bad.length ? bad.join(' ; ') : `${sb.count + tb.count} controls checked`);
-    const states = await ev(s, `(() => { const m = document.getElementById('designnote-mode-btn'); const t = document.getElementById('designnote-toggle-btn');
+    const states = await ev(s, `(() => { const m = document.getElementById('bluelines-mode-btn'); const t = document.getElementById('bluelines-toggle-btn');
       const off = m.getAttribute('aria-pressed'); m.click(); const on = m.getAttribute('aria-pressed'); m.click();
       return { off, on, sidebarExpanded: t.getAttribute('aria-expanded') }; })()`);
     record('N2', 'Mark button exposes on/off (aria-pressed); Notes button exposes open/closed (aria-expanded)',
       states.off === 'false' && states.on === 'true' && states.sidebarExpanded === 'true', JSON.stringify(states));
     const textName = await ev(s, `(() => { document.getElementById('dn-add-note-btn').click(); const t = document.getElementById('dn-text-input');
       const n = t && (t.getAttribute('aria-label') || (t.labels && t.labels.length)); return !!n; })()`);
-    const createDlg = await ev(s, `(() => { const f = document.getElementById('designnote-popup-form'); return f ? [f.getAttribute('role'), f.getAttribute('aria-label')].join('/') : ''; })()`);
+    const createDlg = await ev(s, `(() => { const f = document.getElementById('bluelines-popup-form'); return f ? [f.getAttribute('role'), f.getAttribute('aria-label')].join('/') : ''; })()`);
     record('N4', 'Note text field has a real label (not only a placeholder); create form is a labelled dialog',
       textName && createDlg.startsWith('dialog/') && createDlg.length > 7, `label=${textName} create form=${createDlg || 'none'}`);
     await press(s, 'Escape'); await sleep(300);
@@ -294,12 +294,12 @@ async function main() {
   // ---------- F1 visible focus ----------
   {
     await press(s, 'Tab'); // make the last interaction a keyboard one
-    const sel = ['#designnote-mode-btn', '#designnote-toggle-btn', '.dn-drag-handle', '.dn-close-pill', '#dn-compact-btn', '#dn-export-menu-btn',
+    const sel = ['#bluelines-mode-btn', '#bluelines-toggle-btn', '.dn-drag-handle', '.dn-close-pill', '#dn-compact-btn', '#dn-export-menu-btn',
       '.dn-card [data-act="edit"]', '.dn-card [data-act="delete"]'];
     const sbBad = await noFocusRing(s, sel);
     await ev(s, `document.getElementById('dn-add-note-btn').click(), true`); await sleep(250);
     await ev(s, `document.getElementById('dn-cat-toggle').click(), true`); await sleep(200); // the category menu starts closed and opens from its arrow
-    const formBad = await noFocusRing(s, ['#designnote-popup-form .dn-type-pill', '#dn-cat-toggle', '#dn-text-input', '.dn-form-save']);
+    const formBad = await noFocusRing(s, ['#bluelines-popup-form .dn-type-pill', '#dn-cat-toggle', '#dn-text-input', '.dn-form-save']);
     await press(s, 'Escape'); await sleep(250);
     await ev(s, `document.getElementById('dn-table-btn').click(), true`); await sleep(300);
     const tbBad = await noFocusRing(s, ['.dn-view-btn', '.dn-filter-chip', '#dn-table-search', '#dn-table-close-btn']);
@@ -319,8 +319,8 @@ async function main() {
   {
     const s2 = (await h.openPage(base + '/light.html?empty=1')).s;
     await openSidebar(s2); await expandSidebar(s2); await sleep(300);
-    const r = await ev(s2, `(() => { const e = document.getElementById('designnote-empty'); const text = e ? e.textContent : '';
-      const names = [...document.querySelectorAll('#designnote-root button')].map((b) => (b.getAttribute('aria-label') || b.title || b.textContent).trim());
+    const r = await ev(s2, `(() => { const e = document.getElementById('bluelines-empty'); const text = e ? e.textContent : '';
+      const names = [...document.querySelectorAll('#bluelines-root button')].map((b) => (b.getAttribute('aria-label') || b.title || b.textContent).trim());
       const quoted = [...text.matchAll(/"([^"]+)"/g)].map((m) => m[1]);
       const missing = quoted.filter((q) => !names.some((n) => n.toLowerCase().includes(q.replace(/^\\+\\s*/, '').toLowerCase())));
       return { text, missing }; })()`);
@@ -343,7 +343,7 @@ async function main() {
     await sleep(100);
     await ev(s, `document.getElementById('dn-export-menu-btn').click(), true`); await sleep(100);
     const moving = await ev(s, `(() => { const out = [];
-      document.querySelectorAll('#designnote-root, #designnote-root *').forEach((el) => {
+      document.querySelectorAll('#bluelines-root, #bluelines-root *').forEach((el) => {
         if (!el.getClientRects().length || el.closest('svg')) return; const c = getComputedStyle(el);
         const t = Math.max(...c.transitionDuration.split(',').map(parseFloat)); const a = c.animationName !== 'none' ? Math.max(...c.animationDuration.split(',').map(parseFloat)) : 0;
         if ((t > 0.1 && !/^(color|background-color|opacity|border-color)$/.test(c.transitionProperty)) || a > 0.1) out.push((el.id || el.className || el.tagName) + ' ' + c.transitionProperty.slice(0, 40) + ' ' + Math.max(t, a) + 's');
@@ -360,7 +360,7 @@ async function main() {
   // ---------- C1–C4 contrast: both themes over light and dark host pages ----------
   const dark = (await h.openPage(base + '/dark.html')).s;
   await seed(base + '/dark.html', [note('d1', 'bug', 'Bug note text', '#p1'), note('d2', 'Spacing', 'Custom', '#title')]);
-  await ev(dark, 'location.reload(), true'); await poll(() => ev(dark, `!!document.getElementById('designnote-pill')`)); await sleep(300);
+  await ev(dark, 'location.reload(), true'); await poll(() => ev(dark, `!!document.getElementById('bluelines-pill')`)); await sleep(300);
   for (const [id, page, scheme] of [['C1', s, 'light'], ['C2', dark, 'light'], ['C3', s, 'dark'], ['C4', dark, 'dark']]) {
     // background tabs don't run CSS transitions (cards transition colour), so measure the visible tab
     await h.cdp.send('Page.bringToFront', {}, page);
@@ -381,20 +381,20 @@ async function main() {
         const r = el.getBoundingClientRect(); if (!r.width || getComputedStyle(el).visibility === 'hidden') return;
         if (r.left < -1 || r.right > innerWidth + 1 || r.top < -1 || r.bottom > innerHeight + 1) bad.push((el.id || el.className || el.tagName).toString().slice(0, 30)); }); return [...new Set(bad)]; })()`);
     await openSidebar(s); await expandSidebar(s); await sleep(350);
-    out.push(...(await offscreen('#designnote-sidebar, #designnote-sidebar-header button')).map((x) => 'sidebar: ' + x));
+    out.push(...(await offscreen('#bluelines-sidebar, #bluelines-sidebar-header button')).map((x) => 'sidebar: ' + x));
     await ev(s, `document.getElementById('dn-export-menu-btn').click(), true`); await sleep(250);
     // Items below the fold are fine when the menu scrolls to them.
     const menuScrolls = await ev(s, `(() => { const m = document.querySelector('.dn-action-menu'); return m.scrollHeight > m.clientHeight && /auto|scroll/.test(getComputedStyle(m).overflowY); })()`);
     out.push(...(await offscreen(menuScrolls ? '.dn-action-menu' : '.dn-action-menu, .dn-action-menu-item')).map((x) => 'menu: ' + x));
     await ev(s, `document.body.click(), true`);
     await ev(s, `document.querySelector('.dn-card [data-act="edit"]').click(), true`); await sleep(250);
-    out.push(...(await offscreen('#designnote-edit-form, #designnote-edit-form button')).map((x) => 'edit: ' + x));
+    out.push(...(await offscreen('#bluelines-edit-form, #bluelines-edit-form button')).map((x) => 'edit: ' + x));
     await press(s, 'Escape');
     await ev(s, `document.getElementById('dn-add-note-btn').click(), true`); await sleep(300);
-    out.push(...(await offscreen('#designnote-popup-form, #designnote-popup-form button, #designnote-popup-form textarea')).map((x) => 'create: ' + x));
+    out.push(...(await offscreen('#bluelines-popup-form, #bluelines-popup-form button, #bluelines-popup-form textarea')).map((x) => 'create: ' + x));
     await press(s, 'Escape'); await sleep(250);
     await ev(s, `document.getElementById('dn-table-btn').click(), true`); await sleep(350);
-    out.push(...(await offscreen('#designnote-table-header button, #dn-table-search')).map((x) => 'table: ' + x));
+    out.push(...(await offscreen('#bluelines-table-header button, #dn-table-search')).map((x) => 'table: ' + x));
     await ev(s, `document.getElementById('dn-table-close-btn').click(), true`);
     record(id, `${label}: sidebar, menu, forms and table controls stay on screen`, out.length === 0, out.join(' ; ') || 'all on screen');
     await h.cdp.send('Emulation.clearDeviceMetricsOverride', {}, s);

@@ -1,4 +1,4 @@
-# DesignNote — UX and Accessibility Audit (Phase 4)
+# Bluelines — UX and Accessibility Audit (Phase 4)
 
 _Run 2026-10-18, Windows 11, Chrome 155 and Edge 156, using `tests/browser-a11y.js` (24 checks)._
 
@@ -14,7 +14,7 @@ driven and no participant took part. Those are listed under "Not verified".
 - **Focus rings:** computed style with and without keyboard focus, read after transitions finish.
 - **Contrast:** each text colour against its background. Semi-transparent panels are alpha-composited over the host page. Backdrop blur is ignored, which is also the no-`backdrop-filter` case.
 - **Themes:** both themes, over a white host page and over a near-black one.
-- **Reduced motion:** `prefers-reduced-motion: reduce` is emulated, then every DesignNote element is checked for transitions or animations over 100 ms.
+- **Reduced motion:** `prefers-reduced-motion: reduce` is emulated, then every Bluelines element is checked for transitions or animations over 100 ms.
 - **Zoom:** 200% is approximated as a 640×450 CSS-px viewport (1280×900 at 200%). 320×568 stands in for 400% zoom or a small phone. Real browser zoom was not used.
 
 The same suite was run on the pre-Phase-4 copy for the "Before" column.
@@ -52,7 +52,7 @@ The same suite was run on the pre-Phase-4 copy for the "Before" column.
 ## Friction points found and what changed
 
 ### P1: keyboard and focus (K2–K7, N2–N4)
-- **Escape.** One handler on `#designnote-root` closes the innermost open layer: menu, then table, then sidebar. It only acts while focus is inside DesignNote's UI, so the host page's own Escape keeps working. The forms and Mark mode keep their own Escape:
+- **Escape.** One handler on `#bluelines-root` closes the innermost open layer: menu, then table, then sidebar. It only acts while focus is inside Bluelines's UI, so the host page's own Escape keeps working. The forms and Mark mode keep their own Escape:
   - In Mark mode, one Escape now only leaves Mark mode. It used to also close the sidebar underneath.
   - During a keyboard drag of the floating bar, Escape still cancels the drag.
 - **Focus return.** Every close path puts focus back on the control that opened the layer:
@@ -112,7 +112,7 @@ Before, a custom category such as "Spacing" came out as a bright green behind wh
 - **Wrapping.** The sidebar header actions and the table header now wrap instead of pushing controls off screen.
 
 ### P6: motion (M1)
-- **CSS.** One `prefers-reduced-motion` rule turns off all DesignNote transitions and animations. The Drive "busy" pulse stays, because it is a fade and the only progress cue.
+- **CSS.** One `prefers-reduced-motion` rule turns off all Bluelines transitions and animations. The Drive "busy" pulse stays, because it is a fade and the only progress cue.
 - **JS.** Scrolling (jump, card flash) is instant under reduced motion, and the Mark cursor ring no longer trails the pointer.
 
 ### P7: filter chips used colour-only state and fixed light-theme colours

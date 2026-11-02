@@ -1,4 +1,4 @@
-# DesignNote — Execution Log
+# Bluelines — Execution Log
 
 One entry per phase or work session. There is no git repo, so this file is the change history.
 Earlier work (July–Aug 2026) is in `.superpowers/sdd/progress.md`.
@@ -25,7 +25,7 @@ Earlier work (July–Aug 2026) is in `.superpowers/sdd/progress.md`.
 |---|---|
 | `node --check` on background.js, content.js, popup.js, selector.js, settings.js | PASS (all 5) |
 | `manifest.json` JSON parse + `content_scripts[0].js == selector.js,content.js` | PASS |
-| Fingerprint harness: the real `selector.js` evaluated in Node against a fake DOM, selector deliberately broken, `__designNoteFindElement` timed (script kept in the session scratchpad, not in the repo) | **FAIL (perf)**: 42 elements → 549,311 `querySelectorAll` calls, 4.2 s; 82 elements → did not finish in 60 s. Confirms risk R1. |
+| Fingerprint harness: the real `selector.js` evaluated in Node against a fake DOM, selector deliberately broken, `__bluelinesFindElement` timed (script kept in the session scratchpad, not in the repo) | **FAIL (perf)**: 42 elements → 549,311 `querySelectorAll` calls, 4.2 s; 82 elements → did not finish in 60 s. Confirms risk R1. |
 | Grep audit: `fetch` / `console.*` / `chrome.*` API usage / Escape handlers / CSS scope | Recorded in FEATURE_INVENTORY §4, §6, §8 |
 
 **Not run, and why:**
@@ -61,7 +61,7 @@ Earlier work (July–Aug 2026) is in `.superpowers/sdd/progress.md`.
 
 **Test-tool notes:**
 - The first smoke version silently failed to break selectors (its hash navigation didn't take), which made the old build look freeze-free. Fixed by adding precondition check C18a. Treat any future C18 pass as meaningful only alongside C18a.
-- The fresh Chrome profile's component updater wrote a `Cr24` package (`downloads.htm`) into the test download folder. It is not DesignNote data.
+- The fresh Chrome profile's component updater wrote a `Cr24` package (`downloads.htm`) into the test download folder. It is not Bluelines data.
 
 **Not run:** clipboard, Enhance, Drive, opening exports in desktop spreadsheet apps, visual review, non-Chrome browsers, real-world sites. See PHASE_1_RESULTS "Not tested".
 
@@ -143,7 +143,7 @@ The diff review found two regressions introduced by the new Escape handler, plus
 
 **Runtime files changed:**
 - `content.js`:
-  - Escape on `#designnote-root`; focus return on every close
+  - Escape on `#bluelines-root`; focus return on every close
   - first menu item focused when a menu opens
   - card number as a "go to" button
   - `aria-pressed` / `aria-expanded`; labelled dialogs and fields

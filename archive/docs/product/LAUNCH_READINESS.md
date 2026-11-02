@@ -230,7 +230,7 @@ Collected *only on user action and never sold or transferred to third parties ot
 
 1. **Decide** §9 (licence, ownership, D9, Drive).
 2. **Ship prep (code):** L8 manifest description, L1 package script, L2 npm `bluelines-mcp` + Settings `npx` command, F1 backup/restore/delete-all, F2 welcome page, F3 feedback link, F8 model check.
-3. **Ship prep (docs):** L3 LICENSE, L5 privacy doc, L4 hosted policy, CHANGELOG, README refresh (title still says "DesignNote … (MVP)"; the bridge section still says "one AI tool at a time" though several now run side by side).
+3. **Ship prep (docs):** L3 LICENSE, L5 privacy doc, L4 hosted policy, CHANGELOG, README refresh (title still says "Bluelines … (MVP)"; the bridge section still says "one AI tool at a time" though several now run side by side).
 4. **Assets:** screenshots, promo tile, store copy (§8).
 5. **Verify:** all suites + the human checklist (L7) on the packaged zip.
 6. **Submit:** Edge → Chrome. Record in EXECUTION_LOG.

@@ -135,7 +135,7 @@ function rawWs(port, origin, token) {
 
     // ---- what the user sees ----
     const { s } = await h.openPage(CHECKOUT);
-    await h.domClick(s, '#designnote-toggle-btn');
+    await h.domClick(s, '#bluelines-toggle-btn');
     await poll(() => h.ev(s, `!!document.querySelector('.dn-card[data-id="n2"]')`));
     const ui = await h.ev(s, `(() => {
       const card = (id) => document.querySelector('.dn-card[data-id="' + id + '"]');
@@ -206,17 +206,17 @@ function rawWs(port, origin, token) {
     }
 
     await h.domClick(s, '#dn-add-note-btn');
-    await poll(() => h.ev(s, `!!document.querySelector('#designnote-popup-form')`), 3000);
+    await poll(() => h.ev(s, `!!document.querySelector('#bluelines-popup-form')`), 3000);
     // Every active agent is an icon-only button under Esc/Save, at the far right
-    const pills = await poll(() => h.ev(s, `(() => { const row = document.querySelector('#designnote-popup-form #dn-form-agents'); if (!row || row.hidden) return null;
-      const p = [...row.querySelectorAll('button')]; const save = document.querySelector('#designnote-popup-form .dn-form-save').getBoundingClientRect(); const r = row.getBoundingClientRect();
-      const cap = document.querySelector('#designnote-popup-form .dn-form-cap'); const capSel = cap.querySelector('.dn-form-sel').getBoundingClientRect();
+    const pills = await poll(() => h.ev(s, `(() => { const row = document.querySelector('#bluelines-popup-form #dn-form-agents'); if (!row || row.hidden) return null;
+      const p = [...row.querySelectorAll('button')]; const save = document.querySelector('#bluelines-popup-form .dn-form-save').getBoundingClientRect(); const r = row.getBoundingClientRect();
+      const cap = document.querySelector('#bluelines-popup-form .dn-form-cap'); const capSel = cap.querySelector('.dn-form-sel').getBoundingClientRect();
       const placed = row.parentElement === cap && r.top >= save.bottom - 1 && Math.abs((r.top + r.height / 2) - (capSel.top + capSel.height / 2)) < 8 && r.left > capSel.left && Math.abs(row.lastElementChild.getBoundingClientRect().right - save.right) < 14;
       return placed + '|' + p.map((b) => b.dataset.agentId + ':' + (b.textContent.trim() === '') + ':' + getComputedStyle(b.querySelector('.dn-agent-ico')).maskImage.includes('icons/agents/' + b.dataset.agentId + '.svg')).sort().join(); })()`), 5000);
     record('B25', 'note form shows every active agent as an icon-only button at the right end of the selector caption line, with its logo', pills === 'true|claude-code:true:true,codex:true:true', String(pills));
     await h.ev(s, `document.querySelector('#dn-text-input').value = 'Make the total bold'`);
-    await h.domClick(s, '#designnote-popup-form #dn-form-agents button[data-agent-id="codex"]');
-    await h.domClick(s, '#designnote-popup-form .dn-form-save');
+    await h.domClick(s, '#bluelines-popup-form #dn-form-agents button[data-agent-id="codex"]');
+    await h.domClick(s, '#bluelines-popup-form .dn-form-save');
     const sent = await poll(async () => (await notes(CHECKOUT)).find((a) => a.text === 'Make the total bold'), 5000);
     record('B26', 'saved note is assigned to the picked agent', !!sent && !!sent.assignee && sent.assignee.id === 'codex' && sent.assignee.name === 'Codex', JSON.stringify(sent && sent.assignee));
     // The note's own Send button: first click takes it back, the next lists the agents
