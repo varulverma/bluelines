@@ -1,0 +1,36 @@
+---
+import Burst from './Burst.astro';
+import GitHub from './GitHub.astro';
+import { site, resources } from '../data/site';
+const year = new Date().getFullYear();
+const external = (href: string) => href.startsWith('http');
+---
+<footer class="foot">
+  <div class="wrap foot__grid">
+    <div class="foot__brand">
+      <Burst size={40} />
+      <p class="wordmark foot__name">Bluelines<span class="cursor" aria-hidden="true">_</span></p>
+      <p class="foot__tag mono">{site.tagline}</p>
+      <p class="foot__about">A browser extension that pins notes to elements on any live website. Local-first, no account.</p>
+      <a class="btn btn--ghost btn--sm lock foot__gh" href={site.github.href} rel="noopener"><GitHub size={16} /> Star on GitHub</a>
+    </div>
+    <nav class="foot__nav" aria-label="Footer">
+      {resources.map((r) => (
+        <div class="foot__col">
+          <h2 class="foot__h mono">{r.group}</h2>
+          <ul>
+            {r.links.map(([label, href]) => (
+              <li><a class="ulink" href={href} {...(external(href) ? { rel: 'noopener', target: '_blank' } : {})}>{label}{external(href) && <span class="foot__ext" aria-hidden="true"> ↗</span>}</a></li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </nav>
+    <p class="foot__colophon">
+      Set in Space Mono and Space Grotesk. Agent and browser logos from Simple Icons (CC0), trademarks of
+      their owners, shown only to name the tools Bluelines works with. Screenshots are of the real extension
+      on a made-up demo site.
+    </p>
+    <p class="foot__meta mono">© {year} Varul Verma · Bluelines v{site.version} · <a class="ulink" href={`${site.github.href}/blob/main/LICENSE`} rel="noopener">License</a></p>
+  </div>
+</footer>

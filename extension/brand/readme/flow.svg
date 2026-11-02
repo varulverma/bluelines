@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="230" viewBox="0 0 1200 230" role="img" aria-label="How Bluelines works: mark an element, write the note, review in the sidebar, then export or hand it to an AI agent">
+  <title>Bluelines workflow</title>
+  <style><![CDATA[
+    .mono { font-family: "SFMono-Regular", ui-monospace, Menlo, Consolas, "Liberation Mono", monospace; }
+    .num  { font-size: 13px; font-weight: 700; fill: #031417 }
+    .ttl  { font-size: 16px; font-weight: 700; fill: #ffffff; letter-spacing: 1px }
+    .sub  { font-size: 12.5px; fill: #8a8a8a }
+    .wire { stroke: #00e5ff; stroke-width: 2; fill: none; stroke-dasharray: 6 8; animation: dash 1.6s linear infinite }
+    @keyframes dash { to { stroke-dashoffset: -28 } }
+    .step { opacity: 0; animation: rise .6s ease-out forwards }
+    @keyframes rise { to { opacity: 1 } }
+    .s1 { animation-delay: .1s } .s2 { animation-delay: .35s } .s3 { animation-delay: .6s } .s4 { animation-delay: .85s }
+    .glint { animation: glint 3s ease-in-out infinite }
+    @keyframes glint { 0%,100% { opacity: .35 } 50% { opacity: 1 } }
+    @media (prefers-reduced-motion: reduce) { .wire,.step,.glint { animation: none; opacity: 1 } }
+  ]]></style>
+
+  <rect width="1200" height="230" rx="22" fill="#0B0B0B" stroke="#262626"/>
+  <path class="wire" d="M152 115H1048"/>
+
+  <g class="step s1">
+    <rect x="24" y="52" width="256" height="126" rx="16" fill="#111111" stroke="#262626"/>
+    <circle cx="52" cy="82" r="13" fill="#00e5ff"/><text class="mono num" x="52" y="87" text-anchor="middle">1</text>
+    <text class="mono ttl" x="76" y="87">MARK</text>
+    <text class="mono sub" x="48" y="122">Hover any element,</text>
+    <text class="mono sub" x="48" y="142">click to pin it.</text>
+    <rect class="glint" x="48" y="156" width="88" height="6" rx="3" fill="#00e5ff"/>
+  </g>
+
+  <g class="step s2">
+    <rect x="304" y="52" width="256" height="126" rx="16" fill="#111111" stroke="#262626"/>
+    <circle cx="332" cy="82" r="13" fill="#00e5ff"/><text class="mono num" x="332" y="87" text-anchor="middle">2</text>
+    <text class="mono ttl" x="356" y="87">NOTE</text>
+    <text class="mono sub" x="328" y="122">Pick a category,</text>
+    <text class="mono sub" x="328" y="142">write it, save.</text>
+    <g class="mono" font-size="10" letter-spacing="1.4" fill="#8a8a8a">
+      <rect x="328" y="150" width="54" height="20" rx="10" fill="#1a1a1a" stroke="#262626"/><text x="340" y="164">BUG</text>
+      <rect x="390" y="150" width="78" height="20" rx="10" fill="#1a1a1a" stroke="#262626"/><text x="402" y="164">COPY</text>
+    </g>
+  </g>
+
+  <g class="step s3">
+    <rect x="584" y="52" width="256" height="126" rx="16" fill="#111111" stroke="#262626"/>
+    <circle cx="612" cy="82" r="13" fill="#00e5ff"/><text class="mono num" x="612" y="87" text-anchor="middle">3</text>
+    <text class="mono ttl" x="636" y="87">REVIEW</text>
+    <text class="mono sub" x="608" y="122">Sidebar, pins and</text>
+    <text class="mono sub" x="608" y="142">the full table view.</text>
+    <g fill="#2e2e2e"><rect x="608" y="152" width="120" height="6" rx="3"/><rect x="608" y="164" width="76" height="6" rx="3"/></g>
+  </g>
+
+  <g class="step s4">
+    <rect x="864" y="52" width="312" height="126" rx="16" fill="#111111" stroke="#262626"/>
+    <circle cx="892" cy="82" r="13" fill="#00e5ff"/><text class="mono num" x="892" y="87" text-anchor="middle">4</text>
+    <text class="mono ttl" x="916" y="87">SHIP</text>
+    <text class="mono sub" x="888" y="122">Export XLSX / PDF / ZIP —</text>
+    <text class="mono sub" x="888" y="142">or let an AI agent fix them.</text>
+    <g class="mono" font-size="10" letter-spacing="1.4" fill="#031417">
+      <rect class="glint" x="888" y="150" width="60" height="20" rx="10" fill="#00e5ff"/><text x="900" y="164">MCP</text>
+    </g>
+  </g>
+</svg>

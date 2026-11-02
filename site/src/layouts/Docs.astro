@@ -1,0 +1,94 @@
+---
+// Docs page: grouped nav | article | "On this page". Same header, footer and tokens as the launch page.
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
+import { render } from 'astro:content';
+import Base from './Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import DocsNav from '../components/DocsNav.astro';
+import { getDocs, docHref, type Doc } from '../data/docs';
+import '../styles/docs.css';
+
+interface Props { entry: Doc }
+const { entry } = Astro.props;
+const { title, description, group, video, next: nextSlug } = entry.data;
+const { Content, headings } = await render(entry);
+
+const docs = await getDocs();
+const i = docs.findIndex((d) => d.id === entry.id);
+const prev = docs[i - 1];
+const next = (nextSlug && docs.find((d) => d.id === nextSlug)) || docs[i + 1];
+const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
+
+// Videos land later: render the player only once the file is actually in public/.
+const has = (p?: string) => !!p && existsSync(join(process.cwd(), 'public', p));
+const poster = video?.replace(/\.[a-z0-9]+$/i, '-poster.webp');
+const md = `/docs/${entry.id}.md`;
+---
+<Base title={`${title} | Bluelines docs`} description={description}>
+  <Header slot="header" />
+  <div class="wrap docs">
+    <details class="docs__drawer">
+      <summary class="mono"><span>Docs</span> <b>{title}</b></summary>
+      <DocsNav docs={docs} current={entry.id} label="Docs, mobile" />
+    </details>
+    <aside class="docs__side" data-lenis-prevent>
+      <DocsNav docs={docs} current={entry.id} label="Docs" />
+    </aside>
+
+    <article class="docs__main" data-docs-md={md}>
+      <header class="docs__head">
+        <p class="label"><span>Docs</span> {group}</p>
+        <h1 class="docs__title">{title}</h1>
+        <p class="docs__lede">{description}</p>
+        <div class="docs__actions">
+          <button class="btn btn--ghost btn--sm docs__copy" type="button" data-copy-page>
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></svg>
+            <span data-copy-label>Copy page for AI</span>
+          </button>
+          <details class="docs__more" data-docs-more>
+            <summary class="btn btn--ghost btn--sm" aria-label="More page options">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+            </summary>
+            <ul class="docs__pop mono">
+              <li><a href={md}>Open as Markdown</a></li>
+              <li><button type="button" data-copy-llms>Copy llms.txt link</button></li>
+            </ul>
+          </details>
+          <textarea class="docs__fallback" data-copy-fallback readonly hidden aria-label="Page as Markdown. Press Ctrl+C to copy."></textarea>
+        </div>
+      </header>
+
+      {has(video) && (
+        <figure class="docs__video">
+          <video preload="none" controls playsinline poster={has(poster) ? poster : undefined}>
+            <source src={video} type="video/mp4" />
+          </video>
+        </figure>
+      )}
+
+      <div class="prose"><Content /></div>
+
+      <nav class="docs__pager" aria-label="Pages">
+        {prev && <a class="pager pager--prev lock" href={docHref(prev.id)}><span class="mono">← Previous</span>{prev.data.title}</a>}
+        {next && <a class="pager pager--next lock" href={docHref(next.id)}><span class="mono">Next</span>{next.data.title} →</a>}
+      </nav>
+    </article>
+
+    {toc.length > 0 && (
+      <aside class="docs__toc" aria-labelledby="toc-h" data-lenis-prevent>
+        <p class="dnav__h" id="toc-h">On this page</p>
+        <ul>
+          {toc.map((h) => <li class={`toc--${h.depth}`}><a href={`#${h.slug}`}>{h.text}</a></li>)}
+        </ul>
+      </aside>
+    )}
+  </div>
+  <p class="sr-only" aria-live="polite" data-docs-live></p>
+  <Footer slot="footer" />
+</Base>
+
+<script>
+  import '../motion/docs';
+</script>

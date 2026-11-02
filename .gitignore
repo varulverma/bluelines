@@ -19,3 +19,7 @@ brag-output*/
 
 .DS_Store
 Thumbs.db
+
+# website build output and local Netlify state
+site/.astro/
+.netlify/

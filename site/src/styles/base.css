@@ -1,0 +1,175 @@
+/* Tokens + foundation. Values come from the Bluelines design system (../designnote-extension/DESIGN.md). */
+
+@font-face {
+  font-family: 'Space Mono';
+  src: url('/fonts/space-mono-400-normal.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Space Mono';
+  src: url('/fonts/space-mono-700-normal.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Space Grotesk';
+  src: url('/fonts/space-grotesk-300_700-normal.woff2') format('woff2');
+  font-weight: 300 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  /* Ink theme (brand default) */
+  --ground: #0b0b0b;
+  --raised: #151515;
+  --inset: #111111;
+  --charcoal: #1a1a1a;
+  --fg: #eaeaea;
+  --muted: #a6a6a6;
+  --faint: #8a8a8a;
+  --line: #262626;
+  --line-strong: #3a3a3a;
+
+  /* The one signal. The visitor can change it (accent band); ui.ts recomputes the derived values. */
+  --accent: #00e5ff;
+  --accent-hover: #5cf0ff;
+  --accent-ink: #031417;      /* text on accent fills */
+  --accent-text-ink: #00e5ff; /* accent as text on ink */
+  --accent-text-paper: #007585;
+  --accent-text: var(--accent-text-ink);
+  --accent-subtle: color-mix(in srgb, var(--accent) 10%, transparent);
+  --accent-glow: color-mix(in srgb, var(--accent) 28%, transparent);
+
+  /* Categories: marks only (dots, number chips, pins) */
+  --cat-bug: #ff6b6b;
+  --cat-suggestion: #5aa9ff;
+  --cat-text: #ffc53d;
+  --cat-note: #a6a6a6;
+
+  /* Paper chapter */
+  --paper: #fafafa;
+  --paper-fg: #0b0b0b;
+  --paper-muted: #474747;
+  --paper-line: #dedede;
+
+  --f-mono: 'Space Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --f-sans: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+
+  /* Fluid scale (390 → 1440) */
+  --t-mega: clamp(2.75rem, 0.6rem + 11.2vw, 10rem);
+  --t-xl: clamp(2.25rem, 1rem + 5.4vw, 6rem);
+  --t-l: clamp(1.75rem, 1.1rem + 2.6vw, 3.5rem);
+  --t-m: clamp(1.25rem, 1.05rem + 0.8vw, 1.75rem);
+  --t-body: clamp(1.0625rem, 1rem + 0.2vw, 1.1875rem);
+  --t-s: 0.9375rem;
+  --t-ui: 0.8125rem;
+  --t-label: 0.75rem;
+
+  --gutter: clamp(1rem, 0.55rem + 1.8vw, 2.5rem);
+  --maxw: 1520px;
+  --section: clamp(6rem, 4rem + 8vw, 11rem);
+
+  --r-chip: 3px;
+  --r-press: 6px;
+  --r-btn: 8px;
+  --r-panel: 12px;
+
+  --e-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --e-soft: cubic-bezier(0.215, 0.61, 0.355, 1);
+
+  --z-content: 1;
+  --z-pins: 20;
+  --z-inspector: 40;
+  --z-header: 50;
+  --z-dock: 60;
+  --z-toast: 70;
+}
+
+/* White theme: same system, ground and paper swap. Set on <html data-theme> by the head script. */
+:root[data-theme='light'] {
+  --ground: #fafafa;
+  --raised: #ffffff;
+  --inset: #f2f2f2;
+  --charcoal: #ececec;
+  --fg: #0b0b0b;
+  --muted: #474747;
+  --faint: #5e5e5e;
+  --line: #e2e2e2;
+  --line-strong: #c4c4c4;
+  --accent-text: var(--accent-text-paper);
+
+  /* the privacy chapter becomes the ink counterpart */
+  --paper: #0b0b0b;
+  --paper-fg: #eaeaea;
+  --paper-muted: #a6a6a6;
+  --paper-line: #262626;
+}
+:root[data-theme='light'] .privacy { --accent-text: var(--accent-text-ink); }
+
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; }
+html {
+  -webkit-text-size-adjust: none;
+  text-size-adjust: none;
+  background: var(--ground);
+  color: var(--fg);
+  color-scheme: dark;
+}
+:root[data-theme='light'] { color-scheme: light; }
+html {
+  overflow-x: clip;
+}
+body {
+  min-height: 100dvh;
+  font-family: var(--f-sans);
+  font-size: var(--t-body);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-kerning: normal;
+  overflow-x: clip;
+  background: var(--ground);
+  position: relative;
+}
+img, svg { display: block; max-width: 100%; }
+img { height: auto; }
+input, button { font: inherit; color: inherit; }
+button { background: none; border: 0; cursor: pointer; padding: 0; }
+a { color: inherit; text-decoration: none; }
+h1, h2, h3 { font-weight: inherit; font-size: inherit; text-wrap: balance; }
+p { text-wrap: pretty; }
+ul, ol { list-style: none; padding: 0; }
+::selection { background: var(--accent); color: var(--accent-ink); }
+
+/* Focus: the product's 2px signal outline, offset 2px */
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+#main:focus { outline: none; }
+.skip-link {
+  position: fixed; left: var(--gutter); top: 12px; z-index: 100;
+  padding: 0.6em 1em; border-radius: var(--r-btn);
+  background: var(--accent); color: var(--accent-ink); font: 700 var(--t-ui) var(--f-mono);
+  translate: 0 -200%;
+}
+.skip-link:focus-visible { translate: none; }
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+/* Lenis */
+html.lenis, html.lenis body { height: auto; }
+.lenis:not(.lenis-autoToggle).lenis-stopped { overflow: clip; }
+
+#main { position: relative; z-index: var(--z-content); }
+
+/* Hidden until revealed: only when motion is allowed and JS runs */
+.motion [data-split], .motion [data-reveal] { visibility: hidden; }
+.split-line { padding-bottom: 0.08em; margin-bottom: -0.08em; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+}

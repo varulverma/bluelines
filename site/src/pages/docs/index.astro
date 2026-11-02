@@ -1,0 +1,8 @@
+---
+import { getEntry } from 'astro:content';
+import Docs from '../../layouts/Docs.astro';
+
+const entry = await getEntry('docs', 'introduction');
+if (!entry) throw new Error('Missing src/content/docs/introduction.md');
+---
+<Docs entry={entry} />

@@ -1,0 +1,380 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Burst from '../components/Burst.astro';
+import GitHub from '../components/GitHub.astro';
+import {
+  site, chapters, reviewNotes as rn, categories, enhance, agents, exportsList, copyFormats, accents, privacy, shortcuts, installSteps, browsers, cloneCmd,
+} from '../data/site';
+
+// Real screenshots of the extension, captured from the running build. Missing files are skipped.
+const shotFiles = import.meta.glob<{ default: ImageMetadata }>('../assets/shots/*.png', { eager: true });
+const shot = (name: string) => shotFiles[`../assets/shots/${name}.png`]?.default;
+const shots = {
+  inspect: { img: shot('inspect'), alt: 'Inspect mode on a demo coffee checkout: cyan corners frame the Pay now button, with a button#pay chip above and a 382 × 58 px chip below.' },
+  form: { img: shot('form'), alt: 'The note callout beside the framed Pay now button: the UI category chip, the note "Too close to the total. Give it the same 24 px gap as the coupon field.", and the caption › button#pay · 382×58 · #01.' },
+  sidebar: { img: shot('sidebar'), alt: 'The Annotations sidebar with status filters and four notes (Accessibility, Broken, Wording, UI), each with a cropped screenshot and colour-coded actions, while numbered pins 1 to 4 mark those elements on the page.' },
+  export: { img: shot('export'), alt: 'The table view with the Export menu open: Excel, PDF, HTML report, CSV, Markdown, JSON, XML, plain text, ZIP bundle and Send to Google Drive.' },
+};
+
+// Agent marks: Simple Icons (CC0), inlined so they take the text colour.
+const agentSvgs = import.meta.glob<string>('../assets/agents/*.svg', { query: '?raw', import: 'default', eager: true });
+const agentSvg = (id: string) =>
+  (agentSvgs[`../assets/agents/${id}.svg`] || '')
+    .replace(/<title>.*?<\/title>/, '')
+    .replace('role="img"', 'aria-hidden="true" focusable="false" fill="currentColor"');
+const browserSvgs = import.meta.glob<string>('../assets/browsers/*.svg', { query: '?raw', import: 'default', eager: true });
+const browserSvg = (id: string) =>
+  (browserSvgs[`../assets/browsers/${id}.svg`] || '')
+    .replace(/<title>.*?<\/title>/, '')
+    .replace('role="img"', 'aria-hidden="true" focusable="false" fill="currentColor"');
+---
+<Base>
+  <Header slot="header" />
+
+  <!-- HERO -->
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="wrap hero__grid">
+      <p class="hero__meta mono">
+        <span>Browser extension</span><span>v{site.version}</span><span>Local-first</span>
+      </p>
+      <h1 id="hero-title" class="hero__title" data-inspect data-cat={rn.hero.cat} data-note={rn.hero.text}>
+        <span class="w">Mark up</span><br class="br-m" /> <span class="w">any</span><br class="br-d" /> <span class="w">live</span><br class="br-m" /> <span class="w l--cursor">website</span>
+      </h1>
+      <div class="hero__foot">
+        <p class="hero__lede">
+          Click an element, pin a note to it, and hand it to your developer or your AI coding agent.
+          Every note keeps its selector, its page and a screenshot. No account, nothing uploaded.
+        </p>
+        <div class="hero__cta">
+          <a class="btn btn--primary lock" href="/docs/install/">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>
+            Install Bluelines
+          </a>
+          <a class="btn btn--ghost lock" href={site.github.href} rel="noopener"><GitHub /> GitHub</a>
+          <button class="btn btn--ghost lock" type="button" data-inspect-toggle aria-pressed="false">
+            Try Inspect here <kbd>Alt</kbd><kbd>Shift</kbd><kbd>M</kbd>
+          </button>
+        </div>
+        <div class="cmd hero__cmd" aria-label="Install from the command line">
+          <span class="cmd__prompt mono" aria-hidden="true">$</span>
+          <code class="cmd__text mono">{cloneCmd}</code>
+          <button class="cmd__copy mono" type="button" data-copy={cloneCmd} aria-label="Copy the install command">Copy</button>
+        </div>
+        <p class="cmd__note mono hero__cmdnote">Then open your browser’s extensions page, turn on Developer mode, click <b>Load unpacked</b> and pick the <b>extension</b> folder inside the <b>bluelines</b> folder it made. <a class="ulink" href="/docs/install/">Full install guide</a></p>
+      </div>
+      <ol class="hero__index" aria-label="How it works">
+        {chapters.map((c) => (
+          <li><a class="idx lock" href={`#${c.id}`}><span class="mono">{c.n}</span> {c.word}.</a></li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- BROWSERS: one build, every Chromium browser -->
+  <section class="browsers" aria-labelledby="browsers-title">
+    <div class="wrap browsers__head">
+      <p class="label mono"><span>00</span> Works where you review</p>
+      <h2 id="browsers-title" class="h2">One extension.<br /> Your browser.</h2>
+      <p class="browsers__lede">
+        One Manifest V3 build, no build step. Tested in Chrome and Edge, runs in every Chromium browser,
+        and loads in Firefox and Zen as an experiment. <a class="ulink" href="/docs/browser-support/">Browser support</a>
+      </p>
+    </div>
+    <div class="marquee">
+      <ul class="marquee__track">
+        {[0, 1].map((copy) => browsers.map((b, i) => (
+          <li class="bcard" aria-hidden={copy ? 'true' : undefined}>
+            <span class="bcard__frame">
+              <span class="bcard__logo" set:html={browserSvg(b.id)} />
+              <i class="c tl"></i><i class="c tr"></i><i class="c bl"></i><i class="c br"></i>
+              <span class="bcard__sel mono" aria-hidden="true">#{b.id}</span>
+              <span class="bcard__pin mono" aria-hidden="true">{i + 1}</span>
+              <span class="bcard__chip mono" data-s={b.status}>{b.name} · {b.status}</span>
+            </span>
+          </li>
+        )))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- FILM: self-hosted, nothing loads until play -->
+  <section class="film" aria-label="Bluelines in 60 seconds">
+    <figure class="wrap shot film__frame" data-reveal="clip">
+      <div class="film__media">
+        <video data-film src="/video/bluelines-film.mp4" poster="/video/bluelines-film-poster.webp" preload="none" controls playsinline width="1920" height="1080" aria-describedby="film-desc"></video>
+        <button class="btn btn--primary lock film__play" type="button" data-film-play hidden>
+          <svg width="14" height="16" viewBox="0 0 14 16" aria-hidden="true" focusable="false"><path d="M0 0l14 8-14 8z" fill="currentColor" /></svg>
+          Play the film <span class="mono">1:00</span>
+        </button>
+      </div>
+      <figcaption class="mono">The whole extension in 60 seconds. Music, no voice-over.</figcaption>
+      <p id="film-desc" class="sr-only">
+        The film shows Inspect mode framing elements on a demo store, pinning notes, the sidebar jumping to an element,
+        the table view across pages, Enhance turning a note into a prompt, copying to Linear and exporting to Excel,
+        the local-first privacy promise, and switching the accent colour in Settings.
+      </p>
+    </figure>
+  </section>
+
+  <!-- 01 SEE -->
+  <section id="see" class="chapter see" aria-labelledby="see-title">
+    <div class="wrap see__grid">
+      <div class="see__text">
+        <p class="label"><span>01</span> See</p>
+        <h2 id="see-title" class="h2" data-split="lines">Inspect anything on the page.</h2>
+        <p data-reveal="up">
+          Turn on Inspect and point. Bluelines frames the element under your pointer: four corners,
+          its selector above, its size below. Click, and the note is pinned to that element, not to a
+          spot on a screenshot.
+        </p>
+        <p data-reveal="up">
+          Pages change. Each note keeps a fingerprint of its element, so it finds its way back after a
+          resize or a redeploy. If the element is really gone, Bluelines tells you and asks you to re-pin.
+          It never guesses.
+        </p>
+        <button class="btn btn--ghost lock" type="button" data-inspect-toggle aria-pressed="false">
+          Inspect this page <kbd>Alt</kbd><kbd>Shift</kbd><kbd>M</kbd>
+        </button>
+      </div>
+      <div class="see__side">
+        <figure class="record" data-inspect data-cat={rn.see.cat} data-note={rn.see.text} data-reveal="up">
+          <figcaption class="panel__head">
+            <span class="panel__title">Annotation record<span class="cursor" aria-hidden="true">_</span></span>
+            <span class="live mono">live</span>
+          </figcaption>
+          <dl class="record__rows mono">
+            <div><dt>type</dt><dd data-rec="type">"note"</dd></div>
+            <div><dt>selector</dt><dd data-rec="selector">"h1#hero-title"</dd></div>
+            <div><dt>fingerprint.tag</dt><dd data-rec="tag">"h1"</dd></div>
+            <div><dt>fingerprint.text</dt><dd data-rec="text">"Mark up any live website"</dd></div>
+            <div><dt>rect</dt><dd>{'{ '}x <span data-rec="x">40</span>, y <span data-rec="y">180</span>, w <span data-rec="w">1184</span>, h <span data-rec="h">292</span>{' }'}</dd></div>
+            <div><dt>screenshot</dt><dd>"png, cropped to the element"</dd></div>
+            <div><dt>timestamp</dt><dd data-rec="time">1761004800000</dd></div>
+          </dl>
+          <p class="record__foot">This is the record for whatever is in the frame right now. Scroll, or turn on Inspect and point.</p>
+        </figure>
+      </div>
+    </div>
+    {shots.inspect.img && (
+      <figure class="wrap shot" data-reveal="clip">
+        <Image src={shots.inspect.img} alt={shots.inspect.alt} widths={[720, 1200, 1800]} sizes="(min-width: 1520px) 1440px, 94vw" loading="lazy" />
+        <figcaption class="mono">Inspect mode in the extension, on a real page.</figcaption>
+      </figure>
+    )}
+  </section>
+
+  <!-- 02 MARK -->
+  <section id="mark" class="chapter mark" aria-labelledby="mark-title">
+    <div class="wrap">
+      <div class="chapter__head">
+        <p class="label"><span>02</span> Mark</p>
+        <h2 id="mark-title" class="h2" data-split="lines">Say what kind of problem it is.</h2>
+        <p class="chapter__intro" data-reveal="up">
+          Every note gets a category, so a developer can sort forty notes in a minute. You start with one,
+          UI. Add your own from the note's category menu or in Settings, and rename one everywhere at once.
+        </p>
+      </div>
+      <ol class="cats" data-inspect data-cat={rn.mark.cat} data-note={rn.mark.text}>
+        {categories.map((c, i) => (
+          <li class="cat" data-reveal="up" data-delay={String(i * 0.06)}>
+            <span class="numchip" style={`--c: var(--cat-${c.id})`}>{i + 1}</span>
+            <h3 class="cat__name">{c.name}</h3>
+            <p class="cat__use">{c.use}</p>
+            <p class="cat__ex">{c.example}</p>
+          </li>
+        ))}
+        <li class="cat cat--new" data-reveal="up" data-delay="0.24">
+          <span class="numchip numchip--new" aria-hidden="true">+</span>
+          <h3 class="cat__name">New</h3>
+          <p class="cat__use">Your own word.</p>
+          <p class="cat__ex">Motion, Legal, Client said. Typing a name you already have picks that one.</p>
+        </li>
+      </ol>
+    </div>
+    {shots.form.img && (
+      <figure class="wrap shot shot--narrow" data-reveal="clip">
+        <Image src={shots.form.img} alt={shots.form.alt} widths={[720, 1200, 1800]} sizes="(min-width: 1200px) 1040px, 94vw" loading="lazy" />
+        <figcaption class="mono">The note callout, attached to the element it describes.</figcaption>
+      </figure>
+    )}
+  </section>
+
+  <!-- 03 EXPLAIN -->
+  <section id="explain" class="chapter explain" aria-labelledby="explain-title">
+    <div class="wrap">
+      <div class="chapter__head">
+        <p class="label"><span>03</span> Explain</p>
+        <h2 id="explain-title" class="h2" data-split="lines">Turn a hunch into a prompt.</h2>
+        <p class="chapter__intro" data-reveal="up">
+          Enhance rewrites a quick note into one clear instruction a coding assistant can act on. It runs
+          only when you click it, with your own Anthropic, OpenAI or OpenRouter key.
+        </p>
+      </div>
+      <div class="diff" data-inspect data-cat={rn.explain.cat} data-note={rn.explain.text}>
+        <div class="diff__pane" data-reveal="up">
+          <p class="diff__label mono">What Enhance sends</p>
+          <dl class="kv mono">
+            {enhance.sent.map(([k, v]) => <div><dt>{k}</dt><dd>{v}</dd></div>)}
+          </dl>
+          <p class="diff__note">No screenshot. The page address loses its query string and #fragment.</p>
+        </div>
+        <span class="diff__arrow mono" aria-hidden="true">→</span>
+        <div class="diff__pane diff__pane--out" data-reveal="up" data-delay="0.12">
+          <p class="diff__label mono">What comes back <span>(example)</span></p>
+          <p class="diff__out">{enhance.output}</p>
+        </div>
+      </div>
+
+      <div id="agents" class="agents">
+        <div class="agents__text">
+          <h3 class="h3" data-split="lines">Or let your agent read the notes itself.</h3>
+          <p data-reveal="up">
+            Bluelines comes with a small local MCP server. Start it from your AI tool with your pairing
+            code, choose which sites to share, and the agent can list your notes, read the one you sent
+            it, and jump the page to the element.
+          </p>
+          <ul class="facts mono" data-reveal="up">
+            <li>Talks only to 127.0.0.1</li>
+            <li>Shared sites only</li>
+            <li>Read-only until you allow writes</li>
+            <li>Several agents at once</li>
+          </ul>
+        </div>
+        <ul class="agents__grid" aria-label="AI tools Bluelines can connect to" data-reveal="fade">
+          {agents.map((a) => (
+            <li><span class="agents__mark" set:html={agentSvg(a.id)} /><span class="mono">{a.name}</span></li>
+          ))}
+        </ul>
+      </div>
+    </div>
+    {shots.sidebar.img && (
+      <figure class="wrap shot" data-reveal="clip">
+        <Image src={shots.sidebar.img} alt={shots.sidebar.alt} widths={[720, 1200, 1800]} sizes="(min-width: 1520px) 1440px, 94vw" loading="lazy" />
+        <figcaption class="mono">The sidebar: status filters on top, and Resolve, Copy, Enhance, Send to agent and Delete on every note.</figcaption>
+      </figure>
+    )}
+  </section>
+
+  <!-- 04 SHIP -->
+  <section id="ship" class="chapter ship" aria-labelledby="ship-title">
+    <div class="wrap">
+      <div class="chapter__head">
+        <p class="label"><span>04</span> Ship</p>
+        <h2 id="ship-title" class="h2" data-split="lines">Hand it off in the format they already use.</h2>
+        <p class="chapter__intro" data-reveal="up">
+          Export this page or every page you have marked. Each row carries its page URL, so nothing gets
+          lost between the review and the fix.
+        </p>
+      </div>
+      <ul class="formats" data-inspect data-cat={rn.ship.cat} data-note={rn.ship.text}>
+        {exportsList.map((f, i) => (
+          <li class="format" data-reveal="up" data-delay={String(i * 0.05)}>
+            <span class="format__ext">{f.ext}</span>
+            <span class="format__name mono">{f.name}</span>
+            <p class="format__what">{f.what}</p>
+          </li>
+        ))}
+      </ul>
+      <div class="copyas" data-reveal="up">
+        <p class="mono">Or copy every note as</p>
+        <ul>{copyFormats.map((f) => <li class="chip">{f}</li>)}</ul>
+      </div>
+    </div>
+    {shots.export.img && (
+      <figure class="wrap shot" data-reveal="clip">
+        <Image src={shots.export.img} alt={shots.export.alt} widths={[720, 1200, 1800]} sizes="(min-width: 1520px) 1440px, 94vw" loading="lazy" />
+        <figcaption class="mono">Table view with search, category filters and the Export menu.</figcaption>
+      </figure>
+    )}
+  </section>
+
+  <!-- ACCENT -->
+  <section class="accent" aria-labelledby="accent-title">
+    <div class="wrap accent__grid">
+      <div class="accent__mark" aria-hidden="true"><Burst size={320} /></div>
+      <div class="accent__text">
+        <h2 id="accent-title" class="h2" data-split="lines">The accent is yours.</h2>
+        <p data-reveal="up">
+          Pick any colour in Settings and the whole interface follows, the arrow in the logo included.
+          Readable text shades are worked out for you on dark and light pages. Try it on this page.
+        </p>
+        <div class="swatches" role="group" aria-label="Accent colour" data-reveal="up">
+          {accents.map((a) => (
+            <button class="swatch" type="button" data-accent={a.hex} aria-pressed={a.hex === '#00e5ff' ? 'true' : 'false'} style={`--sw: ${a.hex}`}>
+              <span class="sr-only">{a.name}</span>
+            </button>
+          ))}
+          <label class="swatch swatch--custom">
+            <span class="sr-only">Custom colour</span>
+            <input type="color" value="#00e5ff" data-accent-input />
+          </label>
+          <span class="swatches__hex mono" data-accent-hex aria-live="polite">#00E5FF</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRIVACY (paper) -->
+  <section id="privacy" class="privacy" aria-labelledby="privacy-title">
+    <div class="wrap">
+      <div class="privacy__head">
+        <h2 id="privacy-title" class="privacy__title" data-split="lines" data-inspect data-cat={rn.privacy.cat} data-note={rn.privacy.text}>Local by default.</h2>
+        <p class="privacy__lede" data-reveal="up">
+          No account and no server. Your notes live in your browser until you decide to send them
+          somewhere, and you always know where.
+        </p>
+      </div>
+      <div class="ledger">
+        <div class="ledger__col" data-reveal="up">
+          <h3 class="ledger__h mono">Stays in your browser</h3>
+          <dl>{privacy.stays.map(([k, v]) => <div><dt>{k}</dt><dd>{v}</dd></div>)}</dl>
+        </div>
+        <div class="ledger__col" data-reveal="up" data-delay="0.1">
+          <h3 class="ledger__h mono">Leaves only when you click</h3>
+          <dl>{privacy.leaves.map(([k, v]) => <div><dt>{k}</dt><dd>{v}</dd></div>)}</dl>
+        </div>
+      </div>
+      <p class="privacy__small">
+        Your API key and Google token sit unencrypted in the extension’s storage. Other sites can’t read
+        them; anyone using this browser profile could.
+      </p>
+    </div>
+  </section>
+
+  <!-- INSTALL -->
+  <section id="install" class="install" aria-labelledby="install-title">
+    <div class="wrap install__grid">
+      <h2 id="install-title" class="install__title">
+        {chapters.map((c) => <><span class="install__word" data-split="chars">{c.word}.</span>{' '}</>)}
+      </h2>
+      <div class="install__side">
+        <a class="btn btn--primary btn--big lock" href={site.github.href} rel="noopener"><GitHub size={22} /> View Bluelines on GitHub</a>
+        <p class="install__sub mono">v{site.version} · Manifest V3 · Chrome, Edge, Brave, Arc, Opera, Vivaldi · Install in four steps</p>
+        <div class="cmd">
+          <span class="cmd__prompt mono" aria-hidden="true">$</span>
+          <code class="cmd__text mono">{cloneCmd}</code>
+          <button class="cmd__copy mono" type="button" data-copy={cloneCmd} aria-label="Copy the install command">Copy</button>
+        </div>
+        <ol class="steps">
+          {installSteps.map(([k, v], i) => (
+            <li><span class="numchip">{i + 1}</span><div><h3 class="mono">{k}</h3><p>{v}</p></div></li>
+          ))}
+        </ol>
+        <table class="keys">
+          <caption class="mono">Keyboard shortcuts</caption>
+          <tbody>
+            {shortcuts.map((s) => (
+              <tr><th scope="row">{s.keys.map((k) => <kbd>{k}</kbd>)}</th><td>{s.what}</td></tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <Footer slot="footer" />
+</Base>

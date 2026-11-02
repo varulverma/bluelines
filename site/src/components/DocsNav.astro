@@ -1,0 +1,21 @@
+---
+// Docs page list, grouped. Rendered twice by Docs.astro: a sidebar on wide screens, a disclosure on phones.
+import { docGroups } from '../data/site';
+import { docHref, type Doc } from '../data/docs';
+
+interface Props { docs: Doc[]; current: string; label: string }
+const { docs, current, label } = Astro.props;
+const groups = docGroups.map((g) => ({ g, items: docs.filter((d) => d.data.group === g) })).filter((x) => x.items.length);
+---
+<nav class="dnav" aria-label={label}>
+  {groups.map(({ g, items }) => (
+    <div class="dnav__group">
+      <p class="dnav__h">{g}</p>
+      <ul>
+        {items.map((d) => (
+          <li><a class="dnav__a" href={docHref(d.id)} aria-current={d.id === current ? 'page' : undefined}>{d.data.title}</a></li>
+        ))}
+      </ul>
+    </div>
+  ))}
+</nav>

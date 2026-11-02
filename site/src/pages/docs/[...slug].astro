@@ -1,0 +1,11 @@
+---
+import Docs from '../../layouts/Docs.astro';
+import { getDocs, type Doc } from '../../data/docs';
+
+// The introduction is served at /docs (index.astro).
+export async function getStaticPaths() {
+  return (await getDocs()).filter((d) => d.id !== 'introduction').map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+const { entry } = Astro.props as { entry: Doc };
+---
+<Docs entry={entry} />

@@ -1,0 +1,26 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+<Base title="Element not found | Bluelines" description="This address doesn't match anything on the Bluelines site. Head back to the launch page to see how Bluelines pins notes to elements." noindex>
+  <Header slot="header" />
+  <section class="lost" aria-labelledby="lost-title">
+    <div class="wrap lost__grid">
+      <div class="lost__frame" aria-hidden="true" data-inspect data-cat="bug" data-note="The element this note pointed at is gone. Re-pin it.">
+        <span class="lost__chip">method: "none"</span>
+        nothing to frame here
+      </div>
+      <div class="lost__text">
+        <p class="label"><span>404</span> Lost note</p>
+        <h1 id="lost-title" class="h2">Element not found<span class="cursor" aria-hidden="true">_</span></h1>
+        <p>
+          This is what Bluelines says when a page changed so much that a note's element is gone. It doesn't
+          guess where it went. It asks you to re-pin. Same here.
+        </p>
+        <a class="btn btn--primary lock" href="/">Re-pin to the home page</a>
+      </div>
+    </div>
+  </section>
+  <Footer slot="footer" />
+</Base>

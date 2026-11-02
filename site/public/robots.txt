@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://getbluelines.netlify.app/sitemap-index.xml

@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Checkout · Fernhill Coffee</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font:16px/1.5 "Segoe UI",system-ui,sans-serif;background:#f6f3ee;color:#1f1b16}
+header{display:flex;align-items:center;gap:40px;padding:26px 120px;border-bottom:1px solid #e6e0d6;background:#fbf9f5}
+.logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:21px}
+.logo i{width:30px;height:30px;border-radius:50%;background:#7a4a2b;display:inline-block;box-shadow:inset -6px -4px 0 #5c3519}
+nav{display:flex;gap:30px;color:#6a6157;font-size:15px}
+nav a{color:inherit;text-decoration:none}
+.cart{margin-left:auto;font-size:15px;color:#6a6157}
+main{display:grid;grid-template-columns:1fr 440px;gap:56px;padding:44px 120px}
+h1{width:fit-content;font-size:42px;line-height:1.1;margin:0 0 6px;letter-spacing:-.02em}
+.steps{color:#8a8075;font-size:14px;margin-bottom:30px}
+fieldset{border:0;padding:0;margin:0 0 26px}
+legend{font-weight:600;margin-bottom:12px}
+.row{display:flex;gap:14px}
+.field{flex:1;background:#fff;border:1px solid #ddd5c9;border-radius:10px;padding:13px 15px;color:#9a9085;font-size:15px;margin-bottom:12px}
+.opt{display:flex;justify-content:space-between;background:#fff;border:1px solid #ddd5c9;border-radius:10px;padding:14px 16px;margin-bottom:10px;font-size:15px}
+.opt.on{border-color:#7a4a2b;box-shadow:0 0 0 1px #7a4a2b}
+.opt b{font-weight:600}
+aside{background:#fff;border:1px solid #e6e0d6;border-radius:18px;padding:28px;align-self:start}
+aside h2{font-size:19px;margin:0 0 18px}
+.item{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid #f0ebe3}
+.thumb{width:52px;height:52px;border-radius:10px;background:linear-gradient(135deg,#c79a6b,#7a4a2b)}
+.thumb.b{background:linear-gradient(135deg,#e7d3b4,#b28457)}
+.item div{flex:1}.item small{display:block;color:#8a8075;font-size:13px}
+.coupon{display:flex;gap:10px;margin:22px 0 0}
+.coupon span{flex:1;border:1px dashed #cfc5b7;border-radius:10px;padding:11px 14px;color:#9a9085;font-size:15px}
+.coupon button{border:1px solid #ddd5c9;background:#f6f3ee;border-radius:10px;padding:0 18px;font:inherit;font-size:15px;color:#3b342c}
+.totals{margin-top:22px;font-size:15px}
+.totals p{display:flex;justify-content:space-between;margin:6px 0;color:#6a6157}
+.totals p.t{color:#1f1b16;font-weight:700;font-size:18px;margin-top:12px}
+#pay{width:100%;margin-top:6px;border:0;border-radius:12px;background:#1f1b16;color:#fbf9f5;font:inherit;font-weight:600;font-size:17px;padding:16px}
+.fine{color:#8a8075;font-size:13px;text-align:center;margin-top:12px}
+</style></head>
+<body>
+<header>
+  <div class="logo"><i></i>Fernhill Coffee</div>
+  <nav><a href="#">Shop</a><a href="#">Subscriptions</a><a href="#" id="guides">Brew guides</a><a href="#">Our farms</a></nav>
+  <div class="cart">Cart (2)</div>
+</header>
+<main>
+  <section>
+    <h1 id="title">Checkout</h1>
+    <div class="steps">Cart · Delivery · <b>Payment</b></div>
+    <fieldset><legend>Delivery</legend>
+      <div class="opt on"><span><b>Standard</b> · 3–5 days</span><span>Free</span></div>
+      <div class="opt"><span><b>Express</b> · next day</span><span>$6.00</span></div>
+    </fieldset>
+    <fieldset><legend>Contact</legend>
+      <div class="row"><div class="field">First name</div><div class="field">Last name</div></div>
+      <div class="field">Email for the receipt</div>
+    </fieldset>
+  </section>
+  <aside>
+    <h2>Order summary</h2>
+    <div class="item"><span class="thumb"></span><div>Ridgeline Espresso<small>Whole bean · 500 g</small></div>$18.00</div>
+    <div class="item"><span class="thumb b"></span><div>Morning Field Filter<small>Ground for pour-over · 250 g</small></div>$12.50</div>
+    <div class="coupon"><span>Coupon code</span><button type="button" id="apply">Apply</button></div>
+    <div class="totals"><p><span>Subtotal</span><span>$30.50</span></p><p><span>Delivery</span><span>Free</span></p><p class="t"><span>Total</span><span>$30.50</span></p></div>
+    <form id="payment" aria-label="Payment" onsubmit="return false"><button id="pay" type="submit">Pay now</button></form>
+    <div class="fine">Secure payment · Free returns within 30 days</div>
+  </aside>
+</main>
+</body></html>

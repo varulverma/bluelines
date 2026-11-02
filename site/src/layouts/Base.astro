@@ -1,0 +1,109 @@
+---
+import { site } from '../data/site';
+import '../styles/base.css';
+import '../styles/site.css';
+import Burst from '../components/Burst.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+  noindex?: boolean;
+}
+const { title = site.title, description = site.description, noindex = false } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site ?? site.url).href;
+const ogImage = new URL('/og.png', Astro.site ?? site.url).href;
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: site.name,
+  applicationCategory: 'BrowserApplication',
+  operatingSystem: 'Chrome, Edge, Brave, Arc, Opera, Vivaldi',
+  softwareVersion: site.version,
+  description: site.description,
+  url: site.url,
+};
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex" />}
+    <meta name="theme-color" content="#0b0b0b" />
+    <meta name="color-scheme" content="dark light" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    <link rel="preload" href="/fonts/space-mono-700-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/space-grotesk-300_700-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <script is:inline>
+      document.documentElement.classList.add('js');
+      if (!matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('motion');
+      var t = null;
+      try { t = localStorage.getItem('rl-theme'); } catch (e) {}
+      if (!t) t = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+      document.documentElement.dataset.theme = t;
+      if (t === 'light') document.querySelector('meta[name="theme-color"]').setAttribute('content', '#fafafa');
+      try {
+        var a = JSON.parse(localStorage.getItem('rl-accent-v2') || 'null');
+        if (a) for (var k in a) document.documentElement.style.setProperty(k, a[k]);
+      } catch (e) {}
+    </script>
+    <script>
+      import { boot } from '../engine';
+      import { startInspector } from '../motion/inspector';
+      import { startUI } from '../motion/ui';
+      import { startLoader } from '../motion/loader';
+      startLoader();
+      startInspector();
+      startUI();
+      boot();
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <div id="loader" role="status" aria-label="Loading Bluelines">
+      <div class="loader__bg"></div>
+      <div class="loader__stage">
+        <span class="loader__ripple" aria-hidden="true"></span>
+        <Burst size={160} id="loader-logo" />
+      </div>
+      <div class="loader__foot mono" aria-hidden="true">
+        <span class="loader__name">Bluelines<span class="cursor">_</span></span>
+        <span class="loader__tag">See. Mark. Explain. Ship.</span>
+        <span class="loader__count" data-loader-count>000</span>
+      </div>
+      <span class="loader__bar" aria-hidden="true"></span>
+    </div>
+    <slot name="header" />
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <slot name="footer" />
+    <div id="inspector" aria-hidden="true">
+      <div class="ins__wash"></div>
+      <i class="ins__c ins__c--tl"></i><i class="ins__c ins__c--tr"></i><i class="ins__c ins__c--bl"></i><i class="ins__c ins__c--br"></i>
+      <span class="ins__sel" data-ins-sel></span>
+      <span class="ins__size" data-ins-size></span>
+      <div class="ins__note" data-ins-note><span class="catchip" data-ins-cat></span><p data-ins-text></p><span class="ins__cap" data-ins-num></span></div>
+    </div>
+    <div id="pins" aria-hidden="true"></div>
+    <div id="toast" role="status" aria-live="polite"><span class="toast__prompt" aria-hidden="true">›</span><span data-toast-text></span></div>
+  </body>
+</html>
