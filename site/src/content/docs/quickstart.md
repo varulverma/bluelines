@@ -3,7 +3,7 @@ title: Quickstart
 description: Pin your first note to an element on a web page in about a minute.
 group: Get started
 order: 12
-video: /video/01-install.mp4
+video: /video/how-to.mp4
 next: inspect-mode
 ---
 

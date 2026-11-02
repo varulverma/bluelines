@@ -3,7 +3,7 @@ title: Let Claude Code fix your notes on localhost
 description: Review your local build, send the notes to Claude Code through the Bluelines MCP server, let it fix and resolve them, then check its work in the Done filter.
 group: Guides
 order: 61
-video: /video/teaser.mp4
+video: /video/trailer.mp4
 next: guide-client-audit
 ---
 

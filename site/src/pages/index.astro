@@ -105,7 +105,9 @@ const browserSvg = (id: string) =>
   <section class="film" aria-label="Bluelines in 60 seconds">
     <figure class="wrap shot film__frame" data-reveal="clip">
       <div class="film__media">
-        <video data-film src="/video/bluelines-film.mp4" poster="/video/bluelines-film-poster.webp" preload="none" controls playsinline width="1920" height="1080" aria-describedby="film-desc"></video>
+        <video data-film src="/video/trailer.mp4" poster="/video/trailer-poster.webp" preload="none" controls playsinline width="1920" height="1080" aria-describedby="film-desc">
+          <track kind="captions" src="/video/trailer.vtt" srclang="en" label="English" />
+        </video>
         <button class="btn btn--primary lock film__play" type="button" data-film-play hidden>
           <svg width="14" height="16" viewBox="0 0 14 16" aria-hidden="true" focusable="false"><path d="M0 0l14 8-14 8z" fill="currentColor" /></svg>
           Play the film <span class="mono">1:00</span>
@@ -113,9 +115,9 @@ const browserSvg = (id: string) =>
       </div>
       <figcaption class="mono">The whole extension in 60 seconds. Music, no voice-over.</figcaption>
       <p id="film-desc" class="sr-only">
-        The film shows Inspect mode framing elements on a demo store, pinning notes, the sidebar jumping to an element,
-        the table view across pages, Enhance turning a note into a prompt, copying to Linear and exporting to Excel,
-        the local-first privacy promise, and switching the accent colour in Settings.
+        The film shows Inspect mode framing elements on a demo checkout, pinning a note to the Pay now button and sending it
+        to Claude Code, the sidebar with its status filters, the table view, exporting to Excel, the local-first privacy promise,
+        and Claude Code reading the note over MCP, fixing the button and resolving it.
       </p>
     </figure>
   </section>

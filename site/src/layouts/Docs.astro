@@ -24,6 +24,7 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
 // Videos land later: render the player only once the file is actually in public/.
 const has = (p?: string) => !!p && existsSync(join(process.cwd(), 'public', p));
 const poster = video?.replace(/\.[a-z0-9]+$/i, '-poster.webp');
+const captions = video?.replace(/\.[a-z0-9]+$/i, '.vtt');
 const md = `/docs/${entry.id}.md`;
 ---
 <Base title={`${title} | Bluelines docs`} description={description}>
@@ -64,6 +65,7 @@ const md = `/docs/${entry.id}.md`;
         <figure class="docs__video">
           <video preload="none" controls playsinline poster={has(poster) ? poster : undefined}>
             <source src={video} type="video/mp4" />
+            {has(captions) && <track kind="captions" src={captions} srclang="en" label="English" />}
           </video>
         </figure>
       )}

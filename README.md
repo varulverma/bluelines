@@ -28,6 +28,21 @@
 
 <br>
 
+## Watch it
+
+<table>
+  <tr>
+    <td width="50%"><a href="https://getbluelines.netlify.app/docs/"><img src="site/public/video/trailer-poster.webp" alt="Bluelines launch film poster: the Burst logo, Bluelines, See. Mark. Explain. Ship." width="100%"></a></td>
+    <td width="50%"><a href="https://getbluelines.netlify.app/docs/quickstart"><img src="site/public/video/how-to-poster.webp" alt="Bluelines how-to film poster" width="100%"></a></td>
+  </tr>
+  <tr>
+    <td><b>Launch film · 60 s</b><br>Point at the button, pin the note, and let Claude Code fix it over MCP.<br><a href="https://getbluelines.netlify.app/docs/">Watch in the docs</a> · <a href="site/public/video/trailer.mp4">MP4</a> · <a href="site/public/video/trailer.vtt">captions</a></td>
+    <td><b>How it works · 86 s</b><br>The full flow in 16 steps, from Inspect to a resolved note.<br><a href="https://getbluelines.netlify.app/docs/quickstart">Watch in the docs</a> · <a href="site/public/video/how-to.mp4">MP4</a> · <a href="site/public/video/how-to.vtt">captions</a></td>
+  </tr>
+</table>
+
+Every frame is the real extension, captured live; music, no voice-over.
+
 ---
 
 ## How it works
