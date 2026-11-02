@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="extension/brand/readme/hero.svg" alt="Bluelines — Figma-style comments for any web page" width="100%">
+  <img src="extension/brand/readme/card.svg" alt="Bluelines — See. Mark. Explain. Ship. Pin notes to any live web page." width="460">
 </p>
 
 <p align="center">
