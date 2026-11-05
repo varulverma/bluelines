@@ -185,7 +185,7 @@ Search the Chrome Web Store, Edge Add-ons, npm, GitHub and a trademark database 
 
 | Field | Content |
 |---|---|
-| Name | Bluelines — Visual Annotation Tool (33 chars; manifest limit 75) |
+| Name | Bluelines : Visual Annotation Tool (33 chars; manifest limit 75) |
 | Short description | "See. Mark. Explain. Ship. Pin notes to any element on any web page, saved privately in your browser." Comes from `manifest.json` `description`, limit 132 chars (L8). |
 | Long description | What it does; who it's for; local-first; the optional features (Enhance, Drive, AI agents) and exactly what each sends; shortcuts; link to the privacy policy. |
 | Category | Developer Tools (Chrome) / Developer tools (Edge) |

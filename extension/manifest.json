@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Bluelines — Visual Annotation Tool",
-  "version": "1.0.0",
-  "description": "See. Mark. Explain. Ship. Pin notes to elements on any web page, saved locally, and hand them to your developer or AI coding agent.",
+  "name": "Bluelines : Visual Annotation Tool",
+  "version": "1.0.1",
+  "description": "Pin comments to any element on a live web page, then export them as a spreadsheet, a report, or a prompt for your AI coding agent.",
   "permissions": [
     "storage",
     "unlimitedStorage",
@@ -88,5 +88,7 @@
         "<all_urls>"
       ]
     }
-  ]
+  ],
+  "minimum_chrome_version": "116",
+  "homepage_url": "https://getbluelines.netlify.app/"
 }

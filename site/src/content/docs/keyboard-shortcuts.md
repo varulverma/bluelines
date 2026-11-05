@@ -46,7 +46,7 @@ In the **Edit annotation** dialog, <kbd>Enter</kbd> saves, <kbd>Shift</kbd>+<kbd
    edge://extensions/shortcuts
    ```
 
-2. Find **Bluelines — Visual Annotation Tool**.
+2. Find **Bluelines : Visual Annotation Tool**.
 3. Click the pencil next to a command and press the new keys.
 
 The three commands are *Toggle Inspect Mode*, *Toggle the Bluelines annotations sidebar* and *Show/hide the floating dock*.

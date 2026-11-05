@@ -60,7 +60,7 @@ Keep that folder somewhere you won't clear, such as your Documents folder, not D
 2. Turn on **Developer mode**. In Chrome it's a switch at the top right. In Edge it's in the left column.
 3. Click **Load unpacked**.
 4. Select the Bluelines folder (`extension`, inside `bluelines-main` or `bluelines`) and confirm.
-5. Bluelines appears in the list as **Bluelines — Visual Annotation Tool**.
+5. Bluelines appears in the list as **Bluelines : Visual Annotation Tool**.
 
 > **Note:** Brave and Arc are Chromium browsers and are expected to behave like Chrome, but they are not yet verified. See [Browser support](/docs/browser-support).
 

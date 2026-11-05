@@ -1056,7 +1056,7 @@
 <html>
 <head>
 <meta charset="utf-8" />
-<title>Bluelines export — ${escapeHtml(location.hostname)}</title>
+<title>Bluelines export: ${escapeHtml(location.hostname)}</title>
 <style>
   body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 24px; color: #37352f; }
   h1 { font-size: 18px; margin: 0 0 4px; }
@@ -1080,7 +1080,7 @@
 </head>
 <body>
   <h1>Bluelines export</h1>
-  <p class="sub">${escapeHtml(scopeSource(scope))} — exported ${new Date().toLocaleString()}</p>
+  <p class="sub">${escapeHtml(scopeSource(scope))} · exported ${new Date().toLocaleString()}</p>
   ${tableHtml}
 </body>
 </html>`;
@@ -1151,7 +1151,7 @@
       const tableHtml = renderAnnotationsTable(list, { interactive: false, showPage: scope === 'all' });
       const hostSlug = location.hostname.replace(/[^a-z0-9.-]/gi, '-');
       const dateSlug = new Date().toISOString().slice(0, 10);
-      const title = `Bluelines Export — ${scopeSlug(scope)}`;
+      const title = `Bluelines Export: ${scopeSlug(scope)}`;
       
       const doc = `<!DOCTYPE html>
 <html>
@@ -1201,7 +1201,7 @@
   <div class="header">
     <h1>${escapeHtml(title)}</h1>
     <div class="meta">
-      ${escapeHtml(scopeSource(scope))} — Exported ${new Date().toLocaleString()}
+      ${escapeHtml(scopeSource(scope))} · Exported ${new Date().toLocaleString()}
     </div>
     <div class="stats">
       ${(() => {
@@ -1269,7 +1269,7 @@
 <html>
 <head>
 <meta charset="utf-8" />
-<title>Bluelines export — ${escapeHtml(location.hostname)}</title>
+<title>Bluelines export: ${escapeHtml(location.hostname)}</title>
 <style>
   body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 24px; color: #37352f; }
   h1 { font-size: 18px; margin: 0 0 4px; }
@@ -1293,7 +1293,7 @@
 </head>
 <body>
   <h1>Bluelines export</h1>
-  <p class="sub">${escapeHtml(scopeSource(scope))} — exported ${new Date().toLocaleString()}</p>
+  <p class="sub">${escapeHtml(scopeSource(scope))} · exported ${new Date().toLocaleString()}</p>
   ${tableHtml}
 </body>
 </html>`;
@@ -1890,7 +1890,7 @@ ${colDefs}
           toast('Drive upload failed: ' + ((res && res.error) || 'no response'));
           return;
         }
-        toast(`Saved to Google Drive ✓ — ${built.count} annotation${built.count === 1 ? '' : 's'}`);
+        toast(`Saved to Google Drive ✓ · ${built.count} annotation${built.count === 1 ? '' : 's'}`);
         if (res.link) window.open(res.link, '_blank', 'noopener');
       }
     );
@@ -2394,12 +2394,12 @@ ${colDefs}
           return;
         }
         if (!res || res.error) {
-          toast(res && res.error ? res.error : 'Enhance failed — check your API key in settings.');
+          toast(res && res.error ? res.error : 'Enhance failed. Check your API key in settings.');
           return;
         }
         navigator.clipboard.writeText(res.enhancedPrompt).then(
           () => toast('Enhanced prompt copied to clipboard!'),
-          () => toast("Couldn't copy the enhanced prompt — the clipboard is blocked. Click the page, then try Enhance again.")
+          () => toast("Couldn't copy the enhanced prompt. The clipboard is blocked. Click the page, then try Enhance again.")
         );
       }
     );

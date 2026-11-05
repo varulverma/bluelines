@@ -1,4 +1,4 @@
-# Bluelines — extension reference
+# Bluelines extension reference
 
 A Chrome / Edge extension for marking up any web page like Figma comments. Fully
 local and offline by default; an optional AI "Enhance" button turns a raw
@@ -39,7 +39,7 @@ local MCP bridge lets AI coding agents read your notes.
 - Each card has icon buttons: **Copy** (grabs the annotation as JSON),
   **Copy image** (screenshot only, so it pastes as a picture in Figma/Slack/Docs;
   either copy marks the card with a green **Copied** badge that persists),
-  **Enhance** (rewrites it into a ready-to-paste AI coding prompt — requires
+  **Enhance** (rewrites it into a ready-to-paste AI coding prompt, requires
   an API key set in Settings, opened via the toolbar popup), and **Delete**.
 - The **+** icon in the sidebar header adds a general note with no element
   attached; the **✕** closes the sidebar.
@@ -55,22 +55,22 @@ local MCP bridge lets AI coding agents read your notes.
   toggle shows, and each menu names its scope at the top. Search and type
   filters are *not* applied to exports. File names include `current-page` or
   `all-pages`, and every row carries its page URL. Formats:
-  - **Excel (`.xlsx`)** — a real spreadsheet with each screenshot **embedded
+  - **Excel (`.xlsx`)**: a real spreadsheet with each screenshot **embedded
     as an image** in the Screenshot column. Filename `bluelines-<host>-<scope>-<date>.xlsx`.
-  - **HTML** — a standalone `bluelines-<host>-<scope>-<date>.html` with the same
+  - **HTML**: a standalone `bluelines-<host>-<scope>-<date>.html` with the same
     table and inline screenshots, opens in any browser.
-  - **CSV** (table view) — every cell quoted; values starting with `=`, `+`, `-`
+  - **CSV** (table view): every cell quoted; values starting with `=`, `+`, `-`
     or `@` get a leading `'` so spreadsheets don't run them as formulas.
-  - **PDF (print-ready page)** (table view) — downloads a `…-print.html` that
+  - **PDF (print-ready page)** (table view): downloads a `…-print.html` that
     opens the print dialog when you open it; choose "Save as PDF" there.
-  - **ZIP bundle** (table view) — `annotations.json`, `report.html` and a
+  - **ZIP bundle** (table view): `annotations.json`, `report.html` and a
     `screenshots/` folder.
-  - **Send to Google Drive** (cloud icon) — uploads that same `.xlsx` audit to
+  - **Send to Google Drive** (cloud icon): uploads that same `.xlsx` audit to
     your Google Drive. You connect Drive once (Google consent screen on first
     use); Chrome caches and refreshes the token after that. Requires the
     one-time setup below.
-- **Copy all annotations** (table view header) in a structured format —
-  **Markdown**, **JSON**, **XML**, **Notion**, **Linear** or **Jira** — one entry
+- **Copy all annotations** (table view header) in a structured format:
+  **Markdown**, **JSON**, **XML**, **Notion**, **Linear** or **Jira**. One entry
   per annotation, each with its page URL. (Text formats
   carry a `hasScreenshot` flag rather than the raw image bytes; the actual
   images live in the Excel/HTML exports.)
@@ -139,7 +139,7 @@ Key: `dn_annotations::<page URL without #fragment>` → array in creation order.
   id,
   type,         // "text" | "suggestion" | "bug" | "note", or any custom category string
   text, selector,
-  fingerprint,  // { tag, textHash, siblingIndex, parent } — fallback when the selector breaks
+  fingerprint,  // { tag, textHash, siblingIndex, parent }, fallback when the selector breaks
   anchor?,      // { describe, text, label, role, testId, component, classes, landmark, heading }
                 //   e.g. describe: 'button "Pay now" in form "Payment" under "Checkout"'
   pageTitle?,   // document.title when the note was made
@@ -198,7 +198,7 @@ each starts its own bridge on the next free port (up to 10), and Bluelines conne
 
 The **Send to Google Drive** button uses a manual OAuth flow
 (`chrome.identity.launchWebAuthFlow`), so you paste your own OAuth client ID in
-**Settings** — no `manifest.json` editing required.
+**Settings**, with no `manifest.json` editing required.
 
 1. Open the extension's **Settings** page and copy the **Authorized redirect URI**
    shown under Google Drive (looks like `https://<extension-id>.chromiumapp.org/`).
@@ -209,7 +209,7 @@ The **Send to Google Drive** button uses a manual OAuth flow
 4. Copy the generated client ID, paste it into the **OAuth Client ID** field in
    Settings, and click **Check / connect**.
 
-Scope is `drive.file` — the extension can only see and manage files it creates,
+Scope is `drive.file`, so the extension can only see and manage files it creates,
 never the rest of your Drive. The access token lives ~1 hour and is cached in
 local storage; when it lapses the extension re-auths silently if your Google
 session is still active, or shows the consent screen otherwise.
@@ -229,17 +229,17 @@ session is still active, or shows the consent screen otherwise.
   **Re-pin** button rather than pointing at the wrong thing. Iframes and shadow DOM are not
   supported. React component names aren't visible to content scripts, so the anchor relies on
   `data-component` / `data-testid`.
-- **Screenshots only cover the visible viewport** — the element is scrolled
+- **Screenshots only cover the visible viewport**: the element is scrolled
   back into view before capture, but anything taller or wider than the window
   is cut off. Scroll-and-stitch capture is a possible v2 addition.
 - **URL keying**: notes belong to the exact URL without its `#fragment`, so
   hash-routed apps share one set of notes across routes, and the same page with
   different query strings has separate sets.
-- **No sync across devices** — by design (local-first per your spec). If you
+- **No sync across devices**, by design (local-first per your spec). If you
   ever want team collaboration, swapping `chrome.storage.local` for a
   Supabase-backed store is the smallest lift.
 - **Content script CSS isolation** uses `all: revert` under `#bluelines-root`
-  rather than a full shadow DOM — works well in practice, but a shadow DOM
+  rather than a full shadow DOM. It works well in practice, but a shadow DOM
   wrapper would be more bulletproof against aggressive host-page CSS.
 
 ## Browser support
@@ -248,16 +248,14 @@ One manifest, no build step. Test evidence is in `docs/testing/BROWSER_COMPATIBI
 
 | Browser | Status |
 |---|---|
-| **Chrome** (desktop) | **Tested** — Chrome 155, automated suites in `tests/` (first-release target) |
-| **Microsoft Edge** (desktop) | **Tested** — Edge 156, same suites |
+| **Chrome** (desktop) | **Tested** on Chrome 155, automated suites in `tests/` (first-release target) |
+| **Microsoft Edge** (desktop) | **Tested** on Edge 156, same suites |
 | Brave, Arc, Opera, Vivaldi | Not yet verified (Chromium-based, expected to behave like Chrome) |
-| Firefox / Zen 121+ | Not yet verified — the manifest carries the Firefox settings, but the extension has never been loaded in Firefox |
+| Firefox / Zen | Not supported. The manifest is Chrome-only; Firefox support would need `browser_specific_settings` and a `background.scripts` entry added back. |
 | Safari | Not supported (would need `xcrun safari-web-extension-converter`) |
 
 - **Chromium:** `chrome://extensions` (or `edge://extensions`, etc.) → Developer mode → Load unpacked.
-- **Firefox / Zen:** `about:debugging#/runtime/this-firefox` → Load Temporary Add-on → pick `manifest.json`. Grant the site-access permission if prompted. For Google Drive, register the redirect URL shown on the settings page (differs per browser).
 
-`manifest.json` declares both `background.service_worker` (used by Chrome/Edge) and
-`background.scripts` (used by Firefox, which ignores `service_worker`). This is the
-cross-browser pattern MDN recommends; Chrome 121+ accepts it without warnings
-(verified: no install warnings in Chrome 155). Keep both.
+`manifest.json` targets Chrome/Edge only: a single `background.service_worker`, no
+`browser_specific_settings`, and `minimum_chrome_version: 116`. It loads with zero
+install warnings.

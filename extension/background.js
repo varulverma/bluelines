@@ -295,7 +295,7 @@ async function enhancePrompt(payload) {
   const userContent = [
     `Annotation type: ${payload.annotationType}`,
     `Raw comment: ${payload.text}`,
-    payload.selector ? `Element selector: ${payload.selector}` : 'Element selector: (none — general page note)',
+    payload.selector ? `Element selector: ${payload.selector}` : 'Element selector: (none, general page note)',
     `Page URL: ${pageAddressForAi(payload.url)}`,
   ].join('\n');
 

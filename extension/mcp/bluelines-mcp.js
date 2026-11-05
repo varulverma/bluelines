@@ -280,7 +280,7 @@ function startLink(port = PORT) {
   server.on('error', (e) => {
     if (e.code === 'EADDRINUSE' && port < PORT + PORT_RANGE - 1) return startLink(port + 1); // another AI tool has this one
     listenError = e.code === 'EADDRINUSE'
-      ? `Ports ${PORT}–${port} are all in use — ${PORT_RANGE} AI tools are already connected to Bluelines. Close one, or set BLUELINES_PORT.`
+      ? `Ports ${PORT}–${port} are all in use. ${PORT_RANGE} AI tools are already connected to Bluelines. Close one, or set BLUELINES_PORT.`
       : e.message;
     log(listenError);
   });
@@ -323,7 +323,7 @@ const TOOLS = [
   },
   {
     name: 'list_annotations',
-    description: 'Bluelines notes grouped site → section → page → category (categories are the user\'s own, or inferred from the wording: Bug, Copy / text, Visual / layout, Accessibility, Suggestion, Question). Each note has "element" (what it points at, e.g. button "Pay now" in form "Payment" under "Checkout"), a CSS "selector" and any data-testid — use them to find the matching code. Open notes only unless status says otherwise.',
+    description: 'Bluelines notes grouped site → section → page → category (categories are the user\'s own, or inferred from the wording: Bug, Copy / text, Visual / layout, Accessibility, Suggestion, Question). Each note has "element" (what it points at, e.g. button "Pay now" in form "Payment" under "Checkout"), a CSS "selector" and any data-testid, which you use to find the matching code. Open notes only unless status says otherwise.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -361,7 +361,7 @@ const TOOLS = [
   },
   {
     name: 'show_annotation',
-    description: 'Open the note\'s page in the user\'s browser, scroll to its element and highlight it — to point the user at something.',
+    description: 'Open the note\'s page in the user\'s browser, scroll to its element and highlight it, to point the user at something.',
     inputSchema: { type: 'object', properties: { id: str('Note id.') }, required: ['id'] },
     run: (a) => call('show', a),
   },
@@ -379,7 +379,7 @@ const TOOLS = [
   },
   {
     name: 'reply_to_annotation',
-    description: 'Add a reply to a note (labelled AI in the user\'s sidebar) — to explain a change or ask a question.',
+    description: 'Add a reply to a note (labelled AI in the user\'s sidebar), to explain a change or ask a question.',
     inputSchema: { type: 'object', properties: { id: str('Note id.'), text: str('Reply text.') }, required: ['id', 'text'] },
     run: (a) => call('write', { op: 'reply', id: a.id, text: a.text }),
   },
